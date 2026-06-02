@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -367,7 +367,592 @@ function Group({header:e,children:a,style:t={}}){return React.createElement("div
 function BigCard({tone:i,icon:t,title:e,ar:n,sub:o,onClick:a}){return React.createElement("div",{onClick:a,style:{cursor:"pointer",flex:1,position:"relative",overflow:"hidden",borderRadius:24,padding:18,background:`linear-gradient(150deg, ${i[0]}, ${i[1]})`,boxShadow:"0 8px 22px rgba(28,46,36,0.14)",minHeight:132,display:"flex",flexDirection:"column",justifyContent:"space-between"}},React.createElement("div",{style:{position:"absolute",right:-10,bottom:-16,fontFamily:T.arabic,fontSize:64,color:"rgba(255,255,255,0.12)"}},n),React.createElement("div",{style:{width:44,height:44,borderRadius:14,background:"rgba(255,255,255,0.16)",color:"#fff",display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}},t),React.createElement("div",{style:{position:"relative"}},React.createElement("div",{style:{fontFamily:T.serif,fontSize:19,fontWeight:600,color:"#fff"}},e),React.createElement("div",{style:{fontFamily:T.sans,fontSize:11.5,color:"rgba(255,255,255,0.78)",marginTop:1}},o)))}function MoreRow({icon:i,title:t,sub:e,onClick:n,last:o}){return React.createElement("div",{onClick:n,style:{display:"flex",alignItems:"center",gap:13,padding:"14px 16px",cursor:"pointer",borderBottom:o?"none":`1px solid ${T.lineSoft}`}},React.createElement("div",{style:{width:36,height:36,borderRadius:12,background:"rgba(12,90,59,0.08)",color:T.emerald,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}},i),React.createElement("div",{style:{flex:1}},React.createElement("div",{style:{fontFamily:T.sans,fontSize:15,fontWeight:600,color:T.ink}},t),e&&React.createElement("div",{style:{fontFamily:T.sans,fontSize:12,color:T.muted,marginTop:1}},e)),React.createElement("span",{style:{color:T.faint}},React.createElement(Ic.chevR,{s:17})))}function More({go:i,deenPct:t,dunyaPct:e}){return React.createElement("div",{style:{padding:"52px 18px 14px"}},React.createElement(Eyebrow,{style:{marginBottom:6}},"Tools & Settings"),React.createElement("h1",{style:{fontFamily:T.serif,fontSize:30,fontWeight:600,color:T.ink,margin:"0 0 18px",letterSpacing:-.3}},"More"),React.createElement(Card,{style:{marginBottom:18,display:"flex",alignItems:"center",gap:14},onClick:()=>i("settings")},React.createElement("div",{style:{width:52,height:52,borderRadius:17,flexShrink:0,background:`linear-gradient(135deg, ${T.emerald}, ${T.emeraldDeep})`,display:"flex",alignItems:"center",justifyContent:"center",fontFamily:T.serif,fontSize:20,color:"#fff",fontWeight:600,boxShadow:"0 6px 16px rgba(12,90,59,0.28)"}},"MJ"),React.createElement("div",{style:{flex:1}},React.createElement("div",{style:{fontFamily:T.serif,fontSize:18,fontWeight:600,color:T.ink}},"MJ"),React.createElement("div",{style:{display:"flex",alignItems:"center",gap:4,color:T.muted,marginTop:2}},React.createElement(Ic.pin,{s:13}),React.createElement("span",{style:{fontFamily:T.sans,fontSize:12.5,fontWeight:500}},"Calgary, AB \xB7 Canada"))),React.createElement("span",{style:{color:T.faint}},React.createElement(Ic.chevR,{s:18}))),React.createElement("div",{style:{display:"flex",gap:14,marginBottom:18}},React.createElement(BigCard,{tone:[T.emerald,T.emeraldDeep],icon:React.createElement(Ic.tasks,{s:22}),title:"Tasks",ar:"\u0627\u0644\u062F\u0646\u064A\u0627",sub:`Deen ${t}% \xB7 Dunya ${e}%`,onClick:()=>i("tasks")}),React.createElement(BigCard,{tone:["#B08A3E","#7E5F26"],icon:React.createElement(Ic.settings,{s:22}),title:"Settings",ar:"\u0625\u0639\u062F\u0627\u062F",sub:"Adhan, Iqama & more",onClick:()=>i("settings")})),React.createElement(Card,{pad:0,style:{overflow:"hidden"}},React.createElement(MoreRow,{icon:React.createElement(Ic.book,{s:18}),title:"Daily Nourishment",sub:"Today\u2019s Qur\u2019an goal",onClick:()=>i("quran")}),React.createElement(MoreRow,{icon:React.createElement(Ic.beads,{s:18}),title:"Azkar",sub:"Morning, evening & more",onClick:()=>i("azkar")}),React.createElement(MoreRow,{icon:React.createElement(Ic.compass,{s:18}),title:"Qibla finder",sub:"Direction to the Ka\u02BFbah",onClick:()=>i("qibla"),last:!0})),React.createElement("div",{style:{textAlign:"center",fontFamily:T.sans,fontSize:12,color:T.faint,padding:"18px 0 8px"}},"Deen o Dunya Planner \xB7 v1.1"))}Object.assign(window,{More});
 
 ;
-const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label:"Qur'an",icon:Ic.quran},{key:"qibla",label:"Qibla",icon:Ic.compass},{key:"azkar",label:"Azkar",icon:Ic.beads},{key:"more",label:"More",icon:Ic.grid9}];function BottomNav({active:n,setTab:r}){return React.createElement("div",{style:{padding:"8px 14px 26px",flexShrink:0,position:"relative",zIndex:40}},React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-around",background:"rgba(255,253,247,0.82)",backdropFilter:"blur(20px) saturate(180%)",WebkitBackdropFilter:"blur(20px) saturate(180%)",borderRadius:26,padding:"8px 6px",boxShadow:"0 8px 28px rgba(28,46,36,0.12), 0 0 0 1px rgba(33,48,42,0.04)"}},TABS.map(a=>{const s=n===a.key,d=a.icon;return React.createElement("div",{key:a.key,onClick:()=>r(a.key),style:{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"5px 9px",borderRadius:16,cursor:"pointer",position:"relative",color:s?T.emerald:T.muted,transition:"color .2s"}},s&&React.createElement("div",{style:{position:"absolute",top:2,width:34,height:30,borderRadius:12,background:"rgba(12,90,59,0.10)"}}),React.createElement("div",{style:{position:"relative"}},React.createElement(d,{s:22,w:s?2:1.7})),React.createElement("span",{style:{fontFamily:T.sans,fontSize:9.5,fontWeight:s?700:600,letterSpacing:.1}},a.label))})))}function App(){const[n,r]=React.useState("dashboard"),[a,s]=React.useState({fajr:!0,dhuhr:!0,asr:!0,maghrib:!1,isha:!0}),[d,M]=React.useState(0),[l,K]=React.useState([!1,!1]),[R,h]=React.useState(null),[P,E]=React.useState(!1),[D,z]=React.useState(2),[O,Q]=React.useState(!0),[v,k]=React.useState(null),[c,C]=React.useState({fajr:"04:38",dhuhr:"13:42",asr:"17:58",maghrib:"21:18",isha:"22:52"}),[B,j]=React.useState({fajr:"05:00",dhuhr:"14:00",asr:"18:15",maghrib:"21:25",isha:"23:10"}),[p,G]=React.useState([{id:"d1",group:"deen",text:"Pray Fajr in jam\u0101\u02BFah",time:"4:38 AM",done:!0},{id:"d2",group:"deen",text:"Morning Adhk\u0101r",done:!0},{id:"d3",group:"deen",text:"Give \u1E62adaqah",done:!1},{id:"d4",group:"deen",text:"Evening Adhk\u0101r",done:!1},{id:"u1",group:"dunya",text:"Deep work block",time:"9\u201311 AM",done:!0},{id:"u2",group:"dunya",text:"Reply to client emails",done:!1},{id:"u3",group:"dunya",text:"Grocery run",done:!0},{id:"u4",group:"dunya",text:"Gym session",time:"6 PM",done:!1},{id:"u5",group:"dunya",text:"Call dentist",done:!1}]),F=l.every(Boolean),S=p.filter(e=>e.group==="deen"),x=p.filter(e=>e.group==="dunya"),m=Math.round((S.filter(e=>e.done).length+(F?1:0))/(S.length+1)*100),f=Math.round(x.filter(e=>e.done).length/x.length*100),N=l.filter(Boolean).length,H=[{name:"Mishary Rashid Alafasy"},{name:"Abdul Rahman Al-Sudais"},{name:"Abdul Basit Abdus Samad"},{name:"Maher Al-Muaiqly"},{name:"Mahmoud Al-Husary"}],g=["https://www.islamcan.com/audio/adhan/azan2.mp3","https://www.islamcan.com/audio/adhan/azan1.mp3"],i=React.useRef(null),u=React.useRef(0),A=React.useRef(""),[w,o]=React.useState(!1),[U,W]=React.useState(0),I=()=>{const e=i.current;e&&(u.current=0,e.src=g[0],e.muted=!1,e.currentTime=0,e.play().then(()=>o(!0)).catch(()=>o(!1)))},L=()=>{const e=i.current;e&&(e.pause(),e.currentTime=0),o(!1)},V=()=>{w?L():I()};React.useEffect(()=>{const e=()=>{const t=i.current;t&&(t.muted=!0,t.play().then(()=>{t.pause(),t.currentTime=0,t.muted=!1}).catch(()=>{t.muted=!1}))};return window.addEventListener("pointerdown",e,{once:!0}),()=>window.removeEventListener("pointerdown",e)},[]),React.useEffect(()=>{const e=setInterval(()=>W(t=>t+1),15e3);return()=>clearInterval(e)},[]),React.useEffect(()=>{const e=new Date,t=String(e.getHours()).padStart(2,"0")+":"+String(e.getMinutes()).padStart(2,"0");for(const b of Object.keys(c))if(c[b]===t&&a[b]){const q=b+"@"+e.toDateString()+" "+t;A.current!==q&&(A.current=q,I())}},[U]);const _=n==="tasks"||n==="settings"||n==="more"?"more":n,y=e=>{e==="azkar"&&k(null),e==="quran"&&h(null),r(e)},$=()=>{h(94),r("quran")},J=()=>{switch(n){case"dashboard":return React.createElement(Dashboard,{go:y,openDaily:$,adhan:a,setAdhan:s,deenPct:m,dunyaPct:f,versesDone:N,times:c,adhanPlaying:w,onPreviewAdhan:V});case"quran":return React.createElement(Quran,{surah:R,setSurah:h,qari:d,setQari:M});case"qibla":return React.createElement(Qibla,null);case"azkar":return React.createElement(Azkar,{openCatId:v,setOpenCatId:k});case"more":return React.createElement(More,{go:r,deenPct:m,dunyaPct:f});case"tasks":return React.createElement(Tasks,{tasks:p,setTasks:G,deenPct:m,dunyaPct:f,quranRead:l,go:y,back:()=>r("more")});case"settings":return React.createElement(Settings,{adhan:a,setAdhan:s,qari:d,QARIS:H,useOwnTimes:P,setUseOwnTimes:E,verseGoal:D,setVerseGoal:z,reminder:O,setReminder:Q,adhanTimes:c,setAdhanTimes:C,iqamaTimes:B,setIqamaTimes:j,back:()=>r("more")});default:return null}};return React.createElement("div",{style:{height:"100%",display:"flex",flexDirection:"column",position:"relative",background:`radial-gradient(120% 60% at 80% -5%, #FBF6EA 0%, ${T.canvas} 42%, ${T.canvas2} 100%)`}},React.createElement("audio",{ref:i,preload:"none",onEnded:()=>o(!1),onError:()=>{const e=i.current;e&&u.current+1<g.length?(u.current+=1,e.src=g[u.current],e.play().then(()=>o(!0)).catch(()=>o(!1))):o(!1)}}),React.createElement("div",{style:{position:"absolute",top:0,left:0,right:0,height:50,zIndex:8,pointerEvents:"none",background:"linear-gradient(to bottom, rgba(251,246,234,0.95), rgba(251,246,234,0))"}}),React.createElement("div",{key:n+(v||"")+(R||""),style:{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch"}},J()),React.createElement(BottomNav,{active:_,setTab:y}))}ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
+const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label:"Qur'an",icon:Ic.quran},{key:"qibla",label:"Qibla",icon:Ic.compass},{key:"azkar",label:"Azkar",icon:Ic.beads},{key:"more",label:"More",icon:Ic.grid9}];function BottomNav({active:n,setTab:r}){return React.createElement("div",{style:{padding:"8px 14px 26px",flexShrink:0,position:"relative",zIndex:40}},React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-around",background:"rgba(255,253,247,0.82)",backdropFilter:"blur(20px) saturate(180%)",WebkitBackdropFilter:"blur(20px) saturate(180%)",borderRadius:26,padding:"8px 6px",boxShadow:"0 8px 28px rgba(28,46,36,0.12), 0 0 0 1px rgba(33,48,42,0.04)"}},TABS.map(a=>{const s=n===a.key,d=a.icon;return React.createElement("div",{key:a.key,onClick:()=>r(a.key),style:{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"5px 9px",borderRadius:16,cursor:"pointer",position:"relative",color:s?T.emerald:T.muted,transition:"color .2s"}},s&&React.createElement("div",{style:{position:"absolute",top:2,width:34,height:30,borderRadius:12,background:"rgba(12,90,59,0.10)"}}),React.createElement("div",{style:{position:"relative"}},React.createElement(d,{s:22,w:s?2:1.7})),React.createElement("span",{style:{fontFamily:T.sans,fontSize:9.5,fontWeight:s?700:600,letterSpacing:.1}},a.label))})))}function App(){const[n,r]=React.useState("dashboard"),[a,s]=React.useState({fajr:!0,dhuhr:!0,asr:!0,maghrib:!1,isha:!0}),[d,M]=React.useState(0),[l,K]=React.useState([!1,!1]),[R,h]=React.useState(null),[P,E]=React.useState(!1),[D,z]=React.useState(2),[O,Q]=React.useState(!0),[v,k]=React.useState(null),[c,C]=React.useState({fajr:"04:38",dhuhr:"13:42",asr:"17:58",maghrib:"21:18",isha:"22:52"}),[B,j]=React.useState({fajr:"05:00",dhuhr:"14:00",asr:"18:15",maghrib:"21:25",isha:"23:10"}),[p,G]=React.useState([{id:"d1",group:"deen",text:"Pray Fajr in jam\u0101\u02BFah",time:"4:38 AM",done:!0},{id:"d2",group:"deen",text:"Morning Adhk\u0101r",done:!0},{id:"d3",group:"deen",text:"Give \u1E62adaqah",done:!1},{id:"d4",group:"deen",text:"Evening Adhk\u0101r",done:!1},{id:"u1",group:"dunya",text:"Deep work block",time:"9\u201311 AM",done:!0},{id:"u2",group:"dunya",text:"Reply to client emails",done:!1},{id:"u3",group:"dunya",text:"Grocery run",done:!0},{id:"u4",group:"dunya",text:"Gym session",time:"6 PM",done:!1},{id:"u5",group:"dunya",text:"Call dentist",done:!1}]),F=l.every(Boolean),S=p.filter(e=>e.group==="deen"),x=p.filter(e=>e.group==="dunya"),m=Math.round((S.filter(e=>e.done).length+(F?1:0))/(S.length+1)*100),f=Math.round(x.filter(e=>e.done).length/x.length*100),N=l.filter(Boolean).length,H=[{name:"Mishary Rashid Alafasy"},{name:"Abdul Rahman Al-Sudais"},{name:"Abdul Basit Abdus Samad"},{name:"Maher Al-Muaiqly"},{name:"Mahmoud Al-Husary"}],g=["https://www.islamcan.com/audio/adhan/azan2.mp3","https://www.islamcan.com/audio/adhan/azan1.mp3"],i=React.useRef(null),u=React.useRef(0),A=React.useRef(""),[w,o]=React.useState(!1),[U,W]=React.useState(0),I=()=>{const e=i.current;e&&(u.current=0,e.src=g[0],e.muted=!1,e.currentTime=0,e.play().then(()=>o(!0)).catch(()=>o(!1)))},L=()=>{const e=i.current;e&&(e.pause(),e.currentTime=0),o(!1)},V=()=>{w?L():I()};React.useEffect(()=>{const e=()=>{const t=i.current;t&&(t.muted=!0,t.play().then(()=>{t.pause(),t.currentTime=0,t.muted=!1}).catch(()=>{t.muted=!1}))};return window.addEventListener("pointerdown",e,{once:!0}),()=>window.removeEventListener("pointerdown",e)},[]),React.useEffect(()=>{const e=setInterval(()=>W(t=>t+1),15e3);return()=>clearInterval(e)},[]),React.useEffect(()=>{const e=new Date,t=String(e.getHours()).padStart(2,"0")+":"+String(e.getMinutes()).padStart(2,"0");for(const b of Object.keys(c))if(c[b]===t&&a[b]){const q=b+"@"+e.toDateString()+" "+t;A.current!==q&&(A.current=q,I())}},[U]);const _=n==="tasks"||n==="settings"||n==="more"?"more":n,y=e=>{e==="azkar"&&k(null),e==="quran"&&h(null),r(e)},$=()=>{h(94),r("quran")},J=()=>{switch(n){case"dashboard":return React.createElement(Dashboard,{go:y,openDaily:$,adhan:a,setAdhan:s,deenPct:m,dunyaPct:f,versesDone:N,times:c,adhanPlaying:w,onPreviewAdhan:V});case"quran":return React.createElement(Quran,{surah:R,setSurah:h,qari:d,setQari:M});case"qibla":return React.createElement(Qibla,null);case"azkar":return React.createElement(Azkar,{openCatId:v,setOpenCatId:k});case"more":return React.createElement(More,{go:r,deenPct:m,dunyaPct:f});case"tasks":return React.createElement(Tasks,{tasks:p,setTasks:G,deenPct:m,dunyaPct:f,quranRead:l,go:y,back:()=>r("more")});case"settings":return React.createElement(Settings,{adhan:a,setAdhan:s,qari:d,QARIS:H,useOwnTimes:P,setUseOwnTimes:E,verseGoal:D,setVerseGoal:z,reminder:O,setReminder:Q,adhanTimes:c,setAdhanTimes:C,iqamaTimes:B,setIqamaTimes:j,back:()=>r("more")});default:return null}};return React.createElement("div",{style:{height:"100%",display:"flex",flexDirection:"column",position:"relative",background:`radial-gradient(120% 60% at 80% -5%, #FBF6EA 0%, ${T.canvas} 42%, ${T.canvas2} 100%)`}},React.createElement("audio",{ref:i,preload:"none",onEnded:()=>o(!1),onError:()=>{const e=i.current;e&&u.current+1<g.length?(u.current+=1,e.src=g[u.current],e.play().then(()=>o(!0)).catch(()=>o(!1))):o(!1)}}),React.createElement("div",{style:{position:"absolute",top:0,left:0,right:0,height:50,zIndex:8,pointerEvents:"none",background:"linear-gradient(to bottom, rgba(251,246,234,0.95), rgba(251,246,234,0))"}}),React.createElement("div",{key:n+(v||"")+(R||""),style:{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch"}},J()),React.createElement(BottomNav,{active:_,setTab:y}))}/* Codex enhancements: tafsir offline, audio scroll, mobile qibla, azkar cleanup */
+(function(){
+  var h = React.createElement;
+  var TAFSIR_PREFIX = "ddp_tafsir_v2_";
+  var RESOURCE_KEY = "ddp_tafsir_resources_v2";
+  var resourcePromise = null;
+  [
+    { id: "jalalayn", name: "Al-Jalalayn", work: "Tafsir al-Jalalayn" }
+  ].forEach(function(item){
+    if (!MUFASSIREEN.some(function(existing){ return existing.id === item.id; })) MUFASSIREEN.push(item);
+  });
+
+  function cleanTafsirText(text){
+    return String(text || "")
+      .replace(/<script[\s\S]*?<\/script>/gi, " ")
+      .replace(/<style[\s\S]*?<\/style>/gi, " ")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function tafsirKey(surah, id, lang){ return TAFSIR_PREFIX + surah + "_" + (lang || "en") + "_" + id; }
+  function readStoredTafsir(surah, id, lang){
+    try {
+      var saved = JSON.parse(localStorage.getItem(tafsirKey(surah, id, lang)) || "null");
+      return saved && saved.ayahs ? saved.ayahs : null;
+    } catch (err) { return null; }
+  }
+  function writeStoredTafsir(surah, mufassir, ayahs, lang){
+    var payload = { surah: surah, id: mufassir.id, language: lang || "en", name: mufassir.name, work: mufassir.work, savedAt: Date.now(), ayahs: ayahs };
+    localStorage.setItem(tafsirKey(surah, mufassir.id, lang), JSON.stringify(payload));
+  }
+  function seedTafsir(content, id){
+    var map = {};
+    if (!content || !content.ayahs) return map;
+    content.ayahs.forEach(function(ayah, idx){
+      if (ayah.tafsir && ayah.tafsir[id]) map[idx + 1] = ayah.tafsir[id];
+    });
+    return map;
+  }
+  function mergeMaps(a, b){
+    var out = {};
+    Object.keys(a || {}).forEach(function(k){ out[k] = a[k]; });
+    Object.keys(b || {}).forEach(function(k){ if (b[k]) out[k] = b[k]; });
+    return out;
+  }
+
+  function fetchTafsirResources(){
+    if (resourcePromise) return resourcePromise;
+    resourcePromise = new Promise(function(resolve){
+      try {
+        var cached = JSON.parse(localStorage.getItem(RESOURCE_KEY) || "null");
+        if (cached && cached.items && Date.now() - cached.savedAt < 7 * 864e5) return resolve(cached.items);
+      } catch (err) {}
+      fetch("https://api.quran.com/api/v4/resources/tafsirs")
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("resources")); })
+        .then(function(data){
+          var items = data.tafsirs || [];
+          try { localStorage.setItem(RESOURCE_KEY, JSON.stringify({ savedAt: Date.now(), items: items })); } catch (err) {}
+          resolve(items);
+        })
+        .catch(function(){ resolve([]); });
+    });
+    return resourcePromise;
+  }
+
+  function resourceMatches(mufassir){
+    var patterns = {
+      ibnkathir: [/ibn\s*kathir/i, /kathir/i],
+      maududi: [/maududi/i, /mawdudi/i, /tafhim/i],
+      ghamidi: [/ghamidi/i, /al[-\s]?bayan/i, /bayan/i],
+      islahi: [/islahi/i, /tadabbur/i],
+      jalalayn: [/jalalayn/i, /jalalain/i]
+    };
+    return patterns[mufassir.id] || [new RegExp(mufassir.name.split(" ")[0], "i")];
+  }
+  function resolveTafsirResource(mufassir, lang){
+    return fetchTafsirResources().then(function(items){
+      var tests = resourceMatches(mufassir);
+      var ranked = items.map(function(item){
+        var label = [item.name, item.slug, item.author_name, item.language_name, item.translated_name && item.translated_name.name].join(" ");
+        var score = 0;
+        tests.forEach(function(rx, idx){ if (rx.test(label)) score += 10 - idx; });
+        var isUrdu = /urdu/i.test(item.language_name || item.language || "");
+        if (lang === "ur" && isUrdu) score += 25;
+        if (lang === "ur" && !isUrdu) score -= 12;
+        if (lang === "en" && isUrdu) score -= 20;
+        if (lang !== "ur" && /english/i.test(item.language_name || item.language || "")) score += 4;
+        return { item: item, score: score };
+      }).filter(function(x){ return x.score > 0; }).sort(function(a, b){ return b.score - a.score; });
+      return ranked.length ? ranked[0].item : null;
+    });
+  }
+
+  function fetchChapterTafsir(surah, mufassir, total, onProgress, lang){
+    return resolveTafsirResource(mufassir, lang).then(function(resource){
+      if (!resource || !resource.id) return {};
+      var map = {};
+      var chapterUrl = "https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?chapter_number=" + surah;
+      return fetch(chapterUrl)
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("chapter")); })
+        .then(function(data){
+          (data.tafsirs || []).forEach(function(row){
+            var key = row.verse_key || row.verseKey || "";
+            var ayahNo = Number(String(key).split(":")[1] || row.verse_number || row.verse_id);
+            var text = cleanTafsirText(row.text || row.body || row.tafsir_text);
+            if (ayahNo && text) map[ayahNo] = text;
+          });
+          if (Object.keys(map).length) return map;
+          throw new Error("empty chapter");
+        })
+        .catch(function(){
+          var chain = Promise.resolve();
+          for (var i = 1; i <= total; i++) {
+            (function(ayahNo){
+              chain = chain.then(function(){
+                return fetch("https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?verse_key=" + surah + ":" + ayahNo)
+                  .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("verse")); })
+                  .then(function(data){
+                    var row = data.tafsirs && data.tafsirs[0];
+                    var text = row && cleanTafsirText(row.text || row.body || row.tafsir_text);
+                    if (text) map[ayahNo] = text;
+                    if (onProgress) onProgress(ayahNo / total);
+                  })
+                  .catch(function(){ if (onProgress) onProgress(ayahNo / total); });
+              });
+            })(i);
+          }
+          return chain.then(function(){ return map; });
+        });
+    });
+  }
+
+  function TafsirDownloadPanel(props){
+    var selected = props.selected, status = props.status, progress = props.progress, count = props.count, lang = props.lang || "en";
+    var saved = status === "saved";
+    var busy = status === "downloading";
+    var label = busy ? "Downloading Tafsir " + Math.round(progress * 100) + "%" : saved ? "Tafsir saved offline" : "Download Tafsir for Offline";
+    return h("div", { style: { display: "flex", alignItems: "center", gap: 11, padding: "11px 12px", margin: "10px 0 4px", borderRadius: 16, background: "rgba(189,154,78,0.10)", border: "1px solid rgba(189,154,78,0.18)" } },
+      h("span", { style: { color: T.gold, flexShrink: 0 } }, h(Ic.layers, { s: 17 })),
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: T.sans, fontSize: 12.5, fontWeight: 800, color: T.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, selected.name),
+        h("div", { style: { display: "inline-flex", alignItems: "center", gap: 5, marginTop: 3, fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, color: lang === "ur" ? T.gold : T.emerald, textTransform: "uppercase", letterSpacing: .7 } }, lang === "ur" ? "Urdu Tafsir" : "English Tafsir"),
+        h("div", { style: { fontFamily: T.serif, fontSize: 11.5, color: T.muted, fontStyle: "italic", marginTop: 1 } }, selected.work, " - ", count, " ayat")
+      ),
+      h("div", { onClick: busy ? void 0 : props.onDownload, style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 12px", borderRadius: 999, background: saved ? "rgba(12,90,59,0.12)" : T.gold, color: saved ? T.emerald : "#fff", fontFamily: T.sans, fontSize: 11.5, fontWeight: 800, cursor: busy ? "default" : "pointer", whiteSpace: "nowrap" } },
+        saved ? h(Ic.check, { s: 14 }) : h(Ic.download, { s: 14 }), label
+      )
+    );
+  }
+
+  function clampAyah(value, min, max){
+    var n = parseInt(value, 10);
+    if (!isFinite(n)) n = min;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function selectedAyahRows(source, start, end){
+    var rows = [];
+    if (!source || !source.ayahs) return rows;
+    var last = Math.min(end, source.ayahs.length);
+    for (var i = start - 1; i < last; i++) rows.push({ ayah: source.ayahs[i], n: i + 1 });
+    return rows;
+  }
+
+  function AyahRangeControl(props){
+    var start = props.start, end = props.end, total = props.total, loaded = props.loaded || 0;
+    var selectedCount = Math.max(0, end - start + 1);
+    var loadedCount = Math.max(0, Math.min(end, loaded) - start + 1);
+    var options = Array.from({ length: total }, function(_, idx){ return idx + 1; });
+    var changeStart = function(value){
+      var nextStart = clampAyah(value, 1, total);
+      props.onChange(nextStart, Math.max(nextStart, end));
+    };
+    var changeEnd = function(value){
+      var nextEnd = clampAyah(value, 1, total);
+      props.onChange(Math.min(start, nextEnd), nextEnd);
+    };
+    var field = function(label, value, onChange){
+      return h("label", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: T.sans, fontSize: 9.5, fontWeight: 800, letterSpacing: .8, textTransform: "uppercase", color: T.muted, margin: "0 0 5px 3px" } }, label),
+        h("select", { value: value, onChange: function(ev){ onChange(ev.target.value); }, style: { width: "100%", border: "none", outline: "none", borderRadius: 13, background: "rgba(12,90,59,0.08)", color: T.ink, padding: "10px 12px", fontFamily: T.sans, fontSize: 14, fontWeight: 800 } },
+          options.map(function(n){ return h("option", { key: n, value: n }, n); })
+        )
+      );
+    };
+    return h(Card, { pad: 14, style: { margin: "12px 0 4px", borderRadius: 18 } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 9, marginBottom: 12 } },
+        h("span", { style: { color: T.emerald } }, h(Ic.book, { s: 17 })),
+        h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { style: { fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, color: T.ink } }, "Ayah Selection"),
+          h("div", { style: { fontFamily: T.sans, fontSize: 11.5, color: T.muted, marginTop: 1 } },
+            start === end ? "Showing ayah " + start : "Showing ayat " + start + "-" + end,
+            " - ", selectedCount, selectedCount === 1 ? " selected" : " selected"
+          )
+        ),
+        h("div", { onClick: function(){ props.onChange(1, total); }, style: { padding: "7px 10px", borderRadius: 999, cursor: "pointer", background: "rgba(33,48,42,0.06)", color: T.ink2, fontFamily: T.sans, fontSize: 11.5, fontWeight: 800 } }, "All")
+      ),
+      h("div", { style: { display: "flex", gap: 10 } },
+        field("From", start, changeStart),
+        field("To", end, changeEnd)
+      ),
+      props.partial && loadedCount < selectedCount && h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 11, padding: "10px 11px", borderRadius: 14, background: "rgba(189,154,78,0.10)", color: T.ink2 } },
+        h("span", { style: { color: T.gold, flexShrink: 0 } }, h(Ic.info, { s: 15 })),
+        h("span", { style: { fontFamily: T.sans, fontSize: 11.8, lineHeight: 1.4 } }, "This selection includes ayat not loaded yet. Download the full surah to display and play them.")
+      )
+    );
+  }
+
+  AyahCard = function EnhancedAyahCard(props){
+    var ayah = props.a, n = props.n, show = props.show, mufassir = props.mufassir, accent = props.accent;
+    var lang = props.lang || "en";
+    var saved = props.tafsirMap || {};
+    var local = lang === "ur" ? null : (ayah.tafsir && ayah.tafsir[mufassir.id]);
+    var commentary = saved[n] || local || "";
+    var isPlaying = props.isPlaying;
+    var setNode = props.setNode || function(){};
+    var savedFromOffline = !!saved[n];
+    var urduMode = lang === "ur";
+    return h("div", { ref: setNode },
+      h(Card, { style: { marginBottom: 14, background: isPlaying ? "rgba(12,90,59,0.055)" : T.card, outline: isPlaying ? "2px solid " + accent : "none", outlineOffset: -1, boxShadow: isPlaying ? "0 10px 28px rgba(12,90,59,0.18), 0 0 0 1px rgba(12,90,59,0.08)" : void 0 }, pad: 18 },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
+          h("div", { style: { width: 30, height: 30, borderRadius: 999, background: isPlaying ? accent : accent + "14", color: isPlaying ? "#fff" : accent, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: T.serif, fontSize: 13, fontWeight: 700 } }, n),
+          isPlaying && h("div", { style: { display: "inline-flex", alignItems: "center", gap: 5, color: accent, fontFamily: T.sans, fontSize: 11.5, fontWeight: 800 } }, h(Ic.speaker, { s: 14 }), "Reciting"),
+          h("div", { style: { flex: 1 } }),
+          h("div", { onClick: props.onPlay, style: { width: 34, height: 34, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", background: isPlaying ? accent : accent + "12", color: isPlaying ? "#fff" : accent } },
+            isPlaying ? h(Ic.pause, { s: 16 }) : h("span", { style: { marginLeft: 1 } }, h(Ic.play, { s: 16 }))
+          )
+        ),
+        h("div", { style: { fontFamily: T.arabic, fontSize: 28, lineHeight: 2, color: T.ink, textAlign: "right", direction: "rtl" } }, ayah.ar),
+        show.en && h("div", { style: { fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.55, color: T.ink2, marginTop: 14 } }, ayah.en),
+        show.ur && h("div", { style: { fontFamily: T.urdu, fontSize: 17, lineHeight: 2.1, color: T.ink2, textAlign: "right", direction: "rtl", marginTop: show.en ? 10 : 14 } }, ayah.ur),
+        show.tafsir && h("div", { style: { marginTop: 14, padding: "13px 14px", borderRadius: 16, background: "rgba(189,154,78,0.08)", borderLeft: "3px solid " + T.gold } },
+          h("div", { style: { display: "flex", alignItems: "center", gap: 6, marginBottom: 7, flexWrap: "wrap" } },
+            h("span", { style: { color: T.gold } }, h(Ic.layers, { s: 14 })),
+            h("span", { style: { fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, letterSpacing: .4, color: T.gold } }, urduMode ? "Urdu Tafsir" : mufassir.name),
+            h("span", { style: { fontFamily: urduMode ? T.urdu : T.serif, fontSize: 11.5, fontStyle: "italic", color: T.muted } }, "- ", urduMode ? "\u0627\u0631\u062f\u0648" : mufassir.work),
+            savedFromOffline && h("span", { style: { fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, color: T.emerald, background: "rgba(12,90,59,0.10)", padding: "2px 7px", borderRadius: 999 } }, "Offline")
+          ),
+          commentary ? h("div", { style: { fontFamily: urduMode ? T.urdu : T.serif, fontSize: urduMode ? 15.5 : 14, lineHeight: urduMode ? 2.05 : 1.6, color: T.ink2, textAlign: urduMode ? "right" : "left", direction: urduMode ? "rtl" : "ltr" } }, commentary)
+            : h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, fontStyle: "italic", lineHeight: 1.5 } }, urduMode ? "\u0627\u0631\u062f\u0648 \u062a\u0641\u0633\u06cc\u0631 \u0627\u0628\u06be\u06cc \u0644\u0648\u0688 \u06c1\u0648 \u0631\u06c1\u06cc \u06c1\u06d4" : "Download this surah''s Tafsir to save commentary from " + mufassir.name + " for offline reading.")
+        )
+      )
+    );
+  };
+
+  DownloadButton = function EnhancedDownloadButton(props){
+    return h("div", { onClick: props.start, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "12px 22px", borderRadius: 999, background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 14, fontWeight: 700, cursor: "pointer", boxShadow: "0 6px 16px rgba(12,90,59,0.3)" } },
+      h(Ic.download, { s: 17 }), " ", props.dl === "error" ? "Retry download" : "Download Surah for Offline"
+    );
+  };
+
+  ReadingView = function EnhancedReadingView(props){
+    var t = props.surah, back = props.back, qari = props.qari, setQari = props.setQari;
+    var e = SURAHS.find(function(r){ return r.num === t; });
+    var o = QURAN_CONTENT[t];
+    var chapterTotal = e ? e.ayahs : 1;
+    var storageKey = "ddp_q_" + t;
+    var readQuran = function(){ try { return JSON.parse(localStorage.getItem(storageKey) || "null"); } catch (err) { return null; } };
+    var stateQuran = React.useState(function(){ return QCACHE[t] || readQuran(); });
+    var d = stateQuran[0], setDownloaded = stateQuran[1];
+    var s = d || o;
+    var partial = !d && o && o.partial;
+    var showState = React.useState({ en: true, ur: true, tafsir: true });
+    var show = showState[0], setShow = showState[1];
+    var defaultMufassir = Math.max(0, MUFASSIREEN.findIndex(function(x){ return x.id === "ibnkathir"; }));
+    var mufassirState = React.useState(defaultMufassir);
+    var mufassirIdx = mufassirState[0], setMufassirIdx = mufassirState[1];
+    var selected = MUFASSIREEN[mufassirIdx] || MUFASSIREEN[0];
+    var currentState = React.useState(0), current = currentState[0], setCurrent = currentState[1];
+    var playingState = React.useState(false), playing = playingState[0], setPlaying = playingState[1];
+    var tafsirLang = show.ur && !show.en ? "ur" : "en";
+    var rangeState = React.useState(function(){ return { start: 1, end: chapterTotal }; });
+    var range = rangeState[0], setRange = rangeState[1];
+    var loadedTotal = s && s.ayahs ? s.ayahs.length : 0;
+    var rangeStart = clampAyah(range.start, 1, chapterTotal);
+    var rangeEnd = clampAyah(range.end, rangeStart, chapterTotal);
+    var rows = selectedAyahRows(s, rangeStart, rangeEnd);
+    var selectedTotal = Math.max(0, rangeEnd - rangeStart + 1);
+    var selectedLoaded = rows.length;
+    var missingSelection = !!s && selectedLoaded < selectedTotal;
+    var activeIndex = selectedLoaded ? Math.min(current, selectedLoaded - 1) : 0;
+    var activeRow = rows[activeIndex];
+    var accent = T.emerald;
+    var dlState = React.useState("idle"), dl = dlState[0], setDl = dlState[1];
+    var progState = React.useState(0), prog = progState[0], setProg = progState[1];
+    var tafsirState = React.useState(function(){ return readStoredTafsir(t, selected.id, tafsirLang) || {}; });
+    var tafsirMap = tafsirState[0], setTafsirMap = tafsirState[1];
+    var tafsirStatusState = React.useState(function(){ return readStoredTafsir(t, selected.id, tafsirLang) ? "saved" : "idle"; });
+    var tafsirStatus = tafsirStatusState[0], setTafsirStatus = tafsirStatusState[1];
+    var tafsirProgressState = React.useState(0), tafsirProgress = tafsirProgressState[0], setTafsirProgress = tafsirProgressState[1];
+    var ayahRefs = React.useRef({});
+
+    React.useEffect(function(){
+      setRange({ start: 1, end: chapterTotal });
+      setCurrent(0);
+      setPlaying(false);
+      ayahRefs.current = {};
+    }, [t]);
+
+    React.useEffect(function(){
+      var stored = readStoredTafsir(t, selected.id, tafsirLang);
+      setTafsirMap(stored || {});
+      setTafsirStatus(stored ? "saved" : "idle");
+      setTafsirProgress(0);
+    }, [t, selected.id, tafsirLang]);
+
+    React.useEffect(function(){
+      if (!selectedLoaded && current !== 0) setCurrent(0);
+      if (selectedLoaded && current >= selectedLoaded) setCurrent(selectedLoaded - 1);
+    }, [current, selectedLoaded]);
+
+    React.useEffect(function(){
+      if (!playing) return;
+      var node = ayahRefs.current[current];
+      if (node && node.scrollIntoView) {
+        setTimeout(function(){ node.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" }); }, 80);
+      }
+    }, [current, playing]);
+
+    var setAyahRange = function(start, end){
+      var nextStart = clampAyah(start, 1, chapterTotal);
+      var nextEnd = clampAyah(end, nextStart, chapterTotal);
+      setRange({ start: nextStart, end: nextEnd });
+      setCurrent(0);
+      setPlaying(false);
+      ayahRefs.current = {};
+    };
+    var toggleShow = function(key){ setShow(function(prev){ var next = {}; Object.keys(prev).forEach(function(k){ next[k] = prev[k]; }); next[key] = !prev[key]; return next; }); };
+    var downloadSurah = function(){
+      if (dl === "downloading") return;
+      setDl("downloading");
+      setProg(.06);
+      var timer = setInterval(function(){ setProg(function(v){ return Math.min(.9, v + .035 + Math.random() * .04); }); }, 150);
+      var editions = ["quran-uthmani", "en.sahih", "ur.jalandhry"];
+      Promise.all(editions.map(function(ed){ return fetch("https://api.alquran.cloud/v1/surah/" + t + "/" + ed).then(function(r){ return r.json(); }); }))
+        .then(function(results){
+          var arabic = results[0], english = results[1], urdu = results[2];
+          if (!arabic || !arabic.data || !arabic.data.ayahs) throw new Error("no data");
+          var ayahs = arabic.data.ayahs.map(function(z, idx){ return { ar: z.text, gid: z.number, en: english.data && english.data.ayahs && english.data.ayahs[idx] && english.data.ayahs[idx].text || "", ur: urdu.data && urdu.data.ayahs && urdu.data.ayahs[idx] && urdu.data.ayahs[idx].text || "", tafsir: o && o.ayahs[idx] && o.ayahs[idx].tafsir || {} }; });
+          var full = { bismillah: t !== 1 && t !== 9, ayahs: ayahs };
+          clearInterval(timer); setProg(1); QCACHE[t] = full;
+          try { localStorage.setItem(storageKey, JSON.stringify(full)); } catch (err) {}
+          setTimeout(function(){ setDownloaded(full); setDl("idle"); setCurrent(0); }, 420);
+        })
+        .catch(function(){ clearInterval(timer); setDl("error"); });
+    };
+    var downloadTafsir = function(){
+      if (!s || tafsirStatus === "downloading") return;
+      setTafsirStatus("downloading");
+      setTafsirProgress(.04);
+      var seed = seedTafsir(s, selected.id);
+      fetchChapterTafsir(t, selected, e.ayahs, function(p){ setTafsirProgress(Math.max(.05, Math.min(.96, p))); }, tafsirLang)
+        .then(function(remote){
+          var merged = mergeMaps(seed, remote);
+          if (!Object.keys(merged).length) throw new Error("empty tafsir");
+          writeStoredTafsir(t, selected, merged, tafsirLang);
+          setTafsirMap(merged);
+          setTafsirProgress(1);
+          setTafsirStatus("saved");
+        })
+        .catch(function(){
+          if (Object.keys(seed).length) {
+            try { writeStoredTafsir(t, selected, seed, tafsirLang); } catch (err) {}
+            setTafsirMap(seed);
+            setTafsirStatus("saved");
+          } else {
+            setTafsirStatus("error");
+          }
+        });
+    };
+
+    return h("div", { style: { paddingBottom: 8 } },
+      h("div", { style: { position: "relative", padding: "54px 18px 22px", overflow: "hidden", background: "linear-gradient(155deg, " + T.emerald + ", " + T.emeraldDeep + ")", borderRadius: "0 0 30px 30px" } },
+        h("div", { style: { position: "absolute", right: -10, bottom: -34, fontFamily: T.arabic, fontSize: 150, color: "rgba(255,255,255,0.09)", lineHeight: 1 } }, e.ar),
+        h("div", { style: { position: "relative", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 } },
+          h("div", { onClick: back, style: { width: 40, height: 40, borderRadius: 999, background: "rgba(255,255,255,0.16)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, h(Ic.arrowL, { s: 20 })),
+          h("span", { style: { fontFamily: T.sans, fontSize: 12, fontWeight: 700, color: "rgba(255,255,255,0.8)", background: "rgba(255,255,255,0.14)", padding: "6px 13px", borderRadius: 999 } }, e.place, " - ", e.ayahs, " ayat total")
+        ),
+        h("div", { style: { position: "relative", textAlign: "center" } },
+          h("div", { style: { fontFamily: T.arabic, fontSize: 34, color: "#fff", marginBottom: 2 } }, e.ar),
+          h("h1", { style: { fontFamily: T.serif, fontSize: 26, fontWeight: 600, color: "#fff", margin: 0, letterSpacing: -.2 } }, e.num, ". ", e.name),
+          h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: "rgba(255,255,255,0.72)", marginTop: 3, fontWeight: 500 } }, e.meaning)
+        )
+      ),
+      h("div", { style: { padding: "16px 18px 0" } },
+        h("div", { style: { display: "flex", gap: 9, marginBottom: 12 } },
+          h(Picker, { label: "Reciter - Qari", value: qari, options: QARIS, onChange: setQari, icon: h(Ic.user, { s: 17 }) }),
+          show.tafsir && h(Picker, { label: "Mufassir", value: mufassirIdx, options: MUFASSIREEN, onChange: setMufassirIdx, accent: T.gold, icon: h(Ic.layers, { s: 16 }) })
+        ),
+        h("div", { style: { display: "flex", gap: 8, marginBottom: 4 } }, [["en", "English"], ["ur", "Urdu"], ["tafsir", "Tafsir"]].map(function(pair){
+          var key = pair[0], label = pair[1];
+          return h("div", { key: key, onClick: function(){ toggleShow(key); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 13, cursor: "pointer", fontFamily: key === "ur" ? T.urdu : T.sans, fontSize: key === "ur" ? 15 : 13, fontWeight: 700, background: show[key] ? key === "tafsir" ? T.gold : T.emerald : "rgba(33,48,42,0.06)", color: show[key] ? "#fff" : T.muted, transition: "all .2s" } }, label);
+        })),
+        h(AyahRangeControl, { start: rangeStart, end: rangeEnd, total: chapterTotal, loaded: loadedTotal, partial: partial || loadedTotal < chapterTotal, onChange: setAyahRange }),
+        show.tafsir && s && h(TafsirDownloadPanel, { selected: selected, count: e.ayahs, status: tafsirStatus, progress: tafsirProgress, lang: tafsirLang, onDownload: downloadTafsir })
+      ),
+      s && selectedLoaded > 0 && h(PlayerBar, { qari: QARIS[qari], current: activeRow ? activeRow.n - 1 : activeIndex, total: selectedLoaded, playing: playing, edition: QARI_EDITION[qari], gid: activeRow && activeRow.ayah.gid || gidStartFor(t) + rangeStart + activeIndex - 1, onToggle: function(){ setPlaying(function(v){ return !v; }); }, onPrev: function(){ setCurrent(Math.max(0, activeIndex - 1)); }, onNext: function(){ if (activeIndex + 1 < selectedLoaded) setCurrent(activeIndex + 1); else setPlaying(false); } }),
+      h("div", { style: { padding: "16px 18px 0" } },
+        s && s.bismillah && rangeStart === 1 && h("div", { style: { textAlign: "center", fontFamily: T.arabic, fontSize: 26, color: T.gold, margin: "2px 0 18px" } }, "\u0628\u0650\u0633\u0652\u0645\u0650 \u0627\u0644\u0644\u0651\u0670\u0647\u0650 \u0627\u0644\u0631\u064e\u0651\u062d\u0652\u0645\u0670\u0646\u0650 \u0627\u0644\u0631\u064e\u0651\u062d\u0650\u064a\u0645\u0650"),
+        s ? h(React.Fragment, null,
+          rows.map(function(row, idx){ return h(AyahCard, { key: row.n, a: row.ayah, n: row.n, surah: t, show: show, mufassir: selected, accent: accent, isPlaying: playing && activeIndex === idx, tafsirMap: tafsirMap, lang: tafsirLang, setNode: function(node){ if (node) ayahRefs.current[idx] = node; }, onPlay: function(){ setCurrent(idx); setPlaying(function(v){ return !(v && activeIndex === idx); }); } }); }),
+          missingSelection && h("div", { style: { textAlign: "center", padding: "8px 0 6px" } },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "13px 16px", borderRadius: 18, background: "rgba(189,154,78,0.10)", marginBottom: 14 } },
+              h("span", { style: { color: T.gold } }, h(Ic.info, { s: 17 })),
+              h("span", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.ink2, lineHeight: 1.4, textAlign: "left" } }, "Ayat ", rangeStart, "-", rangeEnd, " include verses that are not loaded on this device yet. Download the full surah once, then this selection will display and play normally.")
+            ),
+            h(DownloadButton, { s: e, dl: dl, prog: prog, start: downloadSurah })
+          ),
+          partial && !missingSelection && h("div", { style: { textAlign: "center", padding: "8px 0 6px" } },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "13px 16px", borderRadius: 18, background: "rgba(33,48,42,0.04)", marginBottom: 14 } },
+              h("span", { style: { color: T.muted } }, h(Ic.info, { s: 17 })),
+              h("span", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, lineHeight: 1.4, textAlign: "left" } }, "Showing the ayat currently loaded on this device. Download the full surah to read all ", e.ayahs, " verses with translation and offline Tafsir.")
+            ),
+            h(DownloadButton, { s: e, dl: dl, prog: prog, start: downloadSurah })
+          )
+        ) : h("div", { style: { textAlign: "center", padding: "36px 20px 30px" } },
+          h("div", { style: { position: "relative", width: 64, height: 64, margin: "0 auto 16px" } }, dl === "downloading" ? h(Ring, { size: 64, stroke: 6, value: Math.round(prog * 100), color: T.emerald }, h("span", { style: { fontFamily: T.serif, fontSize: 14, fontWeight: 700, color: T.ink } }, Math.round(prog * 100), "%")) : h("div", { style: { width: 64, height: 64, borderRadius: 20, background: dl === "error" ? "rgba(176,60,40,0.10)" : "rgba(12,90,59,0.08)", color: dl === "error" ? "#B03C28" : T.emerald, display: "flex", alignItems: "center", justifyContent: "center" } }, dl === "error" ? h(Ic.info, { s: 28 }) : h(Ic.download, { s: 28 }))),
+          h("div", { style: { fontFamily: T.serif, fontSize: 19, fontWeight: 600, color: T.ink } }, dl === "downloading" ? "Downloading " + e.name + "..." : dl === "error" ? "Could not download" : "Surah not downloaded"),
+          h("div", { style: { fontFamily: T.sans, fontSize: 13.5, color: T.muted, marginTop: 6, lineHeight: 1.5, maxWidth: 270, marginLeft: "auto", marginRight: "auto" } }, dl === "downloading" ? "Fetching Arabic text, English and Urdu translation..." : dl === "error" ? "Check your connection and try again." : "Download " + e.name + " to read selected ayat or all " + e.ayahs + " verses with translation, recitation and offline Tafsir."),
+          dl !== "downloading" && h("div", { style: { marginTop: 18 } }, h(DownloadButton, { s: e, dl: dl, prog: prog, start: downloadSurah }))
+        )
+      )
+    );
+  };
+
+  Qibla = function EnhancedQibla(){
+    var statusState = React.useState("idle"), status = statusState[0], setStatus = statusState[1];
+    var locState = React.useState(null), loc = locState[0], setLoc = locState[1];
+    var headingState = React.useState(0), heading = headingState[0], setHeading = headingState[1];
+    var liveState = React.useState(false), live = liveState[0], setLive = liveState[1];
+    var msgState = React.useState("Compass has not started yet."), compassMsg = msgState[0], setCompassMsg = msgState[1];
+    var handlerRef = React.useRef(null), sawEvent = React.useRef(false);
+    var bearing = loc ? qiblaBearing(loc.lat, loc.lon) : null;
+    var km = loc ? distanceKm(loc.lat, loc.lon) : null;
+    var aligned = live && bearing != null && angleDiff(heading, bearing) < 6;
+
+    React.useEffect(function(){ return function(){ removeCompass(); }; }, []);
+    function removeCompass(){
+      if (handlerRef.current) {
+        window.removeEventListener("deviceorientationabsolute", handlerRef.current, true);
+        window.removeEventListener("deviceorientation", handlerRef.current, true);
+      }
+    }
+    function attachCompass(){
+      removeCompass();
+      sawEvent.current = false;
+      var handler = function(evt){
+        var value = null;
+        if (typeof evt.webkitCompassHeading === "number") value = evt.webkitCompassHeading;
+        else if (typeof evt.alpha === "number") value = (360 - evt.alpha) % 360;
+        if (value != null && isFinite(value)) {
+          sawEvent.current = true;
+          setHeading((value + 360) % 360);
+          setLive(true);
+          setCompassMsg("Live compass active");
+        }
+      };
+      handlerRef.current = handler;
+      window.addEventListener("deviceorientationabsolute", handler, true);
+      window.addEventListener("deviceorientation", handler, true);
+      setCompassMsg("Move your phone in a figure-eight to calibrate the compass.");
+      setTimeout(function(){
+        if (!sawEvent.current) {
+          setLive(false);
+          setCompassMsg("No compass updates yet. On iPhone, allow Motion & Orientation access; on Android, use Chrome over HTTPS.");
+        }
+      }, 1800);
+    }
+    function requestCompassFromTap(){
+      var Ctor = window.DeviceOrientationEvent;
+      if (!Ctor) { setLive(false); setCompassMsg("This browser does not expose the device orientation compass."); return; }
+      if (typeof Ctor.requestPermission === "function") {
+        setCompassMsg("Requesting motion permission...");
+        Ctor.requestPermission().then(function(answer){
+          if (answer === "granted") attachCompass();
+          else { setLive(false); setCompassMsg("Motion permission was denied. Enable it in Safari settings, then tap Recalibrate."); }
+        }).catch(function(){ setLive(false); setCompassMsg("Motion permission could not be requested. Try Safari/Chrome over HTTPS and tap again."); });
+      } else {
+        attachCompass();
+      }
+    }
+    function start(){
+      setStatus("locating");
+      requestCompassFromTap();
+      var fallback = function(){ setLoc({ lat: 51.0447, lon: -114.0719, label: "Calgary, AB (default)" }); setStatus("ready"); };
+      if (!navigator.geolocation) return fallback();
+      navigator.geolocation.getCurrentPosition(function(pos){
+        setLoc({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: "Your location" });
+        setStatus("ready");
+      }, fallback, { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 });
+    }
+
+    return h("div", { style: { padding: "52px 18px 14px", minHeight: "100%" } },
+      h("div", { style: { textAlign: "center", marginBottom: 8 } }, h(Eyebrow, { style: { marginBottom: 6 } }, "Find the Direction of Prayer"), h("h1", { style: { fontFamily: T.serif, fontSize: 30, fontWeight: 600, color: T.ink, margin: 0, letterSpacing: -.3 } }, "Qibla"), h("div", { style: { fontFamily: T.arabic, fontSize: 22, color: T.gold, marginTop: 4 } }, "\u0627\u0644\u0642\u0628\u0644\u0629")),
+      status === "idle" && h("div", { style: { textAlign: "center", padding: "36px 10px" } },
+        h("div", { style: { position: "relative", width: 150, height: 150, margin: "0 auto 26px" } }, h("div", { style: { position: "absolute", inset: 0, borderRadius: 999, background: "rgba(12,90,59,0.07)" } }), h("div", { style: { position: "absolute", inset: 22, borderRadius: 999, background: "linear-gradient(135deg, " + T.emerald + ", " + T.emeraldDeep + ")", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", boxShadow: "0 12px 30px rgba(12,90,59,0.32)" } }, h(Ic.compass, { s: 56 }))),
+        h("div", { style: { fontFamily: T.serif, fontSize: 19, fontWeight: 500, color: T.ink, lineHeight: 1.3, maxWidth: 280, margin: "0 auto" } }, "Locate the qibla from wherever you are."),
+        h("div", { style: { fontFamily: T.sans, fontSize: 13, color: T.muted, marginTop: 8, lineHeight: 1.5, maxWidth: 270, margin: "8px auto 0" } }, "Tap once on your phone so location and compass permissions can open correctly."),
+        h("div", { onClick: start, style: { display: "inline-flex", alignItems: "center", gap: 9, marginTop: 26, padding: "15px 30px", borderRadius: 999, background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 15.5, fontWeight: 700, cursor: "pointer", boxShadow: "0 10px 26px rgba(12,90,59,0.34)" } }, h(Ic.navigation, { s: 18 }), " Find Qibla")
+      ),
+      status === "locating" && h("div", { style: { textAlign: "center", padding: "70px 10px" } }, h("div", { className: "qspin", style: { width: 54, height: 54, borderRadius: 999, border: "4px solid rgba(12,90,59,0.15)", borderTopColor: T.emerald, margin: "0 auto 20px" } }), h("div", { style: { fontFamily: T.sans, fontSize: 14.5, fontWeight: 600, color: T.ink2 } }, "Locating you..."), h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, marginTop: 8 } }, compassMsg), h("style", null, "@keyframes qspin{to{transform:rotate(360deg)}} .qspin{animation:qspin .9s linear infinite}")),
+      status === "ready" && loc && h("div", null,
+        h("div", { style: { margin: "14px 0 22px" } }, h(Dial, { heading: heading, qibla: bearing, live: live, aligned: aligned })),
+        h("div", { style: { textAlign: "center", marginBottom: 18 } }, h("div", { style: { fontFamily: T.serif, fontSize: 40, fontWeight: 600, color: aligned ? T.emerald : T.ink, lineHeight: 1, fontVariantNumeric: "tabular-nums" } }, bearing.toFixed(0), "\u00B0"), h("div", { style: { fontFamily: T.sans, fontSize: 13, fontWeight: 600, color: T.muted, marginTop: 5 } }, compassLabel(bearing), " from North ", live ? "- compass live" : "- compass waiting")),
+        aligned && h("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "12px", borderRadius: 18, background: "rgba(12,90,59,0.10)", marginBottom: 16, color: T.emerald } }, h(Ic.check, { s: 18 }), h("span", { style: { fontFamily: T.sans, fontSize: 14, fontWeight: 700 } }, "Facing the Qibla - Allahu Akbar")),
+        h(Card, { pad: 0, style: { overflow: "hidden" } }, h(Row2, { icon: h(Ic.pin, { s: 17 }), label: "Location", value: loc.label }), h(Row2, { icon: h(Ic.kaaba, { s: 17 }), label: "Distance to Makkah", value: km.toLocaleString() + " km" }), h(Row2, { icon: h(Ic.compass, { s: 17 }), label: "Phone heading", value: live ? heading.toFixed(0) + "\u00B0 " + compassLabel(heading) : compassMsg, last: true })),
+        !live && h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "13px 15px", marginTop: 14, borderRadius: 16, background: "rgba(189,154,78,0.10)" } }, h("span", { style: { color: T.gold } }, h(Ic.info, { s: 17 })), h("span", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.ink2, lineHeight: 1.45 } }, compassMsg)),
+        h("div", { onClick: start, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, padding: "13px", borderRadius: 999, background: "rgba(33,48,42,0.05)", color: T.ink2, fontFamily: T.sans, fontSize: 14, fontWeight: 700, cursor: "pointer" } }, h(Ic.refresh, { s: 16 }), " Recalibrate")
+      )
+    );
+  };
+
+  DhikrCard = function CleanDhikrCard(props){
+    var t = props.d, n = props.idx, accent = props.accent, lang = props.lang, saved = props.saved, onSave = props.onSave;
+    var saveId = n;
+    var countState = React.useState(0), count = countState[0], setCount = countState[1];
+    var done = count >= t.count;
+    var pct = Math.min(100, count / t.count * 100);
+    var inc = function(){ setCount(function(v){ return Math.min(t.count, v + 1); }); };
+    return h(Card, { style: { marginBottom: 16 }, pad: 18 },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 5, padding: "5px 11px", borderRadius: 999, background: accent + "1A", color: accent } }, h(Ic.repeat, { s: 13 }), h("span", { style: { fontFamily: T.sans, fontSize: 12.5, fontWeight: 700 } }, t.count, "x")),
+        h("div", { style: { flex: 1 } }),
+        h("div", { onClick: function(){ onSave(saveId); }, style: { width: 34, height: 34, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: saved ? T.gold : T.faint, background: saved ? "rgba(189,154,78,0.12)" : "transparent" } }, h(Ic.bookmark, { s: 17, fill: saved ? T.gold : "none" }))
+      ),
+      h("div", { style: { fontFamily: T.arabic, fontSize: 27, lineHeight: 2, color: T.ink, textAlign: "right", direction: "rtl" } }, t.ar),
+      h("div", { style: { fontFamily: T.serif, fontSize: 13.5, fontStyle: "italic", color: T.gold, marginTop: 10, lineHeight: 1.5 } }, t.tr),
+      h("div", { style: { height: 1, background: T.lineSoft, margin: "15px 0 13px" } }),
+      lang === "ur" ? h("div", { style: { fontFamily: T.urdu, fontSize: 17, lineHeight: 2.1, color: T.ink2, textAlign: "right", direction: "rtl" } }, t.ur) : h("div", { style: { fontFamily: T.serif, fontSize: 15.5, lineHeight: 1.55, color: T.ink2 } }, t.en),
+      h("div", { style: { display: "flex", alignItems: "center", gap: 6, marginTop: 12, color: T.muted } }, h(Ic.book, { s: 13 }), h("span", { style: { fontFamily: T.sans, fontSize: 11.5, fontWeight: 600 } }, t.ref)),
+      h("div", { onClick: inc, style: { display: "flex", alignItems: "center", gap: 13, marginTop: 16, padding: "11px 13px", cursor: "pointer", borderRadius: 18, background: done ? accent + "14" : "rgba(33,48,42,0.04)", border: done ? "1px solid " + accent + "40" : "1px solid transparent", transition: "all .2s", userSelect: "none" } },
+        h(Ring, { size: 44, stroke: 5, value: pct, color: accent }, done ? h("span", { style: { color: accent } }, h(Ic.check, { s: 18 })) : h("span", { style: { fontFamily: T.serif, fontSize: 14, fontWeight: 600, color: T.ink } }, count)),
+        h("div", { style: { flex: 1 } }, h("div", { style: { fontFamily: T.sans, fontSize: 14, fontWeight: 700, color: done ? accent : T.ink } }, done ? "Completed - Masha Allah" : "Tap to count"), h("div", { style: { fontFamily: T.sans, fontSize: 12, color: T.muted, marginTop: 1 } }, count, " of ", t.count)),
+        count > 0 && !done && h("div", { onClick: function(ev){ ev.stopPropagation(); setCount(0); }, style: { width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: T.muted, background: "rgba(33,48,42,0.05)" } }, h(Ic.refresh, { s: 15 }))
+      )
+    );
+  };
+
+  function replacePlannerName(node, state){
+    if (node == null || typeof node === "boolean") return node;
+    if (typeof node === "string") {
+      if (node === "MJ") {
+        state.count += 1;
+        return state.count % 2 === 1 ? h(Ic.book, { s: 22 }) : "Deen of Dunya Planner";
+      }
+      if (node.indexOf("Deen o Dunya Planner") >= 0) return node.replace("Deen o Dunya Planner", "Deen of Dunya Planner");
+      return node;
+    }
+    if (Array.isArray(node)) return node.map(function(child){ return replacePlannerName(child, state); });
+    if (React.isValidElement(node)) {
+      var props = node.props || {};
+      if (!Object.prototype.hasOwnProperty.call(props, "children")) return node;
+      return React.cloneElement(node, {}, replacePlannerName(props.children, state));
+    }
+    return node;
+  }
+
+  var OriginalMore = More;
+  More = function EnhancedMore(props){ return replacePlannerName(OriginalMore(props), { count: 0 }); };
+  var OriginalSettings = Settings;
+  Settings = function EnhancedSettings(props){ return replacePlannerName(OriginalSettings(props), { count: 0 }); };
+
+  function PlannerHeader(){
+    return h("div", { style: { position: "fixed", top: 8, left: 0, right: 0, zIndex: 100, display: "flex", justifyContent: "center", pointerEvents: "none" } },
+      h("div", { style: { display: "inline-flex", alignItems: "center", gap: 7, padding: "7px 14px", borderRadius: 999, background: "rgba(255,253,247,0.88)", color: T.ink, border: "1px solid rgba(255,255,255,0.72)", boxShadow: "0 4px 16px rgba(28,46,36,0.10)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", fontFamily: T.serif, fontSize: 15, fontWeight: 700 } },
+        h(Crescent, { size: 15 }), "Deen of Dunya Planner"
+      )
+    );
+  }
+
+  var OriginalApp = App;
+  App = function PlannerHeaderApp(props){
+    return h(React.Fragment, null, h(PlannerHeader, null), h(OriginalApp, props));
+  };
+
+  Object.assign(window, { ReadingView: ReadingView, AyahCard: AyahCard, Qibla: Qibla, DhikrCard: DhikrCard, More: More, Settings: Settings, App: App });
+})();
+/* End Codex enhancements */
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App));
 
 </script>
 <script>
