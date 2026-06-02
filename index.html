@@ -4,14 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <meta name="color-scheme" content="light" />
-<meta name="theme-color" content="#F4EEE0" />
+<meta name="theme-color" content="#0C5A3B" />
 <title>Deen o Dunya Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&family=Noto+Nastaliq+Urdu:wght@400;500;700&display=swap" rel="stylesheet" />
 <link rel="manifest" href="manifest.webmanifest" />
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
-<link rel="icon" href="icons/favicon-32.png" sizes="32x32" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<link rel="icon" href="favicon-32.png" sizes="32x32" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Deen o Dunya" />
@@ -21,16 +21,10 @@
   body {
     background: radial-gradient(80% 50% at 50% 0%, #EFEADD 0%, #E4DECF 60%, #DBD4C2 100%);
     font-family: 'Hanken Grotesk', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
     -webkit-user-select: none; user-select: none;
   }
-  /* fill the real device; honour the home-indicator safe area */
-  #root {
-    height: 100vh; height: 100dvh;
-    padding-bottom: env(safe-area-inset-bottom);
-    overflow: hidden;
-  }
+  #root { height: 100vh; height: 100dvh; padding-bottom: env(safe-area-inset-bottom); overflow: hidden; }
   input { -webkit-user-select: text; user-select: text; }
   div::-webkit-scrollbar { width: 0; height: 0; }
   div { scrollbar-width: none; }
@@ -39,20 +33,20 @@
 </head>
 <body>
 <div id="root"></div>
-<script src="vendor/react.production.min.js"></script>
-<script src="vendor/react-dom.production.min.js"></script>
-<script src="js/theme.js"></script>
-<script src="js/ios-frame.js"></script>
-<script src="js/dashboard.js"></script>
-<script src="js/quran-data.js"></script>
-<script src="js/quran.js"></script>
-<script src="js/azkar-data.js"></script>
-<script src="js/azkar.js"></script>
-<script src="js/qibla.js"></script>
-<script src="js/tasks.js"></script>
-<script src="js/settings.js"></script>
-<script src="js/more.js"></script>
-<script src="js/app.js"></script>
+<script src="react.production.min.js"></script>
+<script src="react-dom.production.min.js"></script>
+<script src="theme.js"></script>
+<script src="ios-frame.js"></script>
+<script src="dashboard.js"></script>
+<script src="quran-data.js"></script>
+<script src="quran.js"></script>
+<script src="azkar-data.js"></script>
+<script src="azkar.js"></script>
+<script src="qibla.js"></script>
+<script src="tasks.js"></script>
+<script src="settings.js"></script>
+<script src="more.js"></script>
+<script src="app.js"></script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
