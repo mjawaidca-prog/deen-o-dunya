@@ -915,9 +915,9 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
     if (typeof node === "string") {
       if (node === "MJ") {
         state.count += 1;
-        return state.count % 2 === 1 ? h(Ic.book, { s: 22 }) : "Deen of Dunya Planner";
+        return state.count % 2 === 1 ? h(Ic.book, { s: 22 }) : "Deen O Dunya Planner";
       }
-      if (node.indexOf("Deen o Dunya Planner") >= 0) return node.replace("Deen o Dunya Planner", "Deen of Dunya Planner");
+      if (node.indexOf("Deen o Dunya Planner") >= 0) return node.replace("Deen o Dunya Planner", "Deen O Dunya Planner");
       return node;
     }
     if (Array.isArray(node)) return node.map(function(child){ return replacePlannerName(child, state); });
@@ -937,7 +937,7 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
   function PlannerHeader(){
     return h("div", { style: { position: "fixed", top: 8, left: 0, right: 0, zIndex: 100, display: "flex", justifyContent: "center", pointerEvents: "none" } },
       h("div", { style: { display: "inline-flex", alignItems: "center", gap: 7, padding: "7px 14px", borderRadius: 999, background: "rgba(255,253,247,0.88)", color: T.ink, border: "1px solid rgba(255,255,255,0.72)", boxShadow: "0 4px 16px rgba(28,46,36,0.10)", backdropFilter: "blur(14px)", WebkitBackdropFilter: "blur(14px)", fontFamily: T.serif, fontSize: 15, fontWeight: 700 } },
-        h(Crescent, { size: 15 }), "Deen of Dunya Planner"
+        h(Crescent, { size: 15 }), "Deen O Dunya Planner"
       )
     );
   }
