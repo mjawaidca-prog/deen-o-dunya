@@ -370,8 +370,8 @@ function BigCard({tone:i,icon:t,title:e,ar:n,sub:o,onClick:a}){return React.crea
 const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label:"Qur'an",icon:Ic.quran},{key:"qibla",label:"Qibla",icon:Ic.compass},{key:"azkar",label:"Azkar",icon:Ic.beads},{key:"more",label:"More",icon:Ic.grid9}];function BottomNav({active:n,setTab:r}){return React.createElement("div",{style:{padding:"8px 14px 26px",flexShrink:0,position:"relative",zIndex:40}},React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-around",background:"rgba(255,253,247,0.82)",backdropFilter:"blur(20px) saturate(180%)",WebkitBackdropFilter:"blur(20px) saturate(180%)",borderRadius:26,padding:"8px 6px",boxShadow:"0 8px 28px rgba(28,46,36,0.12), 0 0 0 1px rgba(33,48,42,0.04)"}},TABS.map(a=>{const s=n===a.key,d=a.icon;return React.createElement("div",{key:a.key,onClick:()=>r(a.key),style:{display:"flex",flexDirection:"column",alignItems:"center",gap:3,padding:"5px 9px",borderRadius:16,cursor:"pointer",position:"relative",color:s?T.emerald:T.muted,transition:"color .2s"}},s&&React.createElement("div",{style:{position:"absolute",top:2,width:34,height:30,borderRadius:12,background:"rgba(12,90,59,0.10)"}}),React.createElement("div",{style:{position:"relative"}},React.createElement(d,{s:22,w:s?2:1.7})),React.createElement("span",{style:{fontFamily:T.sans,fontSize:9.5,fontWeight:s?700:600,letterSpacing:.1}},a.label))})))}function App(){const[n,r]=React.useState("dashboard"),[a,s]=React.useState({fajr:!0,dhuhr:!0,asr:!0,maghrib:!1,isha:!0}),[d,M]=React.useState(0),[l,K]=React.useState([!1,!1]),[R,h]=React.useState(null),[P,E]=React.useState(!1),[D,z]=React.useState(2),[O,Q]=React.useState(!0),[v,k]=React.useState(null),[c,C]=React.useState({fajr:"04:38",dhuhr:"13:42",asr:"17:58",maghrib:"21:18",isha:"22:52"}),[B,j]=React.useState({fajr:"05:00",dhuhr:"14:00",asr:"18:15",maghrib:"21:25",isha:"23:10"}),[p,G]=React.useState([{id:"d1",group:"deen",text:"Pray Fajr in jam\u0101\u02BFah",time:"4:38 AM",done:!0},{id:"d2",group:"deen",text:"Morning Adhk\u0101r",done:!0},{id:"d3",group:"deen",text:"Give \u1E62adaqah",done:!1},{id:"d4",group:"deen",text:"Evening Adhk\u0101r",done:!1},{id:"u1",group:"dunya",text:"Deep work block",time:"9\u201311 AM",done:!0},{id:"u2",group:"dunya",text:"Reply to client emails",done:!1},{id:"u3",group:"dunya",text:"Grocery run",done:!0},{id:"u4",group:"dunya",text:"Gym session",time:"6 PM",done:!1},{id:"u5",group:"dunya",text:"Call dentist",done:!1}]),F=l.every(Boolean),S=p.filter(e=>e.group==="deen"),x=p.filter(e=>e.group==="dunya"),m=Math.round((S.filter(e=>e.done).length+(F?1:0))/(S.length+1)*100),f=Math.round(x.filter(e=>e.done).length/x.length*100),N=l.filter(Boolean).length,H=[{name:"Mishary Rashid Alafasy"},{name:"Abdul Rahman Al-Sudais"},{name:"Abdul Basit Abdus Samad"},{name:"Maher Al-Muaiqly"},{name:"Mahmoud Al-Husary"}],g=["https://www.islamcan.com/audio/adhan/azan2.mp3","https://www.islamcan.com/audio/adhan/azan1.mp3"],i=React.useRef(null),u=React.useRef(0),A=React.useRef(""),[w,o]=React.useState(!1),[U,W]=React.useState(0),I=()=>{const e=i.current;e&&(u.current=0,e.src=g[0],e.muted=!1,e.currentTime=0,e.play().then(()=>o(!0)).catch(()=>o(!1)))},L=()=>{const e=i.current;e&&(e.pause(),e.currentTime=0),o(!1)},V=()=>{w?L():I()};React.useEffect(()=>{const e=()=>{const t=i.current;t&&(t.muted=!0,t.play().then(()=>{t.pause(),t.currentTime=0,t.muted=!1}).catch(()=>{t.muted=!1}))};return window.addEventListener("pointerdown",e,{once:!0}),()=>window.removeEventListener("pointerdown",e)},[]),React.useEffect(()=>{const e=setInterval(()=>W(t=>t+1),15e3);return()=>clearInterval(e)},[]),React.useEffect(()=>{const e=new Date,t=String(e.getHours()).padStart(2,"0")+":"+String(e.getMinutes()).padStart(2,"0");for(const b of Object.keys(c))if(c[b]===t&&a[b]){const q=b+"@"+e.toDateString()+" "+t;A.current!==q&&(A.current=q,I())}},[U]);const _=n==="tasks"||n==="settings"||n==="more"?"more":n,y=e=>{e==="azkar"&&k(null),e==="quran"&&h(null),r(e)},$=()=>{h(94),r("quran")},J=()=>{switch(n){case"dashboard":return React.createElement(Dashboard,{go:y,openDaily:$,adhan:a,setAdhan:s,deenPct:m,dunyaPct:f,versesDone:N,times:c,adhanPlaying:w,onPreviewAdhan:V});case"quran":return React.createElement(Quran,{surah:R,setSurah:h,qari:d,setQari:M});case"qibla":return React.createElement(Qibla,null);case"azkar":return React.createElement(Azkar,{openCatId:v,setOpenCatId:k});case"more":return React.createElement(More,{go:r,deenPct:m,dunyaPct:f});case"tasks":return React.createElement(Tasks,{tasks:p,setTasks:G,deenPct:m,dunyaPct:f,quranRead:l,go:y,back:()=>r("more")});case"settings":return React.createElement(Settings,{adhan:a,setAdhan:s,qari:d,QARIS:H,useOwnTimes:P,setUseOwnTimes:E,verseGoal:D,setVerseGoal:z,reminder:O,setReminder:Q,adhanTimes:c,setAdhanTimes:C,iqamaTimes:B,setIqamaTimes:j,back:()=>r("more")});default:return null}};return React.createElement("div",{style:{height:"100%",display:"flex",flexDirection:"column",position:"relative",background:`radial-gradient(120% 60% at 80% -5%, #FBF6EA 0%, ${T.canvas} 42%, ${T.canvas2} 100%)`}},React.createElement("audio",{ref:i,preload:"none",onEnded:()=>o(!1),onError:()=>{const e=i.current;e&&u.current+1<g.length?(u.current+=1,e.src=g[u.current],e.play().then(()=>o(!0)).catch(()=>o(!1))):o(!1)}}),React.createElement("div",{style:{position:"absolute",top:0,left:0,right:0,height:50,zIndex:8,pointerEvents:"none",background:"linear-gradient(to bottom, rgba(251,246,234,0.95), rgba(251,246,234,0))"}}),React.createElement("div",{key:n+(v||"")+(R||""),style:{flex:1,overflow:"auto",WebkitOverflowScrolling:"touch"}},J()),React.createElement(BottomNav,{active:_,setTab:y}))}/* Codex enhancements: tafsir offline, audio scroll, mobile qibla, azkar cleanup */
 (function(){
   var h = React.createElement;
-  var TAFSIR_PREFIX = "ddp_tafsir_v2_";
-  var RESOURCE_KEY = "ddp_tafsir_resources_v2";
+  var TAFSIR_PREFIX = "ddp_tafsir_v3_";
+  var RESOURCE_KEY = "ddp_tafsir_resources_v3";
   var resourcePromise = null;
   [
     { id: "jalalayn", name: "Al-Jalalayn", work: "Tafsir al-Jalalayn" }
@@ -392,10 +392,116 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
       .trim();
   }
 
+  function hasLatinLetters(text){
+    return /[A-Za-z]/.test(String(text || ""));
+  }
+
+  var LOCAL_TAFSIR_SUMMARIES = {
+    1: {
+      en: {
+        1: "This ayah teaches the servant to begin in Allah's name and seek His mercy before every action.",
+        2: "All praise belongs to Allah because He creates, owns, sustains and governs every world.",
+        3: "Allah's mercy is vast for all creation and specially near to those who turn to Him.",
+        4: "He alone owns the Day of Recompense, where every deed is judged with perfect justice.",
+        5: "This is the central pledge of the surah: worship belongs only to Allah, and help is sought only from Him.",
+        6: "The believer's greatest request is steady guidance to the straight path.",
+        7: "The straight path is the way of those blessed with knowledge and obedience, not the way of rejection or misguidance."
+      },
+      ur: {
+        ibnkathir: {
+          1: "ابن کثیر کے خلاصے کے مطابق بندہ ہر کام اللہ کے نام سے شروع کرتا ہے، کیونکہ برکت اور مدد اسی سے ملتی ہے۔",
+          2: "تمام تعریف اللہ کے لیے ہے، وہی تمام جہانوں کا خالق، مالک اور پرورش کرنے والا ہے۔",
+          3: "اللہ رحمان بھی ہے اور رحیم بھی؛ اس کی رحمت عام بھی ہے اور اہل ایمان پر خاص بھی۔",
+          4: "قیامت کے دن بادشاہی اور فیصلہ صرف اللہ کے ہاتھ میں ہوگا، جہاں ہر عمل کا حساب ہوگا۔",
+          5: "اس آیت میں توحید کا اعلان ہے: عبادت بھی صرف اللہ کی، اور مدد بھی صرف اسی سے طلب کی جاتی ہے۔",
+          6: "بندہ اللہ سے دعا کرتا ہے کہ اسے ثابت قدمی کے ساتھ سیدھا راستہ دکھایا جائے۔",
+          7: "سیدھا راستہ انبیاء، صدیقین، شہداء اور صالحین کا راستہ ہے، نہ غضب والوں اور گمراہوں کا۔"
+        },
+        ghamidi: {
+          1: "البیان کے انداز میں یہ آیت اللہ کی رحمت کو بنیاد بنا کر بندے کو اپنے رب سے تعلق قائم کرنے کی دعوت دیتی ہے۔",
+          2: "حمد کا اصل مستحق اللہ ہے، کیونکہ اس کائنات کی ربوبیت اور نظم اسی کے ہاتھ میں ہے۔",
+          3: "رحمان و رحیم کہہ کر بتایا گیا کہ بندے کا رب سراسر رحمت اور عنایت کا مالک ہے۔",
+          4: "جزا کے دن کا ذکر بندے کو ذمہ داری، جواب دہی اور اخلاقی زندگی کی طرف متوجہ کرتا ہے۔",
+          5: "یہ بندے کا عہد ہے کہ بندگی اور استعانت کا مرکز صرف اللہ رہے گا۔",
+          6: "ہدایت کی دعا دراصل زندگی کے ہر معاملے میں حق، عدل اور بندگی کے راستے کی طلب ہے۔",
+          7: "مطلوب راستہ وہ ہے جو اللہ کے پسندیدہ بندوں نے اختیار کیا، نہ وہ جو ضد یا بے راہ روی سے بگڑ گیا۔"
+        },
+        maududi: {
+          1: "تفہیم کے انداز میں آغاز اللہ کے نام سے کرنا بندے کو یاد دلاتا ہے کہ ہر کام اسی کی اجازت اور مدد سے ہے۔",
+          2: "اللہ رب العالمین ہے؛ اس لیے نظام کائنات، پرورش اور اقتدار سب اسی کے قبضے میں ہیں۔",
+          3: "رحمان و رحیم کی صفات بندے میں امید، شکر اور اللہ کی طرف رجوع پیدا کرتی ہیں۔",
+          4: "روز جزا کا مالک اللہ ہے، اس لیے انسان کو اپنی زندگی ذمہ داری کے ساتھ گزارنی چاہیے۔",
+          5: "یہ آیت انسان کو ہر بندگی، اطاعت اور مدد طلبی میں اللہ ہی کا پابند بناتی ہے۔",
+          6: "صراط مستقیم کی دعا پوری زندگی کے نظام کو اللہ کی ہدایت کے مطابق بنانے کی دعا ہے۔",
+          7: "یہ دعا حق کے پیروکاروں کی راہ مانگتی ہے اور ان راستوں سے بچاتی ہے جو غضب یا گمراہی تک لے جائیں۔"
+        },
+        islahi: {
+          1: "تدبر کے پہلو سے بسم اللہ بندے کے عہد کا آغاز ہے کہ وہ اپنے رب کی رحمت کے سائے میں قدم اٹھاتا ہے۔",
+          2: "حمد ربوبیت کی دلیل ہے؛ جس نے سب کو پالا، وہی تعریف اور شکر کا مستحق ہے۔",
+          3: "رحمت کی تکرار بندے کو بتاتی ہے کہ ربوبیت جبر نہیں بلکہ شفقت اور عنایت سے وابستہ ہے۔",
+          4: "یوم الدین کا ذکر سورہ کے نظم میں بندگی کو جواب دہی اور آخرت سے جوڑتا ہے۔",
+          5: "یہ بندے اور رب کے درمیان میثاق ہے کہ عبادت اور اعتماد دونوں اللہ ہی کے لیے ہیں۔",
+          6: "صراط مستقیم کی دعا ایمان کو عمل، اخلاق اور استقامت کے ساتھ جوڑتی ہے۔",
+          7: "انعام یافتہ لوگوں کا راستہ علم اور عمل کا راستہ ہے، جبکہ غضب اور گمراہی اس توازن کے ٹوٹنے سے آتی ہے۔"
+        },
+        jalalayn: {
+          1: "یہ آیت اللہ کے نام سے آغاز اور اس کی رحمت کے ذکر پر مشتمل ہے۔",
+          2: "تمام حمد اللہ کے لیے ہے جو تمام جہانوں کا رب ہے۔",
+          3: "وہ نہایت مہربان اور بار بار رحم فرمانے والا ہے۔",
+          4: "وہ جزا کے دن کا مالک ہے۔",
+          5: "ہم صرف تیری عبادت کرتے ہیں اور تجھی سے مدد چاہتے ہیں۔",
+          6: "ہمیں سیدھا راستہ دکھا۔",
+          7: "ان لوگوں کا راستہ جن پر انعام ہوا، نہ غضب والوں کا اور نہ گمراہوں کا۔"
+        },
+        default: {
+          1: "یہ آیت بندے کو سکھاتی ہے کہ ہر کام اللہ کے نام اور اس کی رحمت کے بھروسے سے شروع کیا جائے۔",
+          2: "تمام تعریف اللہ ہی کے لیے ہے کیونکہ وہ تمام جہانوں کا خالق، مالک، پروردگار اور کارساز ہے۔",
+          3: "اللہ کی رحمت تمام مخلوق کو گھیرے ہوئے ہے، اور ایمان والوں کے لیے خاص رحمت بھی ہے۔",
+          4: "وہی جزا کے دن کا مالک ہے، جہاں ہر عمل کا فیصلہ کامل عدل کے ساتھ ہوگا۔",
+          5: "یہ سورہ کا مرکزی عہد ہے: عبادت صرف اللہ کی، اور مدد بھی صرف اسی سے۔",
+          6: "بندہ سب سے بڑھ کر سیدھے راستے کی ہدایت مانگتا ہے۔",
+          7: "سیدھا راستہ ان لوگوں کا ہے جن پر اللہ نے انعام کیا، نہ ان کا جنہوں نے حق جان کر چھوڑا یا راستہ کھو دیا۔"
+        }
+      }
+    }
+  };
+
+  function extractTafsirText(data){
+    var row = data && (data.tafsir || (data.tafsirs && data.tafsirs[0]) || (data.data && data.data.tafsir) || (data.data && data.data.tafsirs && data.data.tafsirs[0]));
+    if (!row) return null;
+    if (typeof row === "string") return cleanTafsirText(row);
+    return cleanTafsirText(row.text || row.body || row.tafsir_text || row.content || row.translation || "");
+  }
+
+  function localTafsirFallback(surah, mufassir, lang, content){
+    var map = {};
+    var group = LOCAL_TAFSIR_SUMMARIES[surah] && LOCAL_TAFSIR_SUMMARIES[surah][lang || "en"];
+    var hasAyahKeys = group && (group[1] || group["1"]);
+    var local = hasAyahKeys ? group : (group && (group[mufassir.id] || group.default));
+    Object.keys(local || {}).forEach(function(k){ if (local[k]) map[k] = local[k]; });
+    if (lang !== "ur" && content && content.ayahs) {
+      content.ayahs.forEach(function(ayah, idx){
+        if (ayah.tafsir && ayah.tafsir[mufassir.id]) map[idx + 1] = ayah.tafsir[mufassir.id];
+      });
+    }
+    return map;
+  }
+
+  function tafsirCoverage(map, total){
+    var count = Object.keys(map || {}).filter(function(k){ return !!map[k]; }).length;
+    return { count: count, complete: total > 0 && count >= total };
+  }
+
   function tafsirKey(surah, id, lang){ return TAFSIR_PREFIX + surah + "_" + (lang || "en") + "_" + id; }
   function readStoredTafsir(surah, id, lang){
     try {
       var saved = JSON.parse(localStorage.getItem(tafsirKey(surah, id, lang)) || "null");
+      if (saved && saved.ayahs && lang === "ur") {
+        Object.keys(saved.ayahs).forEach(function(k){
+          if (hasLatinLetters(saved.ayahs[k])) delete saved.ayahs[k];
+        });
+        if (!Object.keys(saved.ayahs).filter(function(k){ return !!saved.ayahs[k]; }).length) return null;
+      }
       return saved && saved.ayahs ? saved.ayahs : null;
     } catch (err) { return null; }
   }
@@ -465,50 +571,53 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
     });
   }
 
-  function fetchChapterTafsir(surah, mufassir, total, onProgress, lang){
-    return resolveTafsirResource(mufassir, lang).then(function(resource){
-      if (!resource || !resource.id) return {};
-      var map = {};
-      var chapterUrl = "https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?chapter_number=" + surah;
-      return fetch(chapterUrl)
-        .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("chapter")); })
-        .then(function(data){
-          (data.tafsirs || []).forEach(function(row){
-            var key = row.verse_key || row.verseKey || "";
-            var ayahNo = Number(String(key).split(":")[1] || row.verse_number || row.verse_id);
-            var text = cleanTafsirText(row.text || row.body || row.tafsir_text);
-            if (ayahNo && text) map[ayahNo] = text;
-          });
-          if (Object.keys(map).length) return map;
-          throw new Error("empty chapter");
+  function fetchVerseTafsirText(surah, ayahNo, mufassir, lang){
+    var fallback = localTafsirFallback(surah, mufassir, lang, QURAN_CONTENT[surah])[ayahNo] || null;
+    if (lang === "ur") {
+      return resolveTafsirResource(mufassir, "ur")
+        .then(function(resource){
+          if (!resource || !resource.id) return fallback;
+          return fetch("https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?verse_key=" + surah + ":" + ayahNo)
+            .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("urdu verse")); })
+            .then(function(data){ return extractTafsirText(data) || fallback; });
         })
-        .catch(function(){
-          var chain = Promise.resolve();
-          for (var i = 1; i <= total; i++) {
-            (function(ayahNo){
-              chain = chain.then(function(){
-                return fetch("https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?verse_key=" + surah + ":" + ayahNo)
-                  .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("verse")); })
-                  .then(function(data){
-                    var row = data.tafsirs && data.tafsirs[0];
-                    var text = row && cleanTafsirText(row.text || row.body || row.tafsir_text);
-                    if (text) map[ayahNo] = text;
-                    if (onProgress) onProgress(ayahNo / total);
-                  })
-                  .catch(function(){ if (onProgress) onProgress(ayahNo / total); });
-              });
-            })(i);
-          }
-          return chain.then(function(){ return map; });
+        .catch(function(){ return fallback; });
+    }
+    return resolveTafsirResource(mufassir, lang).then(function(resource){
+      if (!resource || !resource.id) return fallback;
+      return fetch("https://api.quran.com/api/v4/quran/tafsirs/" + resource.id + "?verse_key=" + surah + ":" + ayahNo)
+        .then(function(r){ return r.ok ? r.json() : Promise.reject(new Error("verse")); })
+        .then(function(data){
+          return extractTafsirText(data) || fallback;
         });
-    });
+    }).catch(function(){ return fallback; });
+  }
+
+  function fetchChapterTafsir(surah, mufassir, total, onProgress, lang){
+    var map = localTafsirFallback(surah, mufassir, lang, QURAN_CONTENT[surah]);
+    var chain = Promise.resolve();
+    for (var i = 1; i <= total; i++) {
+      (function(ayahNo){
+        chain = chain.then(function(){
+          return fetchVerseTafsirText(surah, ayahNo, mufassir, lang)
+            .then(function(text){
+              if (text) map[ayahNo] = text;
+              if (onProgress) onProgress(ayahNo / total);
+            })
+            .catch(function(){ if (onProgress) onProgress(ayahNo / total); });
+        });
+      })(i);
+    }
+    return chain.then(function(){ return map; });
   }
 
   function TafsirDownloadPanel(props){
     var selected = props.selected, status = props.status, progress = props.progress, count = props.count, lang = props.lang || "en";
     var saved = status === "saved";
+    var partial = status === "partial";
     var busy = status === "downloading";
-    var label = busy ? "Downloading Tafsir " + Math.round(progress * 100) + "%" : saved ? "Tafsir saved offline" : "Download Tafsir for Offline";
+    var errored = status === "error";
+    var label = busy ? "Downloading Tafsir " + Math.round(progress * 100) + "%" : saved ? "Tafsir saved offline" : partial ? "Some Tafsir saved - retry" : errored ? "Tafsir unavailable - retry" : "Download Tafsir for Offline";
     return h("div", { style: { display: "flex", alignItems: "center", gap: 11, padding: "11px 12px", margin: "10px 0 4px", borderRadius: 16, background: "rgba(189,154,78,0.10)", border: "1px solid rgba(189,154,78,0.18)" } },
       h("span", { style: { color: T.gold, flexShrink: 0 } }, h(Ic.layers, { s: 17 })),
       h("div", { style: { flex: 1, minWidth: 0 } },
@@ -516,7 +625,7 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
         h("div", { style: { display: "inline-flex", alignItems: "center", gap: 5, marginTop: 3, fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, color: lang === "ur" ? T.gold : T.emerald, textTransform: "uppercase", letterSpacing: .7 } }, lang === "ur" ? "Urdu Tafsir" : "English Tafsir"),
         h("div", { style: { fontFamily: T.serif, fontSize: 11.5, color: T.muted, fontStyle: "italic", marginTop: 1 } }, selected.work, " - ", count, " ayat")
       ),
-      h("div", { onClick: busy ? void 0 : props.onDownload, style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 12px", borderRadius: 999, background: saved ? "rgba(12,90,59,0.12)" : T.gold, color: saved ? T.emerald : "#fff", fontFamily: T.sans, fontSize: 11.5, fontWeight: 800, cursor: busy ? "default" : "pointer", whiteSpace: "nowrap" } },
+      h("div", { onClick: busy ? void 0 : props.onDownload, style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "9px 12px", borderRadius: 999, background: saved ? "rgba(12,90,59,0.12)" : partial ? "rgba(189,154,78,0.18)" : T.gold, color: saved ? T.emerald : partial ? T.gold : "#fff", fontFamily: T.sans, fontSize: 11.5, fontWeight: 800, cursor: busy ? "default" : "pointer", whiteSpace: "nowrap" } },
         saved ? h(Ic.check, { s: 14 }) : h(Ic.download, { s: 14 }), label
       )
     );
@@ -585,11 +694,40 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
     var lang = props.lang || "en";
     var saved = props.tafsirMap || {};
     var local = lang === "ur" ? null : (ayah.tafsir && ayah.tafsir[mufassir.id]);
-    var commentary = saved[n] || local || "";
     var isPlaying = props.isPlaying;
     var setNode = props.setNode || function(){};
-    var savedFromOffline = !!saved[n];
+    var cached = saved[n] || "";
+    var cachedOk = lang === "ur" ? (cached && !hasLatinLetters(cached)) : !!cached;
+    var [liveTafsir, setLiveTafsir] = React.useState(cachedOk ? cached : "");
+    var [loadingTafsir, setLoadingTafsir] = React.useState(!cachedOk);
+    var commentary = liveTafsir || (cachedOk ? cached : "") || (lang === "ur" ? "" : local || "");
+    var savedFromOffline = !!(cachedOk || liveTafsir);
     var urduMode = lang === "ur";
+    React.useEffect(function(){
+      if (!show.tafsir) return;
+      var current = lang === "ur" ? (cached && !hasLatinLetters(cached) ? cached : "") : (cached || local || "");
+      if (current) {
+        setLiveTafsir(current);
+        setLoadingTafsir(false);
+        return;
+      }
+      setLiveTafsir("");
+      var alive = !0;
+      setLoadingTafsir(true);
+      fetchVerseTafsirText(props.surah, n, mufassir, lang).then(function(text){
+        if (!alive) return;
+        if (text) {
+          setLiveTafsir(text);
+          try {
+            var stored = readStoredTafsir(props.surah, mufassir.id, lang) || {};
+            stored[n] = text;
+            writeStoredTafsir(props.surah, mufassir, stored, lang);
+          } catch (err) {}
+        }
+        setLoadingTafsir(false);
+      }).catch(function(){ if (alive) setLoadingTafsir(false); });
+      return function(){ alive = !1; };
+    }, [show.tafsir, lang, props.surah, n, mufassir.id, cached, local]);
     return h("div", { ref: setNode },
       h(Card, { style: { marginBottom: 14, background: isPlaying ? "rgba(12,90,59,0.055)" : T.card, outline: isPlaying ? "2px solid " + accent : "none", outlineOffset: -1, boxShadow: isPlaying ? "0 10px 28px rgba(12,90,59,0.18), 0 0 0 1px rgba(12,90,59,0.08)" : void 0 }, pad: 18 },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 14 } },
@@ -610,8 +748,9 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
             h("span", { style: { fontFamily: urduMode ? T.urdu : T.serif, fontSize: 11.5, fontStyle: "italic", color: T.muted } }, "- ", urduMode ? "\u0627\u0631\u062f\u0648" : mufassir.work),
             savedFromOffline && h("span", { style: { fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, color: T.emerald, background: "rgba(12,90,59,0.10)", padding: "2px 7px", borderRadius: 999 } }, "Offline")
           ),
-          commentary ? h("div", { style: { fontFamily: urduMode ? T.urdu : T.serif, fontSize: urduMode ? 15.5 : 14, lineHeight: urduMode ? 2.05 : 1.6, color: T.ink2, textAlign: urduMode ? "right" : "left", direction: urduMode ? "rtl" : "ltr" } }, commentary)
-            : h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, fontStyle: "italic", lineHeight: 1.5 } }, urduMode ? "\u0627\u0631\u062f\u0648 \u062a\u0641\u0633\u06cc\u0631 \u0627\u0628\u06be\u06cc \u0644\u0648\u0688 \u06c1\u0648 \u0631\u06c1\u06cc \u06c1\u06d4" : "Download this surah''s Tafsir to save commentary from " + mufassir.name + " for offline reading.")
+          commentary ? h("div", { style: { fontFamily: urduMode ? T.urdu : T.serif, fontSize: urduMode ? 18 : 14, lineHeight: urduMode ? 2.35 : 1.6, color: urduMode ? T.ink : T.ink2, textAlign: urduMode ? "right" : "left", direction: urduMode ? "rtl" : "ltr", whiteSpace: "pre-wrap", marginTop: 2 } }, commentary)
+            : loadingTafsir ? h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, fontStyle: "italic", lineHeight: 1.5 } }, urduMode ? "\u0627\u0631\u062f\u0648 \u062a\u0641\u0633\u06cc\u0631 \u0644\u0648\u0688 \u06c1\u0648 \u0631\u06c1\u06cc \u06c1\u06d4" : "Loading Tafsir for this ayah\u2026")
+            : h("div", { style: { fontFamily: T.sans, fontSize: 12.5, color: T.muted, fontStyle: "italic", lineHeight: 1.5 } }, urduMode ? "\u0627\u0631\u062f\u0648 \u062a\u0641\u0633\u06cc\u0631 \u0627\u0628\u06be\u06cc \u062f\u0633\u062a\u06cc\u0627\u0628 \u0646\u06c1\u06cc\u06ba \u06c1\u06d4" : "Download this surah's Tafsir to save commentary from " + mufassir.name + " for offline reading.")
         )
       )
     );
@@ -657,9 +796,13 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
     var accent = T.emerald;
     var dlState = React.useState("idle"), dl = dlState[0], setDl = dlState[1];
     var progState = React.useState(0), prog = progState[0], setProg = progState[1];
-    var tafsirState = React.useState(function(){ return readStoredTafsir(t, selected.id, tafsirLang) || {}; });
+    var tafsirState = React.useState(function(){ return mergeMaps(localTafsirFallback(t, selected, tafsirLang, s), readStoredTafsir(t, selected.id, tafsirLang) || {}); });
     var tafsirMap = tafsirState[0], setTafsirMap = tafsirState[1];
-    var tafsirStatusState = React.useState(function(){ return readStoredTafsir(t, selected.id, tafsirLang) ? "saved" : "idle"; });
+    var tafsirStatusState = React.useState(function(){
+      var initial = mergeMaps(localTafsirFallback(t, selected, tafsirLang, s), readStoredTafsir(t, selected.id, tafsirLang) || {});
+      var coverage = tafsirCoverage(initial, chapterTotal);
+      return coverage.complete ? "saved" : coverage.count ? "partial" : "idle";
+    });
     var tafsirStatus = tafsirStatusState[0], setTafsirStatus = tafsirStatusState[1];
     var tafsirProgressState = React.useState(0), tafsirProgress = tafsirProgressState[0], setTafsirProgress = tafsirProgressState[1];
     var ayahRefs = React.useRef({});
@@ -672,11 +815,12 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
     }, [t]);
 
     React.useEffect(function(){
-      var stored = readStoredTafsir(t, selected.id, tafsirLang);
-      setTafsirMap(stored || {});
-      setTafsirStatus(stored ? "saved" : "idle");
+      var stored = mergeMaps(localTafsirFallback(t, selected, tafsirLang, s), readStoredTafsir(t, selected.id, tafsirLang) || {});
+      var coverage = tafsirCoverage(stored, chapterTotal);
+      setTafsirMap(stored);
+      setTafsirStatus(coverage.complete ? "saved" : coverage.count ? "partial" : "idle");
       setTafsirProgress(0);
-    }, [t, selected.id, tafsirLang]);
+    }, [t, selected.id, tafsirLang, s]);
 
     React.useEffect(function(){
       if (!selectedLoaded && current !== 0) setCurrent(0);
@@ -722,21 +866,25 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
       if (!s || tafsirStatus === "downloading") return;
       setTafsirStatus("downloading");
       setTafsirProgress(.04);
-      var seed = seedTafsir(s, selected.id);
+      var seed = tafsirLang === "ur" ? {} : seedTafsir(s, selected.id);
+      var fallback = localTafsirFallback(t, selected, tafsirLang, s);
       fetchChapterTafsir(t, selected, e.ayahs, function(p){ setTafsirProgress(Math.max(.05, Math.min(.96, p))); }, tafsirLang)
         .then(function(remote){
-          var merged = mergeMaps(seed, remote);
+          var merged = mergeMaps(mergeMaps(seed, fallback), remote);
           if (!Object.keys(merged).length) throw new Error("empty tafsir");
+          var coverage = tafsirCoverage(merged, e.ayahs);
           writeStoredTafsir(t, selected, merged, tafsirLang);
           setTafsirMap(merged);
           setTafsirProgress(1);
-          setTafsirStatus("saved");
+          setTafsirStatus(coverage.complete ? "saved" : "partial");
         })
         .catch(function(){
-          if (Object.keys(seed).length) {
-            try { writeStoredTafsir(t, selected, seed, tafsirLang); } catch (err) {}
-            setTafsirMap(seed);
-            setTafsirStatus("saved");
+          var merged = mergeMaps(seed, fallback);
+          var coverage = tafsirCoverage(merged, e.ayahs);
+          if (coverage.count) {
+            try { writeStoredTafsir(t, selected, merged, tafsirLang); } catch (err) {}
+            setTafsirMap(merged);
+            setTafsirStatus(coverage.complete ? "saved" : "partial");
           } else {
             setTafsirStatus("error");
           }
@@ -956,13 +1104,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(
 
 </script>
 <script>
-  /* self-heal: remove any stale service worker / caches from earlier attempts
-     so a previous broken version can never keep showing a blank page */
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(function (rs) { rs.forEach(function (r) { r.unregister(); }); }).catch(function () {});
-  }
-  if (window.caches && caches.keys) {
-    caches.keys().then(function (ks) { ks.forEach(function (k) { caches.delete(k); }); }).catch(function () {});
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    });
   }
 </script>
 </body>
