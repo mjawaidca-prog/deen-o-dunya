@@ -1,7 +1,10 @@
-const CACHE_NAME = "deen-o-dunya-v2";
+const CACHE_NAME = "deen-o-dunya-v7";
 const APP_SHELL = [
   "./",
-  "./index.html"
+  "./index.html",
+  "./privacy.html",
+  "./manifest.webmanifest",
+  "./assets/app-icon.svg"
 ];
 
 self.addEventListener("install", event => {

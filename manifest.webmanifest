@@ -1,44 +1,23 @@
 {
   "name": "Deen o Dunya Planner",
   "short_name": "Deen o Dunya",
-  "description": "A serene daily planner for prayer times, Qur’an, Azkar, Qibla and your day.",
-  "id": ".",
-  "start_url": ".",
-  "scope": ".",
+  "description": "A daily planner for prayer times, Qur'an reading, tafsir, azkar, qibla direction and personal balance.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#F4EEE0",
   "theme_color": "#0C5A3B",
   "lang": "en",
   "dir": "ltr",
-  "categories": [
-    "lifestyle",
-    "productivity"
-  ],
+  "categories": ["lifestyle", "productivity"],
   "icons": [
     {
-      "src": "icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ]
 }
