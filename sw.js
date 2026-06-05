@@ -1,4 +1,4 @@
-const CACHE_NAME = "deen-o-dunya-v8";
+const CACHE_NAME = "deen-o-dunya-v9";
 const APP_SHELL = [
   "./",
   "./index.html",
