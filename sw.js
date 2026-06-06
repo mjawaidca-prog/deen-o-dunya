@@ -1,4 +1,4 @@
-const CACHE_NAME = "deen-o-dunya-v9";
+﻿const CACHE_NAME = "deen-o-dunya-v15";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -51,3 +51,6 @@ self.addEventListener("fetch", event => {
     })
   );
 });
+
+
+
