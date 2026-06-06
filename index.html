@@ -1559,121 +1559,319 @@ const TABS=[{key:"dashboard",label:"Today",icon:Ic.dashboard},{key:"quran",label
 /* End Codex enhancements */
 
 
-/* Codex enhancement: Hadith tab (Kutub al-Sittah, live fetch + offline cache) */
+/* Codex enhancement: Hadith tab (Kutub al-Sittah) \u2014 design-styled, live fetch + offline cache */
 (function(){
   var h = React.createElement;
+
   var HBOOKS = [
-    { id:"bukhari",  name:"Sahih al-Bukhari" },
-    { id:"muslim",   name:"Sahih Muslim" },
-    { id:"abudawud", name:"Sunan Abu Dawud" },
-    { id:"tirmidhi", name:"Jami at-Tirmidhi" },
-    { id:"nasai",    name:"Sunan an-Nasai" },
-    { id:"ibnmajah", name:"Sunan Ibn Majah" }
+    { id:"bukhari",  en:"Sahih al-Bukhari", ar:"\u0635\u062d\u064a\u062d \u0627\u0644\u0628\u062e\u0627\u0631\u064a", author:"Imam Muhammad al-Bukhari",   count:"7,563" },
+    { id:"muslim",   en:"Sahih Muslim",     ar:"\u0635\u062d\u064a\u062d \u0645\u0633\u0644\u0645",    author:"Imam Muslim ibn al-Hajjaj",   count:"7,470" },
+    { id:"abudawud", en:"Sunan Abi Dawud",  ar:"\u0633\u0646\u0646 \u0623\u0628\u064a \u062f\u0627\u0648\u062f", author:"Imam Abu Dawud as-Sijistani", count:"5,274" },
+    { id:"tirmidhi", en:"Jami at-Tirmidhi", ar:"\u062c\u0627\u0645\u0639 \u0627\u0644\u062a\u0631\u0645\u0630\u064a", author:"Imam Muhammad at-Tirmidhi",   count:"3,956" },
+    { id:"nasai",    en:"Sunan an-Nasai",   ar:"\u0633\u0646\u0646 \u0627\u0644\u0646\u0633\u0627\u0626\u064a",  author:"Imam Ahmad an-Nasai",         count:"5,761" },
+    { id:"ibnmajah", en:"Sunan Ibn Majah",  ar:"\u0633\u0646\u0646 \u0627\u0628\u0646 \u0645\u0627\u062c\u0647", author:"Imam Muhammad ibn Majah",     count:"4,341" }
   ];
-  var HLANGS = { ar:"ara", en:"eng", ur:"urd" };
+  var HLANGS = [ { id:"ar", label:"Arabic" }, { id:"en", label:"English" }, { id:"ur", label:"Urdu" } ];
+  var HAPI = { ar:"ara", en:"eng", ur:"urd" };
   var HBASE = "https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/";
+  var SAHIH = { bukhari:1, muslim:1 };
+
   function hClean(t){ return String(t || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(); }
-  function hKey(book, lang){ return "ddp_hadith_v1_" + book + "_" + lang; }
-  function hRead(book, lang){
-    try { return JSON.parse(localStorage.getItem(hKey(book, lang)) || "{}") || {}; }
-    catch(e){ return {}; }
-  }
-  function hWrite(book, lang, map){
-    try { localStorage.setItem(hKey(book, lang), JSON.stringify(map)); } catch(e){}
-  }
+  function hKey(b, l){ return "ddp_hadith_v2_" + b + "_" + l; }
+  function hRead(b, l){ try { return JSON.parse(localStorage.getItem(hKey(b, l)) || "{}") || {}; } catch(e){ return {}; } }
+  function hWrite(b, l, m){ try { localStorage.setItem(hKey(b, l), JSON.stringify(m)); } catch(e){} }
   function hFetch(book, lang, n){
     return fetch(HBASE + lang + "-" + book + "/" + n + ".min.json")
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(d){
         if (!d || !d.hadiths || !d.hadiths[0]) return null;
-        var hd = d.hadiths[0];
-        var grade = (hd.grades && hd.grades[0] && (hd.grades[0].grade || hd.grades[0].name)) || "";
-        return { text: hClean(hd.text), grade: grade };
+        var x = d.hadiths[0];
+        var g = (x.grades && x.grades[0] && (x.grades[0].grade || x.grades[0].name)) || "";
+        return { text: hClean(x.text), grade: g };
       })
       .catch(function(){ return null; });
   }
+  function narratorOf(en){
+    if (!en) return "";
+    var m = en.match(/^Narrated\s+([^:]{2,70}):/);
+    return m ? m[1].replace(/\([^)]*\)/g, "").trim() : "";
+  }
+  function snip(t){ t = String(t || ""); return t.length > 116 ? t.slice(0, 114).trim() + "\u2026" : t; }
+
+  /* ---- brand primitives (khatim star, ornament, icons) ---- */
+  function StarMark(size, stroke, sw, node){
+    size = size || 22; stroke = stroke || T.gold; sw = sw || 1.5;
+    var c = size / 2, r = size * 0.42;
+    var sq = function(rot){
+      var pts = [0,90,180,270].map(function(a){
+        var t = (a + rot) * Math.PI / 180;
+        return (c + r * Math.cos(t)).toFixed(2) + "," + (c + r * Math.sin(t)).toFixed(2);
+      }).join(" ");
+      return h("polygon", { points:pts, fill:"none", stroke:stroke, strokeWidth:sw, strokeLinejoin:"round" });
+    };
+    var kids = [sq(0), sq(45)];
+    if (node !== false) kids.push(h("circle", { cx:c, cy:c, r:size * 0.07, fill:stroke }));
+    return h("svg", { width:size, height:size, viewBox:"0 0 " + size + " " + size, style:{ display:"block" } }, kids);
+  }
+  function Ornament(width, tone){
+    width = width || 120; tone = tone || T.gold;
+    return h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"center", gap:10, width:width } },
+      h("span", { style:{ flex:1, height:1, background:"linear-gradient(90deg, transparent, " + tone + ")", opacity:.5 } }),
+      StarMark(13, tone, 1.2, false),
+      h("span", { style:{ flex:1, height:1, background:"linear-gradient(90deg, " + tone + ", transparent)", opacity:.5 } })
+    );
+  }
+  function svgIc(d, size, sw){
+    return h("svg", { width:size||16, height:size||16, viewBox:"0 0 16 16", fill:"none", stroke:"currentColor", strokeWidth:sw||1.7, strokeLinecap:"round", strokeLinejoin:"round" }, h("path", { d:d }));
+  }
+  var IC = {
+    chevDown: function(s){ return svgIc("M3 6l5 5 5-5", s); },
+    chevRight: function(s){ return svgIc("M6 3l5 5-5 5", s); },
+    chevLeft: function(s){ return svgIc("M10 3L5 8l5 5", s); },
+    arrowRight: function(s){ return svgIc("M2.5 8h11M9 3.5L13.5 8 9 12.5", s); },
+    info: function(s){ return h("svg", { width:s||16, height:s||16, viewBox:"0 0 16 16", fill:"none", stroke:"currentColor", strokeWidth:1.5 }, h("circle",{cx:8,cy:8,r:6.4}), h("path",{d:"M8 7.2v3.6",strokeLinecap:"round"}), h("circle",{cx:8,cy:5,r:.7,fill:"currentColor",stroke:"none"})); },
+    bookmark: function(s){ return svgIc("M4 2.5h8v11l-4-2.6-4 2.6z", s, 1.6); },
+    copy: function(s){ return h("svg",{width:s||15,height:s||15,viewBox:"0 0 15 15",fill:"none",stroke:"currentColor",strokeWidth:1.5,strokeLinejoin:"round"}, h("rect",{x:3,y:3,width:7,height:9,rx:1.4}), h("path",{d:"M5.5 3V2a1 1 0 011-1H12a1 1 0 011 1v7.5a1 1 0 01-1 1h-1"})); },
+    share: function(s){ return h("svg",{width:s||15,height:s||15,viewBox:"0 0 15 15",fill:"none",stroke:"currentColor",strokeWidth:1.5,strokeLinecap:"round",strokeLinejoin:"round"}, h("path",{d:"M7.5 1.5v8M5 4l2.5-2.5L10 4M3 7v5.5a1 1 0 001 1h7a1 1 0 001-1V7"})); },
+    check: function(s){ return h("svg",{width:s||15,height:s||15,viewBox:"0 0 15 15",fill:"none",stroke:"currentColor",strokeWidth:2,strokeLinecap:"round",strokeLinejoin:"round"}, h("path",{d:"M3 8l3 3 6-7"})); }
+  };
+  function GradeBadge(grade){
+    if (!grade) return null;
+    return h("span", { style:{ display:"inline-flex", alignItems:"center", gap:5, fontFamily:T.sans, fontSize:10.5, fontWeight:800, color:T.emerald, background:"rgba(12,90,59,0.10)", padding:"3px 9px", borderRadius:999, letterSpacing:.3 } },
+      h("span", { style:{ width:6, height:6, borderRadius:999, background:T.emerald } }), grade);
+  }
+  function LabelTag(txt, mt, mb){
+    return h("div", { style:{ fontFamily:T.sans, fontSize:10, fontWeight:900, letterSpacing:1.4, textTransform:"uppercase", color:T.muted, marginTop:mt||0, marginBottom:mb||0 } }, txt);
+  }
+  function iconBtn(icon, onClick){
+    return h("button", { type:"button", onClick:onClick, style:{ width:38, height:38, borderRadius:999, border:"none", background:T.cardSoft, color:T.ink2, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 } }, icon);
+  }
 
   function HadithTab(){
+    var scrState = React.useState("books"), screen = scrState[0], setScreen = scrState[1];
     var bookState = React.useState(0), bookIdx = bookState[0], setBookIdx = bookState[1];
     var book = HBOOKS[bookIdx] || HBOOKS[0];
+    var langState = React.useState("en"), lang = langState[0], setLang = langState[1];
     var nState = React.useState(1), n = nState[0], setN = nState[1];
-    var showState = React.useState({ ar:true, en:true, ur:true }), show = showState[0], setShow = showState[1];
-    var dataState = React.useState({}), data = dataState[0], setData = dataState[1];
-    var loadState = React.useState(false), loading = loadState[0], setLoading = loadState[1];
+    var pageState = React.useState(1), page = pageState[0], setPage = pageState[1];
+    var sheetState = React.useState(false), sheet = sheetState[0], setSheet = sheetState[1];
+    var PAGE = 8;
 
+    /* detail data: {ar,en,ur} for current n */
+    var detState = React.useState({}), det = detState[0], setDet = detState[1];
+    var detLoadState = React.useState(false), detLoading = detLoadState[0], setDetLoading = detLoadState[1];
     React.useEffect(function(){
+      if (screen !== "detail") return;
       var alive = true;
-      var want = [];
-      if (show.ar) want.push("ar");
-      if (show.en) want.push("en");
-      if (show.ur) want.push("ur");
+      var want = ["ar","en"]; if (lang === "ur") want.push("ur");
       var seeded = {};
-      want.forEach(function(k){
-        var cache = hRead(book.id, HLANGS[k]);
-        if (cache[n]) seeded[k] = { text: cache[n], grade: "" };
-      });
-      setData(seeded);
-      var missing = want.filter(function(k){ return !seeded[k]; });
-      if (!missing.length){ setLoading(false); return; }
-      setLoading(true);
-      Promise.all(missing.map(function(k){
-        return hFetch(book.id, HLANGS[k], n).then(function(res){ return { k:k, res:res }; });
-      })).then(function(results){
-        if (!alive) return;
-        setData(function(prev){
-          var next = Object.assign({}, prev);
-          results.forEach(function(o){
-            if (o.res){
-              next[o.k] = o.res;
-              try { var c = hRead(book.id, HLANGS[o.k]); c[n] = o.res.text; hWrite(book.id, HLANGS[o.k], c); } catch(e){}
-            }
+      want.forEach(function(k){ var c = hRead(book.id, HAPI[k]); if (c[n]) seeded[k] = { text:c[n], grade:"" }; });
+      setDet(seeded);
+      var miss = want.filter(function(k){ return !seeded[k]; });
+      if (!miss.length){ setDetLoading(false); return; }
+      setDetLoading(true);
+      Promise.all(miss.map(function(k){ return hFetch(book.id, HAPI[k], n).then(function(res){ return { k:k, res:res }; }); }))
+        .then(function(rs){
+          if (!alive) return;
+          setDet(function(prev){
+            var nx = Object.assign({}, prev);
+            rs.forEach(function(o){ if (o.res){ nx[o.k] = o.res; try { var c = hRead(book.id, HAPI[o.k]); c[n] = o.res.text; hWrite(book.id, HAPI[o.k], c); } catch(e){} } });
+            return nx;
           });
-          return next;
-        });
-        setLoading(false);
-      }).catch(function(){ if (alive) setLoading(false); });
+          setDetLoading(false);
+        }).catch(function(){ if (alive) setDetLoading(false); });
       return function(){ alive = false; };
-    }, [bookIdx, n, show.ar, show.en, show.ur]);
+    }, [screen, bookIdx, n, lang]);
 
-    var move = function(d){ setN(function(v){ return Math.max(1, v + d); }); };
-    var anyText = !!((show.ar && data.ar && data.ar.text) || (show.en && data.en && data.en.text) || (show.ur && data.ur && data.ur.text));
-    var grade = (data.en && data.en.grade) || (data.ar && data.ar.grade) || "";
-    var inputStyle = { width:"100%", border:"none", outline:"none", borderRadius:14, background:"rgba(33,48,42,0.06)", color:T.ink, padding:"12px 13px", fontFamily:T.sans, fontSize:14, fontWeight:700, textAlign:"center" };
+    /* list data: {num: text} for current page in selected lang */
+    var listState = React.useState({}), listData = listState[0], setListData = listState[1];
+    var listLoadState = React.useState(false), listLoading = listLoadState[0], setListLoading = listLoadState[1];
+    var pageNums = [];
+    for (var pi = 0; pi < PAGE; pi++) pageNums.push((page - 1) * PAGE + pi + 1);
+    React.useEffect(function(){
+      if (screen !== "list") return;
+      var alive = true;
+      var apiL = HAPI[lang];
+      var seeded = {}; var c = hRead(book.id, apiL);
+      pageNums.forEach(function(num){ if (c[num]) seeded[num] = c[num]; });
+      setListData(seeded);
+      var miss = pageNums.filter(function(num){ return !seeded[num]; });
+      if (!miss.length){ setListLoading(false); return; }
+      setListLoading(true);
+      Promise.all(miss.map(function(num){ return hFetch(book.id, apiL, num).then(function(res){ return { num:num, res:res }; }); }))
+        .then(function(rs){
+          if (!alive) return;
+          setListData(function(prev){
+            var nx = Object.assign({}, prev); var cc = hRead(book.id, apiL);
+            rs.forEach(function(o){ if (o.res){ nx[o.num] = o.res.text; cc[o.num] = o.res.text; } });
+            hWrite(book.id, apiL, cc);
+            return nx;
+          });
+          setListLoading(false);
+        }).catch(function(){ if (alive) setListLoading(false); });
+      return function(){ alive = false; };
+    }, [screen, bookIdx, page, lang]);
 
-    return h("div", { style:{ padding:"62px 18px 14px", minHeight:"100%" } },
-      h(Eyebrow, { style:{ marginBottom:6 } }, "Six Books · Hadith"),
-      h("h1", { style:{ fontFamily:T.serif, fontSize:30, fontWeight:600, color:T.ink, margin:"0 0 18px", letterSpacing:-.3 } }, "Hadith"),
-      h(Card, { style:{ marginBottom:14, padding:16 } },
-        h("div", { style:{ display:"flex", gap:9, marginBottom:12 } },
-          h(Picker, { label:"Book", value:bookIdx, options:HBOOKS, onChange:function(i){ setBookIdx(i); setN(1); }, accent:T.gold, icon:h(Ic.book, { s:16 }) })
+    var langSegment = function(compact){
+      return h("div", { style:{ display:"flex", gap:6, background:T.cardSoft, borderRadius:13, padding:4 } },
+        HLANGS.map(function(l){
+          var on = lang === l.id;
+          return h("button", { key:l.id, type:"button", onClick:function(){ setLang(l.id); }, style:{ flex:1, border:"none", borderRadius:10, padding:(compact?"7px 0":"9px 0"), cursor:"pointer", fontFamily:T.sans, fontSize:compact?12:13, fontWeight:800, background:on?T.card:"transparent", color:on?T.emerald:T.muted, boxShadow:on?"0 1px 4px rgba(28,46,36,0.10)":"none" } }, l.label);
+        })
+      );
+    };
+
+    /* ---------- SCREEN: BOOKS (home) ---------- */
+    if (screen === "books"){
+      return h("div", { style:{ padding:"58px 20px 16px", minHeight:"100%" } },
+        h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between" } },
+          h("div", { style:{ display:"flex", alignItems:"center", gap:9 } }, StarMark(20, T.gold, 1.5, true), h("span", { style:{ fontFamily:T.sans, fontSize:10.5, fontWeight:900, letterSpacing:1.6, color:T.gold } }, "HADITH")),
+          h("span", { style:{ color:T.muted } }, IC.info(16))
         ),
-        h("div", { style:{ display:"flex", gap:8, marginBottom:12 } },
-          [["ar","Arabic"],["en","English"],["ur","Urdu"]].map(function(pair){
-            var key = pair[0], label = pair[1], on = show[key];
-            return h("div", { key:key, onClick:function(){ setShow(function(s){ var nx = Object.assign({}, s); nx[key] = !nx[key]; if (!nx.ar && !nx.en && !nx.ur) nx[key] = true; return nx; }); },
-              style:{ flex:1, textAlign:"center", padding:"10px 0", borderRadius:13, cursor:"pointer", fontFamily:T.sans, fontSize:13, fontWeight:800, background:on ? T.gold : "rgba(33,48,42,0.06)", color:on ? "#fff" : T.muted } }, label);
+        h("div", { style:{ textAlign:"center", marginTop:34 } },
+          h("div", { style:{ fontFamily:T.arabic, fontSize:25, color:T.gold, lineHeight:1 } }, "\u0627\u0644\u062d\u062f\u064a\u062b \u0627\u0644\u0634\u0631\u064a\u0641"),
+          h("h1", { style:{ fontFamily:T.serif, fontSize:44, fontWeight:600, margin:"8px 0 0", color:T.ink, letterSpacing:-.5 } }, "Hadith"),
+          h("p", { style:{ margin:"8px 0 0", fontFamily:T.sans, fontSize:13.5, color:T.ink2 } }, "Read the authentic Sunnah, narration by narration."),
+          h("div", { style:{ display:"flex", justifyContent:"center", marginTop:18 } }, Ornament(120, T.gold))
+        ),
+        LabelTag("Collection", 30, 9),
+        h("button", { type:"button", onClick:function(){ setSheet(true); }, style:{ width:"100%", display:"flex", alignItems:"center", gap:13, background:T.card, border:"1px solid " + T.line, borderRadius:20, padding:15, cursor:"pointer", textAlign:"left", boxShadow:"0 1px 4px rgba(28,46,36,0.05)" } },
+          h("div", { style:{ width:46, height:54, borderRadius:11, background:"linear-gradient(135deg, " + T.emerald + ", " + T.emeraldDeep + ")", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 } }, StarMark(20, "#fff", 1.6, false)),
+          h("div", { style:{ flex:1, minWidth:0 } },
+            h("div", { style:{ fontFamily:T.arabic, fontSize:18, color:T.gold, lineHeight:1.2 } }, book.ar),
+            h("div", { style:{ fontFamily:T.serif, fontSize:17, fontWeight:700, color:T.ink, marginTop:2 } }, book.en),
+            h("div", { style:{ fontFamily:T.sans, fontSize:12, color:T.ink2, marginTop:3 } }, book.author),
+            h("div", { style:{ fontFamily:T.sans, fontSize:10.5, color:T.muted, marginTop:6, letterSpacing:.5 } }, book.count + " HADITH")
+          ),
+          h("span", { style:{ color:T.gold, alignSelf:"center" } }, IC.chevDown(16))
+        ),
+        LabelTag("Reading language", 24, 9),
+        h("div", { style:{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10 } },
+          HLANGS.map(function(l){
+            var on = lang === l.id;
+            return h("button", { key:l.id, type:"button", onClick:function(){ setLang(l.id); }, style:{ display:"flex", flexDirection:"column", alignItems:"center", gap:2, border:"1px solid " + (on?T.emerald:T.line), borderRadius:14, padding:"12px 0", cursor:"pointer", background:on?"rgba(12,90,59,0.07)":T.card, color:on?T.emerald:T.ink2, fontFamily:T.sans, fontSize:14, fontWeight:700 } }, l.label);
           })
         ),
-        h("div", { style:{ display:"flex", alignItems:"center", gap:8 } },
-          h("button", { type:"button", onClick:function(){ move(-1); }, disabled:n <= 1, style:{ width:42, height:42, border:"none", borderRadius:13, background:n <= 1 ? "rgba(33,48,42,0.04)" : "rgba(189,154,78,0.16)", color:n <= 1 ? T.faint : T.gold, display:"flex", alignItems:"center", justifyContent:"center", cursor:n <= 1 ? "default" : "pointer", flexShrink:0 } }, h("span", { style:{ transform:"scaleX(-1)" } }, h(Ic.chevR, { s:17 }))),
-          h("input", { type:"number", min:1, value:n, onChange:function(ev){ var v = parseInt(ev.target.value, 10); setN(isFinite(v) && v > 0 ? v : 1); }, style:Object.assign({ flex:1 }, inputStyle) }),
-          h("button", { type:"button", onClick:function(){ move(1); }, style:{ width:42, height:42, border:"none", borderRadius:13, background:"rgba(189,154,78,0.16)", color:T.gold, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", flexShrink:0 } }, h(Ic.chevR, { s:17 }))
+        h("button", { type:"button", onClick:function(){ setPage(1); setScreen("list"); }, style:{ width:"100%", marginTop:24, border:"none", borderRadius:16, padding:"15px 0", background:T.emerald, color:"#fff", fontFamily:T.sans, fontSize:15, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:9, boxShadow:"0 10px 24px rgba(12,90,59,0.30)" } }, "Start reading", IC.arrowRight(16)),
+        h("div", { style:{ display:"flex", gap:10, marginTop:20, padding:"13px 14px", borderRadius:16, background:T.cardSoft } },
+          h("span", { style:{ color:T.gold, flexShrink:0, marginTop:1 } }, IC.info(15)),
+          h("p", { style:{ margin:0, fontFamily:T.sans, fontSize:12, lineHeight:1.5, color:T.ink2 } }, "Hadith are fetched online and cached on this device for offline reading.")
         ),
-        h("div", { style:{ display:"flex", alignItems:"center", gap:8, marginTop:10, fontFamily:T.sans, fontSize:11.5, color:T.muted } }, h(Ic.info, { s:14 }), "Hadith are fetched online and cached on this device for offline reading.")
+        sheet ? bookSheet() : null
+      );
+    }
+
+    /* ---------- SCREEN: LIST ---------- */
+    if (screen === "list"){
+      return h("div", { style:{ padding:"54px 0 14px", minHeight:"100%", display:"flex", flexDirection:"column" } },
+        h("div", { style:{ display:"flex", alignItems:"center", gap:8, padding:"0 16px" } },
+          iconBtn(IC.chevLeft(16), function(){ setScreen("books"); }),
+          h("div", { style:{ flex:1, textAlign:"center", lineHeight:1.15 } },
+            h("div", { style:{ fontFamily:T.serif, fontSize:16, fontWeight:700, color:T.ink } }, book.en),
+            h("div", { style:{ fontFamily:T.arabic, fontSize:13, color:T.gold } }, book.ar)
+          ),
+          h("div", { style:{ width:38 } })
+        ),
+        h("div", { style:{ padding:"12px 20px 8px" } }, langSegment(false)),
+        h("div", { style:{ flex:1, overflow:"auto", padding:"4px 20px 10px", display:"flex", flexDirection:"column", gap:11 } },
+          pageNums.map(function(num){
+            var txt = listData[num];
+            var ar = lang === "ar";
+            return h("button", { key:num, type:"button", onClick:function(){ setN(num); setScreen("detail"); }, style:{ width:"100%", background:T.card, border:"1px solid " + T.line, borderRadius:18, padding:14, cursor:"pointer", textAlign:"left" } },
+              h("div", { style:{ display:"flex", alignItems:"center", gap:11, marginBottom:txt?8:0 } },
+                h("div", { style:{ width:30, height:30, borderRadius:999, background:"rgba(189,154,78,0.14)", color:T.gold, display:"flex", alignItems:"center", justifyContent:"center", fontFamily:T.serif, fontSize:13, fontWeight:700, flexShrink:0 } }, num),
+                h("div", { style:{ flex:1, fontFamily:T.sans, fontSize:11, fontWeight:800, letterSpacing:.5, textTransform:"uppercase", color:T.muted } }, "Hadith " + num),
+                h("span", { style:{ color:T.faint } }, IC.chevRight(15))
+              ),
+              txt ? h("p", { dir:ar?"rtl":"ltr", style:{ margin:0, fontFamily:ar?T.arabic:T.serif, fontSize:ar?15:13, lineHeight:ar?1.9:1.5, color:T.ink2, textAlign:ar?"right":"left" } }, snip(txt)) : (listLoading ? h("p", { style:{ margin:0, fontFamily:T.sans, fontSize:12, fontStyle:"italic", color:T.muted } }, "Loading\u2026") : h("p", { style:{ margin:0, fontFamily:T.sans, fontSize:12, fontStyle:"italic", color:T.muted } }, "Not available."))
+            );
+          })
+        ),
+        h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between", gap:12, padding:"10px 20px 0" } },
+          h("button", { type:"button", onClick:function(){ setPage(function(p){ return Math.max(1, p - 1); }); }, disabled:page<=1, style:{ width:44, height:44, borderRadius:13, border:"none", background:page<=1?T.cardSoft:"rgba(189,154,78,0.16)", color:page<=1?T.faint:T.gold, cursor:page<=1?"default":"pointer", display:"flex", alignItems:"center", justifyContent:"center" } }, IC.chevLeft(17)),
+          h("div", { style:{ fontFamily:T.sans, fontSize:12.5, fontWeight:700, color:T.ink2 } }, "Hadith " + pageNums[0] + "\u2013" + pageNums[pageNums.length-1]),
+          h("button", { type:"button", onClick:function(){ setPage(function(p){ return p + 1; }); }, style:{ width:44, height:44, borderRadius:13, border:"none", background:"rgba(189,154,78,0.16)", color:T.gold, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" } }, IC.chevRight(17))
+        ),
+        sheet ? bookSheet() : null
+      );
+    }
+
+    /* ---------- SCREEN: DETAIL ---------- */
+    var arObj = det.ar, enObj = det.en, urObj = det.ur;
+    var arText = arObj && arObj.text, enText = enObj && enObj.text, urText = urObj && urObj.text;
+    var translation = lang === "ur" ? urText : (lang === "en" ? enText : null);
+    var narrator = narratorOf(enText);
+    var grade = (enObj && enObj.grade) || (arObj && arObj.grade) || (SAHIH[book.id] ? "Sahih" : "");
+    var anyText = !!(arText || translation);
+    var pad3 = ("000" + n).slice(-3);
+    return h("div", { style:{ padding:"54px 0 14px", minHeight:"100%", display:"flex", flexDirection:"column" } },
+      h("div", { style:{ display:"flex", alignItems:"center", gap:8, padding:"0 16px" } },
+        iconBtn(IC.chevLeft(16), function(){ setScreen("list"); }),
+        h("div", { style:{ flex:1, textAlign:"center", lineHeight:1.05 } },
+          LabelTag("Hadith"),
+          h("div", { style:{ fontFamily:T.serif, fontSize:18, fontWeight:700, color:T.ink } }, pad3)
+        ),
+        iconBtn(IC.bookmark(16))
       ),
-      h(Card, { style:{ marginBottom:14, padding:18, borderLeft:"3px solid " + T.gold, background:"rgba(189,154,78,0.06)" } },
-        h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:12 } },
-          h("div", { style:{ fontFamily:T.serif, fontSize:18, fontWeight:700, color:T.ink } }, book.name),
-          h("span", { style:{ fontFamily:T.sans, fontSize:11, fontWeight:800, color:T.gold, background:"rgba(189,154,78,0.12)", padding:"4px 9px", borderRadius:999 } }, "Hadith " + n)
+      h("div", { style:{ padding:"10px 20px 4px" } }, langSegment(true)),
+      h("div", { style:{ flex:1, overflow:"auto", padding:"8px 20px 14px" } },
+        h("div", { style:{ position:"relative", background:T.card, border:"1px solid " + T.line, borderRadius:20, padding:"22px 18px" } },
+          h("span", { style:{ position:"absolute", top:9, left:9, color:T.goldSoft } }, StarMark(15, T.gold, 1.2, false)),
+          h("span", { style:{ position:"absolute", bottom:9, right:9, color:T.goldSoft } }, StarMark(15, T.gold, 1.2, false)),
+          arText ? h("p", { dir:"rtl", style:{ margin:0, fontFamily:T.arabic, fontSize:25, lineHeight:2.05, color:T.ink, textAlign:"center" } }, arText) : h("p", { style:{ margin:0, fontFamily:T.sans, fontSize:12.5, fontStyle:"italic", color:T.muted, textAlign:"center" } }, detLoading ? "Loading hadith\u2026" : "This hadith number is not available. Try a lower number.")
         ),
-        (show.ar && data.ar && data.ar.text) ? h("div", { style:{ fontFamily:T.arabic, fontSize:23, lineHeight:2.0, color:T.ink, textAlign:"right", direction:"rtl", marginBottom:14 } }, data.ar.text) : null,
-        (show.en && data.en && data.en.text) ? h("div", { style:{ fontFamily:T.serif, fontSize:15, lineHeight:1.6, color:T.ink2, marginBottom:10 } }, data.en.text) : null,
-        (show.ur && data.ur && data.ur.text) ? h("div", { style:{ fontFamily:T.urdu, fontSize:17, lineHeight:2.2, color:T.ink2, textAlign:"right", direction:"rtl", marginBottom:10 } }, data.ur.text) : null,
-        grade ? h("div", { style:{ fontFamily:T.sans, fontSize:11, fontWeight:700, color:T.emerald, marginTop:4 } }, "Grade: " + grade) : null,
-        (!anyText && loading) ? h("div", { style:{ fontFamily:T.sans, fontSize:12.5, color:T.muted, fontStyle:"italic" } }, "Loading hadith…") : null,
-        (!anyText && !loading) ? h("div", { style:{ fontFamily:T.sans, fontSize:12.5, color:T.muted, fontStyle:"italic" } }, "This hadith number is not available in the selected book or language. Try a lower number.") : null
+        translation ? h("div", { style:{ marginTop:18 } },
+          LabelTag((lang === "ur" ? "Urdu" : "English") + " translation", 0, 8),
+          h("p", { dir:lang==="ur"?"rtl":"ltr", style:{ margin:0, fontFamily:lang==="ur"?T.urdu:T.serif, fontSize:lang==="ur"?17:15, lineHeight:lang==="ur"?2.1:1.65, color:T.ink, textAlign:lang==="ur"?"right":"left" } }, translation)
+        ) : null,
+        anyText ? h("div", { style:{ marginTop:18, background:T.card, border:"1px solid " + T.line, borderRadius:20, padding:16 } },
+          h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between" } }, LabelTag("Source"), GradeBadge(grade)),
+          narrator ? h("div", { style:{ display:"flex", alignItems:"center", gap:12, marginTop:12 } },
+            h("div", { style:{ width:38, height:38, borderRadius:999, background:"linear-gradient(135deg, " + T.emerald + ", " + T.emeraldDeep + ")", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 } }, StarMark(17, "#fff", 1.6, false)),
+            h("div", { style:{ flex:1, minWidth:0 } },
+              LabelTag("Narrated by"),
+              h("div", { style:{ fontFamily:T.serif, fontSize:15.5, fontWeight:700, color:T.ink } }, narrator)
+            )
+          ) : null,
+          h("div", { style:{ height:1, background:T.line, margin:"13px 0" } }),
+          h("div", { style:{ display:"flex", alignItems:"center", justifyContent:"space-between" } },
+            h("span", { style:{ fontFamily:T.sans, fontSize:11.5, color:T.ink2 } }, book.en + " \u00b7 Hadith " + n),
+            h("span", { style:{ display:"flex", gap:14, color:T.gold } },
+              h("span", { style:{ cursor:"pointer" }, onClick:function(){ try { navigator.clipboard && navigator.clipboard.writeText((arText?arText+"\n\n":"") + (translation||"") + "\n\u2014 " + book.en + ", Hadith " + n); } catch(e){} } }, IC.copy(15))
+            )
+          )
+        ) : null
+      ),
+      h("div", { style:{ display:"flex", alignItems:"center", gap:10, padding:"10px 20px 0" } },
+        h("button", { type:"button", onClick:function(){ if (n > 1) setN(n - 1); }, disabled:n<=1, style:{ flex:1, border:"1px solid " + T.line, borderRadius:14, padding:"13px 0", background:T.card, color:n<=1?T.faint:T.ink, fontFamily:T.sans, fontSize:13.5, fontWeight:800, cursor:n<=1?"default":"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 } }, IC.chevLeft(15), "Previous"),
+        h("input", { type:"number", min:1, value:n, onChange:function(ev){ var v = parseInt(ev.target.value, 10); setN(isFinite(v) && v > 0 ? v : 1); }, style:{ width:64, border:"1px solid " + T.line, borderRadius:14, padding:"12px 0", textAlign:"center", fontFamily:T.sans, fontSize:14, fontWeight:800, color:T.ink, background:T.cardSoft, outline:"none" } }),
+        h("button", { type:"button", onClick:function(){ setN(n + 1); }, style:{ flex:1, border:"none", borderRadius:14, padding:"13px 0", background:T.emerald, color:"#fff", fontFamily:T.sans, fontSize:13.5, fontWeight:800, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 } }, "Next", IC.chevRight(15))
       )
     );
+
+    function bookSheet(){
+      return h("div", { onClick:function(){ setSheet(false); }, style:{ position:"fixed", inset:0, background:"rgba(20,28,24,0.38)", zIndex:60, display:"flex", alignItems:"flex-end" } },
+        h("div", { onClick:function(e){ e.stopPropagation(); }, style:{ width:"100%", background:T.card, borderRadius:"24px 24px 0 0", padding:"12px 18px 26px", maxHeight:"72%", overflow:"auto" } },
+          h("div", { style:{ width:40, height:4, borderRadius:999, background:T.line, margin:"2px auto 12px" } }),
+          LabelTag("Choose a collection", 0, 10),
+          h("div", { style:{ display:"flex", flexDirection:"column", gap:8 } },
+            HBOOKS.map(function(b, i){
+              var on = i === bookIdx;
+              return h("button", { key:b.id, type:"button", onClick:function(){ setBookIdx(i); setN(1); setPage(1); setSheet(false); }, style:{ display:"flex", alignItems:"center", gap:10, border:"1px solid " + (on?T.emerald:T.line), borderRadius:15, padding:13, cursor:"pointer", background:on?"rgba(12,90,59,0.06)":T.card, textAlign:"left" } },
+                h("div", { style:{ flex:1, minWidth:0 } },
+                  h("div", { style:{ fontFamily:T.serif, fontSize:15.5, fontWeight:700, color:T.ink } }, b.en),
+                  h("div", { style:{ display:"flex", gap:8, alignItems:"center", marginTop:2 } },
+                    h("span", { style:{ fontFamily:T.arabic, fontSize:14, color:T.gold } }, b.ar),
+                    h("span", { style:{ fontFamily:T.sans, fontSize:10.5, color:T.muted } }, b.count)
+                  )
+                ),
+                on ? h("span", { style:{ color:T.emerald } }, IC.check(16)) : null
+              );
+            })
+          )
+        )
+      );
+    }
   }
   window.HadithTab = HadithTab;
 })();
