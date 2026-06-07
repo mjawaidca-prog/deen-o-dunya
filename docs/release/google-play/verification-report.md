@@ -8,9 +8,9 @@ Repository: `mjawaidca-prog/deen-o-dunya`
 
 ## Status
 
-Not submission-ready.
+Not submission-ready, but materially advanced.
 
-The developer machine successfully generated the native Android project, but the release AAB build is now blocked by local Java/JDK setup. The generated Android project has not yet been committed back to GitHub, so repo-side native Android metadata still cannot be verified through the connector.
+The developer machine successfully generated the native Android project and built a release AAB. The generated Android project has not yet been committed back to GitHub, so connector-side native Android metadata still cannot be verified from the repository.
 
 ## Developer-Machine Progress Reported
 
@@ -21,9 +21,11 @@ Confirmed from PowerShell output on 2026-06-07:
 - `npm run check` passed all readiness checks.
 - `npm run cap:add:android` created the native `android/` project.
 - `npm run cap:sync` completed for Android.
-- `./gradlew bundleRelease` failed because `JAVA_HOME` is not set and no `java` command was found in `PATH`.
+- Java was configured with Temurin JDK 21.0.11.
+- `./gradlew.bat bundleRelease` completed successfully.
+- Gradle reported `BUILD SUCCESSFUL` with 118 actionable tasks.
 
-Current blocker: install/configure Java JDK, then rerun the release AAB build.
+Current blocker: verify AAB path and Android metadata, then commit/push the generated Android project.
 
 ## Verified Matches From Repo Files
 
@@ -43,7 +45,7 @@ Current blocker: install/configure Java JDK, then rerun the release AAB build.
 | --- | --- | --- | --- |
 | Android app module Gradle file | `android/app/build.gradle` or `android/app/build.gradle.kts` | Generated locally, not yet committed/verified in GitHub | Blocks connector-side verification until committed |
 | Android manifest | `android/app/src/main/AndroidManifest.xml` | Generated locally, not yet committed/verified in GitHub | Blocks permissions verification until committed or pasted |
-| Android upload bundle | `.aab` build artifact | Not built yet | Blocks Play Console release upload |
+| Android upload bundle | `.aab` build artifact | Built locally, exact path/name not yet verified in handoff | Blocks Play upload handoff until file path is confirmed |
 | Android signing references | Gradle signing config, keystore docs, CI secrets, or Play App Signing notes | Not found | Blocks signing readiness verification |
 | Target SDK | Native Android Gradle config | Not yet verified | Blocks current Google Play target API compliance verification |
 | Version code | Native Android Gradle config | Not yet verified | Blocks release upload; Play requires monotonically increasing version codes |
@@ -83,17 +85,12 @@ Sources:
 
 ## Required Next Commands
 
-Set Java/JDK first, then build:
+Locate the AAB:
 
 ```powershell
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
-java -version
 cd C:\Users\mjawa\deen-o-dunya\android
-.\gradlew.bat bundleRelease
+Get-ChildItem -Recurse app\build\outputs\bundle\release
 ```
-
-If Android Studio's `jbr` path does not exist, install a JDK and set `JAVA_HOME` to that JDK folder.
 
 Then verify native Android files from repo root:
 
@@ -103,6 +100,15 @@ Select-String -Path android\**\*.gradle* -Pattern "applicationId|namespace|versi
 Select-String -Path android\app\src\main\AndroidManifest.xml -Pattern "uses-permission|ACCESS_|CAMERA|RECORD_AUDIO|INTERNET|POST_NOTIFICATIONS"
 ```
 
+Then commit/push generated Android files:
+
+```powershell
+git status
+git add android package-lock.json
+git commit -m "Add generated Android project"
+git push
+```
+
 ## Release Readiness Decision
 
-Do not submit yet. First configure Java, build the release AAB, verify target SDK/API 35+, verify permissions and signing, commit the generated Android project if this repo is the release source of truth, and reconcile the Drive launch folder.
+Do not submit yet. First verify the AAB path and Android metadata, commit the generated Android project if this repo is the release source of truth, verify target SDK/API 35+, verify permissions and signing, and reconcile the Drive launch folder.
