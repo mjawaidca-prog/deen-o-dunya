@@ -7,7 +7,7 @@ Package ID: `com.deenodunya.planner`
 
 ## Current Result
 
-Android platform generation succeeded on the developer machine.
+Android platform generation and release bundle build succeeded on the developer machine.
 
 Confirmed from PowerShell output:
 
@@ -16,60 +16,30 @@ Confirmed from PowerShell output:
 - `npm run check` passed all store-readiness checks.
 - `npm run cap:add:android` created the native `android/` project.
 - `npm run cap:sync` copied web assets and synced Android.
+- Java was configured with Temurin JDK 21.0.11.
+- `./gradlew.bat bundleRelease` completed successfully.
+- Gradle reported `BUILD SUCCESSFUL` with 118 actionable tasks.
 
-Current blocker:
+Current launch step: locate the release AAB, verify Android metadata, then commit the generated Android project back to GitHub.
 
-- `./gradlew bundleRelease` failed because `JAVA_HOME` is not set and no `java` command was found in `PATH`.
+## Locate Release AAB
 
-This means the next launch step is Java/JDK setup, then a release AAB build.
-
-## Required Java/JDK Setup On Windows
-
-Install a JDK compatible with the Android Gradle Plugin. Android Studio includes a bundled JDK, or install a current LTS JDK such as Temurin 17 or 21.
-
-Recommended quick path if Android Studio is installed:
-
-1. Locate Android Studio's bundled JDK, often one of:
-
-```text
-C:\Program Files\Android\Android Studio\jbr
-C:\Program Files\Android\Android Studio\jre
-```
-
-2. Set `JAVA_HOME` in PowerShell for the current session:
-
-```powershell
-$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
-java -version
-```
-
-If that path does not exist, install a JDK and set `JAVA_HOME` to its install folder, for example:
-
-```powershell
-$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.x.x-hotspot"
-$env:Path = "$env:JAVA_HOME\bin;$env:Path"
-java -version
-```
-
-## Build Release AAB
-
-After Java works:
+From PowerShell:
 
 ```powershell
 cd C:\Users\mjawa\deen-o-dunya\android
-.\gradlew.bat bundleRelease
+Get-ChildItem -Recurse app\build\outputs\bundle\release
 ```
 
-Expected output is usually under:
+Expected output usually includes an `.aab` file, commonly:
 
 ```text
-android\app\build\outputs\bundle\release\
+android\app\build\outputs\bundle\release\app-release.aab
 ```
 
 ## Verify Android Release Metadata
 
-After the Android project exists, run from the repository root:
+Run from the repository root:
 
 ```powershell
 cd C:\Users\mjawa\deen-o-dunya
@@ -85,14 +55,31 @@ Expected identity values:
 - First version code: usually `1`, unless Play Console already has a prior uploaded build.
 - Target SDK: Android 15 / API 35 or higher for current Google Play submission.
 
-## Verification Needed After Build
-
-- Confirm the AAB package ID is `com.deenodunya.planner`.
-- Confirm versionCode and versionName.
-- Confirm targetSdk is API 35+.
-- Confirm permissions match the privacy policy and Data Safety draft.
-- Install/test through internal testing before production.
-
 ## Commit Guidance
 
-If this repository is the release source of truth, commit the generated `android/` project and any version/signing documentation after verifying the generated files. Do not commit keystore private files or secrets.
+If this repository is the release source of truth, commit the generated Android project and package lock after verifying metadata:
+
+```powershell
+cd C:\Users\mjawa\deen-o-dunya
+git status
+git add android package-lock.json
+git commit -m "Add generated Android project"
+git push
+```
+
+Do not commit keystore private files or secrets. Build outputs under `android/app/build/` are normally ignored and should not be committed.
+
+## Verification Needed After Commit
+
+After the generated Android project is pushed, verify from GitHub:
+
+- `android/app/build.gradle` or `android/app/build.gradle.kts`
+- `android/app/src/main/AndroidManifest.xml`
+- versionCode and versionName
+- targetSdk / compileSdk
+- permissions
+- signing references and Play App Signing plan
+
+## Play Console Next Step
+
+Upload the release AAB to an internal testing track first. Do not go directly to production before installing from the Play internal testing link and completing the Play Console App content/Data safety forms.
