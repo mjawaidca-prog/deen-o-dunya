@@ -1,6 +1,7 @@
 # Google Play Verification Report
 
 Generated: 2026-06-07
+Updated: 2026-06-07
 App: Deen o Dunya Planner
 Target package ID: `com.deenodunya.planner`
 Repository: `mjawaidca-prog/deen-o-dunya`
@@ -9,23 +10,22 @@ Repository: `mjawaidca-prog/deen-o-dunya`
 
 Not submission-ready.
 
-The repo has enough evidence to confirm the intended app name and Capacitor app ID, but it does not currently include a verifiable Android native project or upload-ready Android App Bundle.
+The developer machine successfully generated the native Android project, but the release AAB build is now blocked by local Java/JDK setup. The generated Android project has not yet been committed back to GitHub, so repo-side native Android metadata still cannot be verified through the connector.
 
-## Android Generation Attempt
+## Developer-Machine Progress Reported
 
-Attempted on 2026-06-07 in the launch container.
+Confirmed from PowerShell output on 2026-06-07:
 
-Result: blocked by environment limitations.
+- `git clone` succeeded.
+- `npm install` succeeded with 0 vulnerabilities.
+- `npm run check` passed all readiness checks.
+- `npm run cap:add:android` created the native `android/` project.
+- `npm run cap:sync` completed for Android.
+- `./gradlew bundleRelease` failed because `JAVA_HOME` is not set and no `java` command was found in `PATH`.
 
-- `npm install` failed with `403 Forbidden` while downloading `@capacitor/android` from npm.
-- No preinstalled Capacitor CLI/package was available.
-- No local Gradle executable was available.
-- No Android SDK / `ANDROID_HOME` was available.
-- Direct GitHub clone had also failed with `CONNECT tunnel failed, response 403`.
+Current blocker: install/configure Java JDK, then rerun the release AAB build.
 
-See `android-generation-handoff.md` for the exact developer-machine steps required to generate and verify the native Android project.
-
-## Verified Matches
+## Verified Matches From Repo Files
 
 | Item | Expected | Found | Status |
 | --- | --- | --- | --- |
@@ -37,18 +37,17 @@ See `android-generation-handoff.md` for the exact developer-machine steps requir
 | PWA manifest | Required for web/PWA metadata | `manifest.webmanifest` | Found |
 | App icon source | Store asset source candidate | `assets/app-icon.svg` | Found |
 
-## Missing Or Unverified
+## Missing Or Unverified In GitHub
 
 | Item | Expected File Or Evidence | Current Result | Launch Impact |
 | --- | --- | --- | --- |
-| Android app module Gradle file | `android/app/build.gradle` or `android/app/build.gradle.kts` | Not found | Blocks applicationId, versionCode, versionName, min/target SDK, signing, dependencies, and AAB verification |
-| Android manifest | `android/app/src/main/AndroidManifest.xml` | Not found | Blocks permissions and Play policy verification |
-| Android settings | `android/settings.gradle` | Not found | Blocks native project verification |
-| Android upload bundle | `.aab` build artifact | Not found | Blocks Play Console release upload |
+| Android app module Gradle file | `android/app/build.gradle` or `android/app/build.gradle.kts` | Generated locally, not yet committed/verified in GitHub | Blocks connector-side verification until committed |
+| Android manifest | `android/app/src/main/AndroidManifest.xml` | Generated locally, not yet committed/verified in GitHub | Blocks permissions verification until committed or pasted |
+| Android upload bundle | `.aab` build artifact | Not built yet | Blocks Play Console release upload |
 | Android signing references | Gradle signing config, keystore docs, CI secrets, or Play App Signing notes | Not found | Blocks signing readiness verification |
-| Target SDK | Native Android Gradle config | Not found | Blocks current Google Play target API compliance verification |
-| Version code | Native Android Gradle config | Not found | Blocks release upload; Play requires monotonically increasing version codes |
-| Version name | Native Android Gradle config | Not found | Cannot verify against `package.json` version `1.0.0` |
+| Target SDK | Native Android Gradle config | Not yet verified | Blocks current Google Play target API compliance verification |
+| Version code | Native Android Gradle config | Not yet verified | Blocks release upload; Play requires monotonically increasing version codes |
+| Version name | Native Android Gradle config | Not yet verified | Cannot verify against `package.json` version `1.0.0` |
 | Google Drive source workspace | `Deen o Dunya` Drive workspace | Not found via connected Drive search/root listing | Blocks Drive-vs-repo reconciliation |
 | Store screenshots | Phone screenshots and optional tablet screenshots | Not found | Blocks store listing completion |
 | Feature graphic | 1024 x 500 Play feature graphic | Not found | Likely blocks polished listing; may be required for some placements |
@@ -82,30 +81,28 @@ Sources:
 - https://support.google.com/googleplay/android-developer/answer/10144311
 - https://developer.android.com/google/play/requirements/target-sdk
 
-## Required Build Verification Commands
+## Required Next Commands
 
-Run after the Android project is generated and committed:
+Set Java/JDK first, then build:
 
-```bash
-npm install
-npm run check
-npm run cap:sync
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
+cd C:\Users\mjawa\deen-o-dunya\android
+.\gradlew.bat bundleRelease
 ```
 
-Then verify native Android files:
+If Android Studio's `jbr` path does not exist, install a JDK and set `JAVA_HOME` to that JDK folder.
 
-```bash
-rg "applicationId|namespace|versionCode|versionName|minSdk|targetSdk|compileSdk" android
-rg "uses-permission|ACCESS_|CAMERA|RECORD_AUDIO|INTERNET" android/app/src/main/AndroidManifest.xml
-```
+Then verify native Android files from repo root:
 
-Build an Android App Bundle from Android Studio or Gradle after confirming signing configuration. The exact Gradle command depends on the generated Capacitor Android project, but is usually similar to:
-
-```bash
-cd android
-./gradlew bundleRelease
+```powershell
+cd C:\Users\mjawa\deen-o-dunya
+Select-String -Path android\**\*.gradle* -Pattern "applicationId|namespace|versionCode|versionName|minSdk|targetSdk|compileSdk"
+Select-String -Path android\app\src\main\AndroidManifest.xml -Pattern "uses-permission|ACCESS_|CAMERA|RECORD_AUDIO|INTERNET|POST_NOTIFICATIONS"
 ```
 
 ## Release Readiness Decision
 
-Do not submit yet. First generate and commit the Android native project in a normal development environment, verify target SDK/API 35+, verify permissions and signing, generate a release AAB, and reconcile the Drive launch folder.
+Do not submit yet. First configure Java, build the release AAB, verify target SDK/API 35+, verify permissions and signing, commit the generated Android project if this repo is the release source of truth, and reconcile the Drive launch folder.
