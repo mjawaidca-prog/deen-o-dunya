@@ -16,6 +16,8 @@ The app identity in the web/Capacitor layer is aligned with the intended Google 
 - `play-listing-copy.md` - paste-ready Google Play listing copy draft.
 - `compliance-draft.md` - Play Console App content and Data safety draft answers, with unverified items marked.
 - `submission-checklist.md` - ordered manual submission checklist and handoff notes.
+- `privacy-policy-github-pages.html` - GitHub Pages-ready privacy policy page using the existing policy wording.
+- `privacy-policy-deployment.md` - privacy policy hosting and Play Console URL checklist.
 
 ## Canonical Repo Evidence Used
 
@@ -35,5 +37,6 @@ The app identity in the web/Capacitor layer is aligned with the intended Google 
 3. No versionCode/build number found in native Android files.
 4. No Google Drive `Deen o Dunya` workspace or launch folder found through the connected Drive search.
 5. Screenshots, feature graphic, signing setup, and tester evidence are not yet verified.
+6. Public privacy-policy URL still needs to be confirmed after GitHub Pages or another public host is configured.
 
 Do not treat this package as final submission approval. It is a launch-prep package that identifies the remaining work needed before Google Play submission.
