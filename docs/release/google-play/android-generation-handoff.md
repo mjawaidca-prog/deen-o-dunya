@@ -1,47 +1,80 @@
 # Android Generation Handoff
 
 Generated: 2026-06-07
+Updated: 2026-06-07
 App: Deen o Dunya Planner
 Package ID: `com.deenodunya.planner`
 
 ## Current Result
 
-Android generation was attempted in the launch workspace, but this container cannot complete it.
+Android platform generation succeeded on the developer machine.
 
-Blocked by environment limitations:
+Confirmed from PowerShell output:
 
-- `npm install` failed with `403 Forbidden` while downloading `@capacitor/android` from `https://registry.npmjs.org/@capacitor%2fandroid`.
-- No preinstalled Capacitor CLI/package was found in the container.
-- No local Gradle executable was found.
-- No Android SDK / `ANDROID_HOME` was available.
-- Direct GitHub clone was also blocked earlier by a `CONNECT tunnel failed, response 403` error.
+- `git clone` succeeded.
+- `npm install` succeeded with 0 vulnerabilities.
+- `npm run check` passed all store-readiness checks.
+- `npm run cap:add:android` created the native `android/` project.
+- `npm run cap:sync` copied web assets and synced Android.
 
-This is an environment blocker, not evidence that the app cannot be built.
+Current blocker:
 
-## Required Developer-Machine Steps
+- `./gradlew bundleRelease` failed because `JAVA_HOME` is not set and no `java` command was found in `PATH`.
 
-Run these on a machine with normal npm access, Java, Android Studio, Android SDK, and Gradle/Android Gradle Plugin support.
+This means the next launch step is Java/JDK setup, then a release AAB build.
 
-```bash
-git clone https://github.com/mjawaidca-prog/deen-o-dunya.git
-cd deen-o-dunya
-npm install
-npm run check
-npm run cap:sync
+## Required Java/JDK Setup On Windows
+
+Install a JDK compatible with the Android Gradle Plugin. Android Studio includes a bundled JDK, or install a current LTS JDK such as Temurin 17 or 21.
+
+Recommended quick path if Android Studio is installed:
+
+1. Locate Android Studio's bundled JDK, often one of:
+
+```text
+C:\Program Files\Android\Android Studio\jbr
+C:\Program Files\Android\Android Studio\jre
 ```
 
-If `android/` does not exist after sync, run:
+2. Set `JAVA_HOME` in PowerShell for the current session:
 
-```bash
-npm run cap:add:android
-npm run cap:sync
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Android\Android Studio\jbr"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
 ```
 
-Then verify Android release metadata:
+If that path does not exist, install a JDK and set `JAVA_HOME` to its install folder, for example:
 
-```bash
-rg "applicationId|namespace|versionCode|versionName|minSdk|targetSdk|compileSdk" android
-rg "uses-permission|ACCESS_|CAMERA|RECORD_AUDIO|INTERNET|POST_NOTIFICATIONS" android/app/src/main/AndroidManifest.xml
+```powershell
+$env:JAVA_HOME = "C:\Program Files\Eclipse Adoptium\jdk-17.0.x.x-hotspot"
+$env:Path = "$env:JAVA_HOME\bin;$env:Path"
+java -version
+```
+
+## Build Release AAB
+
+After Java works:
+
+```powershell
+cd C:\Users\mjawa\deen-o-dunya\android
+.\gradlew.bat bundleRelease
+```
+
+Expected output is usually under:
+
+```text
+android\app\build\outputs\bundle\release\
+```
+
+## Verify Android Release Metadata
+
+After the Android project exists, run from the repository root:
+
+```powershell
+cd C:\Users\mjawa\deen-o-dunya
+Select-String -Path android\**\*.gradle* -Pattern "applicationId|namespace|versionCode|versionName|minSdk|targetSdk|compileSdk"
+Select-String -Path android\app\src\main\AndroidManifest.xml -Pattern "uses-permission|ACCESS_|CAMERA|RECORD_AUDIO|INTERNET|POST_NOTIFICATIONS"
 ```
 
 Expected identity values:
@@ -51,21 +84,6 @@ Expected identity values:
 - Version name: align with `package.json` version `1.0.0`, unless intentionally changed.
 - First version code: usually `1`, unless Play Console already has a prior uploaded build.
 - Target SDK: Android 15 / API 35 or higher for current Google Play submission.
-
-## Build Release AAB
-
-After signing is configured:
-
-```bash
-cd android
-./gradlew bundleRelease
-```
-
-Expected output is usually under:
-
-```text
-android/app/build/outputs/bundle/release/
-```
 
 ## Verification Needed After Build
 
