@@ -11,6 +11,20 @@ Not submission-ready.
 
 The repo has enough evidence to confirm the intended app name and Capacitor app ID, but it does not currently include a verifiable Android native project or upload-ready Android App Bundle.
 
+## Android Generation Attempt
+
+Attempted on 2026-06-07 in the launch container.
+
+Result: blocked by environment limitations.
+
+- `npm install` failed with `403 Forbidden` while downloading `@capacitor/android` from npm.
+- No preinstalled Capacitor CLI/package was available.
+- No local Gradle executable was available.
+- No Android SDK / `ANDROID_HOME` was available.
+- Direct GitHub clone had also failed with `CONNECT tunnel failed, response 403`.
+
+See `android-generation-handoff.md` for the exact developer-machine steps required to generate and verify the native Android project.
+
 ## Verified Matches
 
 | Item | Expected | Found | Status |
@@ -94,4 +108,4 @@ cd android
 
 ## Release Readiness Decision
 
-Do not submit yet. First generate and commit the Android native project, verify target SDK/API 35+, verify permissions and signing, generate a release AAB, and reconcile the Drive launch folder.
+Do not submit yet. First generate and commit the Android native project in a normal development environment, verify target SDK/API 35+, verify permissions and signing, generate a release AAB, and reconcile the Drive launch folder.
