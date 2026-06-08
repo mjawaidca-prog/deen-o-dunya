@@ -7,11 +7,13 @@ const files = [
   "index.html",
   "sw.js",
   "privacy.html",
-  "manifest.webmanifest"
+  "manifest.webmanifest",
+  "mobile-admob.js"
 ];
 const dirs = [
   "assets"
 ];
+const admobScriptTag = '<script src="./mobile-admob.js"></script>';
 
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(dist, { recursive: true });
@@ -22,6 +24,13 @@ for (const file of files) {
 
 for (const dir of dirs) {
   fs.cpSync(path.join(root, dir), path.join(dist, dir), { recursive: true });
+}
+
+const indexPath = path.join(dist, "index.html");
+let indexHtml = fs.readFileSync(indexPath, "utf8");
+if (!indexHtml.includes(admobScriptTag)) {
+  indexHtml = indexHtml.replace("</body>", admobScriptTag + "\n</body>");
+  fs.writeFileSync(indexPath, indexHtml);
 }
 
 console.log("Prepared mobile web bundle in dist/");
