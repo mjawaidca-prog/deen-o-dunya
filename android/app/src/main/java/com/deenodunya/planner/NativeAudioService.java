@@ -96,11 +96,11 @@ public class NativeAudioService extends Service {
             updateNotification(true);
         });
         mediaPlayer.setOnCompletionListener(player -> {
-            sendBroadcast(new Intent(ACTION_ENDED));
+            sendPlaybackEnded();
             stopPlayback(true);
         });
         mediaPlayer.setOnErrorListener((player, what, extra) -> {
-            sendBroadcast(new Intent(ACTION_ENDED));
+            sendPlaybackEnded();
             stopPlayback(true);
             return true;
         });
@@ -109,7 +109,7 @@ public class NativeAudioService extends Service {
             mediaPlayer.setDataSource(url);
             mediaPlayer.prepareAsync();
         } catch (IOException | IllegalArgumentException | IllegalStateException error) {
-            sendBroadcast(new Intent(ACTION_ENDED));
+            sendPlaybackEnded();
             stopPlayback(true);
         }
     }
@@ -179,6 +179,11 @@ public class NativeAudioService extends Service {
         } else if (focusChange == AudioManager.AUDIOFOCUS_GAIN && mediaPlayer != null) {
             mediaPlayer.setVolume(1f, 1f);
         }
+    }
+
+    private void sendPlaybackEnded() {
+        Intent intent = new Intent(ACTION_ENDED).setPackage(getPackageName());
+        sendBroadcast(intent);
     }
 
     private void createNotificationChannel() {
