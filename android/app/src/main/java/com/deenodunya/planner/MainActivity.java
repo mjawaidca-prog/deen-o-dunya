@@ -2,6 +2,8 @@ package com.deenodunya.planner;
 
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import androidx.activity.EdgeToEdge;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -13,7 +15,22 @@ public class MainActivity extends BridgeActivity {
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+        configureWebViewForPhase0();
         applySystemBarInsets();
+    }
+
+    private void configureWebViewForPhase0() {
+        WebView webView = getBridge().getWebView();
+        if (webView == null) {
+            return;
+        }
+
+        WebSettings settings = webView.getSettings();
+        settings.setMediaPlaybackRequiresUserGesture(false);
+
+        float fontScale = getResources().getConfiguration().fontScale;
+        float clampedScale = Math.max(1.0f, Math.min(fontScale, 1.4f));
+        settings.setTextZoom(Math.round(clampedScale * 100));
     }
 
     private void applySystemBarInsets() {
