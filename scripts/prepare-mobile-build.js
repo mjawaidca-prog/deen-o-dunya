@@ -8,7 +8,10 @@ const files = [
   "sw.js",
   "privacy.html",
   "manifest.webmanifest",
-  "mobile-admob.js"
+  "mobile-admob.js",
+  "ddp-cities.js",
+  "ddp-state.js",
+  "ddp-audio.js"
 ];
 const dirs = [
   "assets"
