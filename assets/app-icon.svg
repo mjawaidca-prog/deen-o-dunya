@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Deen o Dunya Planner app icon">
+  <rect width="1024" height="1024" rx="220" fill="#0C5A3B"/>
+  <circle cx="512" cy="512" r="338" fill="#FFFDF7"/>
+  <path d="M651 228c-104 34-180 132-180 248 0 145 117 262 262 262 31 0 61-5 89-15-56 73-144 120-243 120-169 0-306-137-306-306 0-137 90-253 214-292 42-13 87-19 131-15 17 1 33 3 49 7-6 1-12 2-16 3z" fill="#0C5A3B"/>
+  <path d="M574 284l31 83 88-4-69 55 31 83-73-46-69 55 22-86-73-46 88-6 24-88z" fill="#BD9A4E"/>
+  <path d="M328 718h356" stroke="#BD9A4E" stroke-width="42" stroke-linecap="round"/>
+  <path d="M368 790h276" stroke="#0C5A3B" stroke-width="34" stroke-linecap="round"/>
+</svg>

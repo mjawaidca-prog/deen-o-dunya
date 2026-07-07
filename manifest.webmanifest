@@ -1,0 +1,23 @@
+{
+  "name": "Deen o Dunya Planner",
+  "short_name": "Deen o Dunya",
+  "description": "A daily planner for prayer times, Qur'an reading, tafsir, azkar, qibla direction and personal balance.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F4EEE0",
+  "theme_color": "#0C5A3B",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["lifestyle", "productivity"],
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

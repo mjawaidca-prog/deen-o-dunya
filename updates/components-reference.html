@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deen o Dunya — Today & Logs Handoff</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;background:#1a1a1a;font-family:'Hanken Grotesk',system-ui,sans-serif;padding:40px 20px 80px;}
+  .page-title{color:#BD9A4E;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;margin-bottom:6px;}
+  .page-subtitle{color:#fff;font-family:'Newsreader',serif;font-size:26px;font-weight:600;text-align:center;margin-bottom:6px;}
+  .page-note{color:#888;font-size:13px;text-align:center;margin-bottom:48px;}
+  .section{max-width:390px;margin:0 auto 56px;}
+  .section-label{color:#888;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+  .section-label::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08);}
+  .frame{background:radial-gradient(120% 55% at 80% -5%,#FBF6EA 0%,#F4EEE0 42%,#EFE7D6 100%);border-radius:24px;padding:16px;overflow:hidden;}
+  /* card base */
+  .card{background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);}
+  .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .card-label{font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;}
+  .card-count{display:flex;align-items:center;gap:5px;color:#0C5A3B;}
+  .card-count span{font-family:'Newsreader',serif;font-size:16px;font-weight:600;}
+  /* chips */
+  .chips{display:flex;gap:6px;}
+  .chip{flex:1;text-align:center;}
+  .chip-inner{height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+  .chip-inner.active{background:rgba(12,90,59,0.12);}
+  .chip-inner.empty{background:rgba(33,48,42,0.05);border:1px dashed rgba(33,48,42,0.18);}
+  .chip-inner.done-time{background:rgba(12,90,59,0.12);}
+  .chip-inner.late{background:rgba(189,154,78,0.18);}
+  .chip-inner.missed{background:rgba(176,60,52,0.12);}
+  .chip-val{font-size:15px;font-weight:700;}
+  .chip-val.green{color:#0C5A3B;}
+  .chip-val.muted{color:#B7B1A1;}
+  .chip-val.gold{color:#9A7B2E;}
+  .chip-val.red{color:#B03C34;}
+  .chip-name{font-size:10px;font-weight:600;color:#8A8576;}
+  /* progress bar */
+  .bar-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+  .bar-track{height:6px;border-radius:999px;background:rgba(33,48,42,0.08);overflow:hidden;margin-bottom:10px;}
+  .bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#BD9A4E,#D8B978);}
+  .card-footer{font-size:11.5px;color:#8A8576;}
+  /* zikr chips */
+  .zikr-chips{display:flex;gap:8px;}
+  .zikr-chip{flex:1;display:flex;align-items:center;gap:5px;padding:9px 10px;border-radius:14px;}
+  .zikr-chip.done{background:rgba(12,90,59,0.10);}
+  .zikr-chip.pending{background:rgba(33,48,42,0.05);border:1px solid rgba(33,48,42,0.10);}
+  .zikr-chip span{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .zikr-chip span.done{color:#0C5A3B;}
+  .zikr-chip span.pending{color:#8A8576;}
+  /* deed pills */
+  .deed-pills{display:flex;flex-wrap:wrap;gap:6px;}
+  .pill{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;cursor:pointer;}
+  .pill.done{background:rgba(12,90,59,0.12);}
+  .pill.todo{background:rgba(33,48,42,0.05);border:1px solid rgba(33,48,42,0.10);}
+  .pill span.label{font-size:12px;font-weight:600;}
+  .pill.done span.label{color:#0C5A3B;}
+  .pill.todo span.label{color:#8A8576;}
+  /* screens */
+  .screen-wrap{background:radial-gradient(120% 55% at 80% -5%,#FBF6EA 0%,#F4EEE0 42%,#EFE7D6 100%);border-radius:24px;overflow:hidden;}
+  .screen-inner{padding:8px 18px 18px;}
+  .screen-header{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .back-btn{width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;flex-shrink:0;}
+  .screen-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;}
+  .screen-title{font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;}
+  .stat-row{display:flex;gap:10px;margin-bottom:16px;}
+  .stat-green{flex:1;background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:22px;padding:16px;color:#fff;box-shadow:0 12px 26px -10px rgba(12,90,59,0.45);}
+  .stat-white{flex:1;background:#FFFDF7;border-radius:22px;padding:16px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);}
+  .stat-num{font-family:'Newsreader',serif;font-size:32px;font-weight:600;line-height:1;}
+  .stat-num.white{color:#fff;}
+  .stat-num.dark{color:#21302A;}
+  .stat-sub{font-size:11.5px;margin-top:4px;}
+  .stat-sub.white{color:rgba(255,255,255,0.75);}
+  .stat-sub.muted{color:#8A8576;}
+  /* list cards */
+  .list-card{background:#FFFDF7;border-radius:24px;padding:8px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);}
+  .list-card-label{padding:10px 10px 8px;font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;}
+  .list-row{display:flex;align-items:center;gap:12px;padding:11px 10px;border-bottom:1px solid rgba(33,48,42,0.07);}
+  .list-row:last-child{border-bottom:none;}
+  .list-dot{width:8px;height:8px;border-radius:999px;flex-shrink:0;}
+  .list-dot.done{background:#0C5A3B;}
+  .list-dot.todo{background:rgba(33,48,42,0.18);}
+  .list-name{font-size:15px;font-weight:600;color:#21302A;}
+  .list-sub{font-size:12px;color:#8A8576;}
+  .list-action{display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:11px;cursor:pointer;margin-left:auto;}
+  .list-action.has-data{background:rgba(12,90,59,0.10);}
+  .list-action.no-data{background:rgba(33,48,42,0.05);}
+  .list-action .num{font-family:'Newsreader',serif;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1;}
+  .list-action.has-data .num{color:#0C5A3B;}
+  .list-action.no-data .num{color:#B7B1A1;}
+  .list-action .unit{font-size:10px;font-weight:700;letter-spacing:0.5px;}
+  .list-action.has-data .unit{color:#0C5A3B;}
+  .list-action.no-data .unit{color:#B7B1A1;}
+  /* juz grid */
+  .juz-grid{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;}
+  .juz-seg{flex-basis:calc(100%/6 - 4px);height:14px;border-radius:4px;}
+  .juz-seg.done{background:#0C5A3B;}
+  .juz-seg.current{background:rgba(12,90,59,0.35);}
+  .juz-seg.todo{background:rgba(33,48,42,0.08);}
+  /* deed rows */
+  .deed-row{display:flex;align-items:center;gap:13px;padding:15px 12px;cursor:pointer;}
+  .deed-icon{width:42px;height:42px;border-radius:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:18px;}
+  .deed-icon.done{background:rgba(12,90,59,0.1);color:#0C5A3B;}
+  .deed-icon.todo{background:rgba(33,48,42,0.05);color:#8A8576;}
+  .deed-label{font-size:15px;font-weight:600;color:#21302A;}
+  .deed-status{font-size:12px;margin-top:1px;}
+  .deed-status.done{color:#0C5A3B;}
+  .deed-status.todo{color:#B7B1A1;}
+  .deed-check{width:30px;height:30px;border-radius:999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-left:auto;}
+  .deed-check.done{background:#0C5A3B;}
+  .deed-check.todo{border:2px solid rgba(33,48,42,0.18);}
+  /* tasbih */
+  .tasbih-card{background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:28px;padding:24px 20px 18px;box-shadow:0 14px 30px -10px rgba(12,90,59,0.45);text-align:center;}
+  .tasbih-ar{font-family:'Amiri',serif;font-size:26px;color:rgba(255,255,255,0.9);margin-bottom:4px;line-height:1.5;direction:rtl;}
+  .tasbih-en{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#D8B978;margin-bottom:16px;}
+  .tasbih-count{font-family:'Newsreader',serif;font-size:64px;font-weight:600;color:#fff;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;}
+  .tasbih-of{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:16px;}
+  .tasbih-bar-track{height:4px;border-radius:999px;background:rgba(255,255,255,0.15);overflow:hidden;margin:0 0 18px;}
+  .tasbih-bar-fill{height:100%;border-radius:999px;background:#D8B978;transition:width .12s;}
+  .tasbih-btn{padding:18px;border-radius:18px;background:rgba(255,255,255,0.14);cursor:pointer;font-size:16px;font-weight:700;color:#fff;letter-spacing:0.3px;margin-bottom:10px;user-select:none;}
+  .tasbih-reset{font-size:12px;color:rgba(255,255,255,0.45);cursor:pointer;}
+  /* goal row */
+  .goal-row{display:flex;align-items:center;justify-content:space-between;padding:18px;}
+  .goal-label{font-size:14px;font-weight:600;color:#21302A;}
+  .goal-controls{display:flex;align-items:center;gap:14px;}
+  .goal-btn{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .goal-btn.minus{background:rgba(33,48,42,0.06);color:#21302A;}
+  .goal-btn.plus{background:rgba(12,90,59,0.1);color:#0C5A3B;}
+  .goal-num{font-family:'Newsreader',serif;font-size:20px;font-weight:600;color:#21302A;min-width:30px;text-align:center;}
+  /* ribbon */
+  .ribbon-card{background:#FFFDF7;border-radius:28px;padding:18px 18px 14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(28,46,36,0.07);border:1px solid rgba(255,255,255,0.85);overflow:hidden;}
+  .ribbon-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .ribbon-period-label{font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin-bottom:3px;}
+  .ribbon-period-sub{font-family:'Newsreader',serif;font-size:16px;font-weight:500;font-style:italic;color:#4C5852;line-height:1.25;}
+  .ribbon-pill{flex-shrink:0;background:rgba(12,90,59,0.07);border-radius:14px;padding:8px 12px;text-align:right;}
+  .ribbon-pill-name{font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#0C5A3B;}
+  .ribbon-pill-count{font-family:'Newsreader',serif;font-size:21px;font-weight:600;color:#0C5A3B;line-height:1.1;font-variant-numeric:tabular-nums;}
+  .ribbon-track{position:relative;height:62px;margin-bottom:10px;}
+  .ribbon-footer{display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(33,48,42,0.07);}
+  .ribbon-sun{display:flex;align-items:center;gap:5px;}
+  .ribbon-sun span{font-size:11.5px;font-weight:600;color:#8A8576;font-variant-numeric:tabular-nums;}
+  .ribbon-daylen{font-size:10.5px;font-weight:600;color:#B7B1A1;}
+  /* salah row highlight */
+  .prayer-row-next{display:flex;align-items:center;gap:12px;padding:15px 14px;border-radius:18px;background:linear-gradient(135deg,#0C5A3B,#073A28);box-shadow:0 8px 22px rgba(12,90,59,0.32);}
+  .prayer-row-normal{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:18px;}
+</style>
+</head>
+<body>
+
+<div class="page-title">Deen o Dunya Planner</div>
+<div class="page-subtitle">Today Screen — Log Cards Handoff</div>
+<div class="page-note">Visual reference for developer implementation · HTML/CSS/JS (Capacitor)</div>
+
+<!-- ═══════════════════════════════════════════════
+     1. DAY RIBBON (replaces "Next Prayer" hero)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">1 · Day Ribbon Card (Look A — replaces "Next Prayer" hero)</div>
+  <div class="frame">
+    <div class="ribbon-card">
+      <div class="ribbon-header">
+        <div>
+          <div class="ribbon-period-label">Ḍuḥā · Mid-morning</div>
+          <div class="ribbon-period-sub">Between sunrise and noon</div>
+        </div>
+        <div class="ribbon-pill">
+          <div class="ribbon-pill-name">Dhuhr</div>
+          <div class="ribbon-pill-count">2h 14m</div>
+        </div>
+      </div>
+      <!-- Timeline track (built with SVG for precision) -->
+      <div class="ribbon-track">
+        <svg width="100%" height="62" style="overflow:visible;">
+          <!-- base dim track -->
+          <rect x="5%" y="29" width="90%" height="2" rx="1" fill="rgba(33,48,42,0.10)"/>
+          <!-- elapsed amber→green fill (38% elapsed = mid-morning) -->
+          <rect x="5%" y="29" width="34%" height="2" rx="1" fill="url(#elapsed)"/>
+          <!-- prayer dots: F=5% D=38% A=60% M=80% I=93% -->
+          <!-- F label + dot -->
+          <text x="5%" y="12" text-anchor="middle" font-family="Hanken Grotesk" font-size="9.5" font-weight="700" fill="#C8C2B8">F</text>
+          <circle cx="5%" cy="31" r="3.5" fill="rgba(33,48,42,0.22)"/>
+          <!-- D label + dot (next = amber, larger) -->
+          <text x="38%" y="12" text-anchor="middle" font-family="Hanken Grotesk" font-size="9.5" font-weight="700" fill="#BD9A4E">D</text>
+          <circle cx="38%" cy="31" r="5.5" fill="#BD9A4E"/>
+          <circle cx="38%" cy="31" r="9" fill="rgba(189,154,78,0.22)"/>
+          <!-- D time below -->
+          <text x="38%" y="57" text-anchor="middle" font-family="Hanken Grotesk" font-size="8.5" font-weight="700" fill="#BD9A4E" font-variant-numeric="tabular-nums">12:14 PM</text>
+          <!-- A label + dot -->
+          <text x="60%" y="12" text-anchor="middle" font-family="Hanken Grotesk" font-size="9.5" font-weight="700" fill="#8A8576">A</text>
+          <circle cx="60%" cy="31" r="3.5" fill="rgba(33,48,42,0.15)"/>
+          <!-- M label + dot -->
+          <text x="80%" y="12" text-anchor="middle" font-family="Hanken Grotesk" font-size="9.5" font-weight="700" fill="#8A8576">M</text>
+          <circle cx="80%" cy="31" r="3.5" fill="rgba(33,48,42,0.15)"/>
+          <!-- I label + dot -->
+          <text x="93%" y="12" text-anchor="middle" font-family="Hanken Grotesk" font-size="9.5" font-weight="700" fill="#8A8576">I</text>
+          <circle cx="93%" cy="31" r="3.5" fill="rgba(33,48,42,0.15)"/>
+          <!-- NOW amber dot -->
+          <circle cx="28%" cy="31" r="8" fill="#BD9A4E" filter="url(#glow)"/>
+          <defs>
+            <linearGradient id="elapsed" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="rgba(189,154,78,0.75)"/>
+              <stop offset="1" stop-color="rgba(12,90,59,0.5)"/>
+            </linearGradient>
+            <filter id="glow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+        </svg>
+      </div>
+      <div class="ribbon-footer">
+        <div class="ribbon-sun">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#BD9A4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="3.5"/><path d="M12 4v2M5 8l1.4 1.4M19 8l-1.4 1.4M2.5 17h3M18.5 17h3"/><path d="M8 20h8"/></svg>
+          <span>5:48 AM</span>
+        </div>
+        <div class="ribbon-daylen">14h 22m daylight</div>
+        <div class="ribbon-sun">
+          <span>8:10 PM</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#E7B9D0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 00-10 0"/><path d="M12 9V3M4.5 9.5L6 11M19.5 9.5L18 11M2 18h3M19 18h3"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     2. SALAH LOG CARD (existing — keep as-is)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">2 · Salah Log Card (existing, keep)</div>
+  <div class="frame">
+    <div class="card" style="cursor:pointer;">
+      <div class="card-header">
+        <div class="card-label">Salah Log · Today</div>
+        <div class="card-count"><span>3/5</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="chips">
+        <div class="chip"><div class="chip-inner done-time"><span class="chip-val green">✓</span></div><div class="chip-name">Fajr</div></div>
+        <div class="chip"><div class="chip-inner done-time"><span class="chip-val green">✓</span></div><div class="chip-name">Dhuhr</div></div>
+        <div class="chip"><div class="chip-inner late"><span class="chip-val gold">!</span></div><div class="chip-name">Asr</div></div>
+        <div class="chip"><div class="chip-inner empty"><span class="chip-val muted">·</span></div><div class="chip-name">Maghr.</div></div>
+        <div class="chip"><div class="chip-inner empty"><span class="chip-val muted">·</span></div><div class="chip-name">Isha</div></div>
+      </div>
+      <div style="font-size:11.5px;color:#8A8576;margin-top:12px;text-align:center;">Tap a prayer to log · On time · Late · Missed · Excused</div>
+    </div>
+  </div>
+  <div style="color:#666;font-size:11.5px;margin-top:10px;line-height:1.6;">States cycle: <b style="color:#0C5A3B;">✓ On time</b> · <b style="color:#9A7B2E;">! Late</b> · <b style="color:#B03C34;">× Missed</b> · <b style="color:#3E6A8C;">~ Excused</b> · <b style="color:#B7B1A1;">· Not logged</b></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     3. QURAN LOG CARD (new)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">3 · Qurʾān Log Card (new)</div>
+  <div class="frame">
+    <div class="card" style="cursor:pointer;">
+      <div class="card-header">
+        <div class="card-label">Qurʾān Log · Today</div>
+        <div class="card-count"><span>5 verses</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+      </div>
+      <!-- Session chips: one per prayer time -->
+      <div class="chips" style="margin-bottom:12px;">
+        <div class="chip"><div class="chip-inner active"><span class="chip-val green">2</span></div><div class="chip-name">Fajr</div></div>
+        <div class="chip"><div class="chip-inner empty"><span class="chip-val muted">·</span></div><div class="chip-name">Dhuhr</div></div>
+        <div class="chip"><div class="chip-inner active"><span class="chip-val green">3</span></div><div class="chip-name">Asr</div></div>
+        <div class="chip"><div class="chip-inner empty"><span class="chip-val muted">·</span></div><div class="chip-name">Maghr.</div></div>
+        <div class="chip"><div class="chip-inner empty"><span class="chip-val muted">·</span></div><div class="chip-name">Isha</div></div>
+      </div>
+      <!-- Juz progress -->
+      <div class="bar-row">
+        <span style="font-size:12px;font-weight:600;color:#21302A;">Juz 6 <span style="color:#8A8576;font-weight:400;">/ 30</span></span>
+        <span style="font-size:12px;font-weight:700;color:#0C5A3B;">14-day streak</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:20%;"></div></div>
+      <div class="card-footer">12 min read · goal 10 verses · tap to log</div>
+    </div>
+  </div>
+  <div style="color:#666;font-size:11.5px;margin-top:10px;line-height:1.6;">Number in chip = verses read in that prayer session. Empty = no reading logged.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     4. ZIKR CARD (new)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">4 · Zikr Card (new)</div>
+  <div class="frame">
+    <div class="card" style="cursor:pointer;">
+      <div class="card-header">
+        <div class="card-label">Zikr · Today</div>
+        <div class="card-count"><span>132</span><span style="font-size:11px;font-weight:600;color:#8A8576;">taps</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="zikr-chips">
+        <div class="zikr-chip done"><span style="font-family:'Amiri',serif;font-size:15px;color:#0C5A3B;flex-shrink:0;">☀</span><span class="done">Morning</span></div>
+        <div class="zikr-chip done"><span style="font-family:'Amiri',serif;font-size:15px;color:#0C5A3B;flex-shrink:0;">مـ</span><span class="done">After Prayer</span></div>
+        <div class="zikr-chip pending"><span style="font-family:'Amiri',serif;font-size:15px;color:#8A8576;flex-shrink:0;">✦</span><span class="pending">Evening</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="color:#666;font-size:11.5px;margin-top:10px;line-height:1.6;">Chips: Morning / After Prayer / Evening azkar sets. Green = completed. Taps = tasbih count for the day (all phases).</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     5. GOOD DEEDS CARD (new)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">5 · Good Deeds Card (new)</div>
+  <div class="frame">
+    <div class="card" style="cursor:pointer;">
+      <div class="card-header">
+        <div class="card-label">Good Deeds · Today</div>
+        <div class="card-count"><span>3/6</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+      </div>
+      <div class="deed-pills">
+        <div class="pill done" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#0C5A3B;">ص</span><span class="label">Fasting</span></div>
+        <div class="pill todo" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#8A8576;">♡</span><span class="label">Sadaqah</span></div>
+        <div class="pill done" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#0C5A3B;">☾</span><span class="label">Tahajjud</span></div>
+        <div class="pill todo" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#8A8576;">✎</span><span class="label">Learning</span></div>
+        <div class="pill todo" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#8A8576;">✤</span><span class="label">Helped someone</span></div>
+        <div class="pill done" onclick="this.classList.toggle('done');this.classList.toggle('todo')"><span style="font-family:'Amiri',serif;font-size:13px;color:#0C5A3B;">◎</span><span class="label">Recitation</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="color:#666;font-size:11.5px;margin-top:10px;line-height:1.6;">Tap any pill to toggle. Pills are interactive above.</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     6. QURAN LOG SCREEN (detail)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">6 · Qurʾān Log Screen (detail)</div>
+  <div class="screen-wrap">
+    <div class="screen-inner">
+      <div class="screen-header">
+        <div class="back-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+        <div><div class="screen-eyebrow">Track your reading</div><div class="screen-title">Qurʾān Log</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-green"><div class="stat-num white">14</div><div class="stat-sub white">day streak</div></div>
+        <div class="stat-white"><div class="stat-num dark">86%</div><div class="stat-sub muted">goal met this week</div></div>
+      </div>
+      <!-- Sessions list -->
+      <div class="list-card">
+        <div class="list-card-label">Today's sessions · tap to add a verse</div>
+        <div class="list-row">
+          <div class="list-dot done"></div>
+          <div><div class="list-name">Fajr</div><div class="list-sub">4:23 AM</div></div>
+          <div class="list-action has-data" id="fajr-add" onclick="addVerse('fajr')"><span class="num" id="fajr-n">2</span><span class="unit">v</span></div>
+        </div>
+        <div class="list-row">
+          <div class="list-dot todo"></div>
+          <div><div class="list-name">Dhuhr</div><div class="list-sub">12:14 PM</div></div>
+          <div class="list-action no-data" id="dhuhr-add" onclick="addVerse('dhuhr')"><span class="num" id="dhuhr-n">0</span><span class="unit">v</span></div>
+        </div>
+        <div class="list-row">
+          <div class="list-dot done"></div>
+          <div><div class="list-name">Asr</div><div class="list-sub">4:02 PM</div></div>
+          <div class="list-action has-data" id="asr-add" onclick="addVerse('asr')"><span class="num" id="asr-n">3</span><span class="unit">v</span></div>
+        </div>
+        <div class="list-row">
+          <div class="list-dot todo"></div>
+          <div><div class="list-name">Maghr.</div><div class="list-sub">7:34 PM</div></div>
+          <div class="list-action no-data" id="maghrib-add" onclick="addVerse('maghrib')"><span class="num" id="maghrib-n">0</span><span class="unit">v</span></div>
+        </div>
+        <div class="list-row" style="border-bottom:none;">
+          <div class="list-dot todo"></div>
+          <div><div class="list-name">Isha</div><div class="list-sub">9:02 PM</div></div>
+          <div class="list-action no-data" id="isha-add" onclick="addVerse('isha')"><span class="num" id="isha-n">0</span><span class="unit">v</span></div>
+        </div>
+      </div>
+      <!-- Juz progress -->
+      <div class="card" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <span style="font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Juz Progress</span>
+          <span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;color:#0C5A3B;">Juz 6 / 30</span>
+        </div>
+        <div class="juz-grid">
+          <div class="juz-seg done"></div><div class="juz-seg done"></div><div class="juz-seg done"></div>
+          <div class="juz-seg done"></div><div class="juz-seg done"></div><div class="juz-seg done"></div>
+          <div class="juz-seg current"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+          <div class="juz-seg todo"></div><div class="juz-seg todo"></div><div class="juz-seg todo"></div>
+        </div>
+        <div style="font-size:12px;color:#8A8576;">5 verses today · 12 min read</div>
+      </div>
+      <!-- Goal -->
+      <div class="card" style="padding:0;margin-bottom:0;">
+        <div class="goal-row">
+          <span class="goal-label">Daily verse goal</span>
+          <div class="goal-controls">
+            <div class="goal-btn minus" onclick="adjustGoal(-1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+            <span class="goal-num" id="goal-n">10</span>
+            <div class="goal-btn plus" onclick="adjustGoal(1)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     7. GOOD DEEDS SCREEN (detail)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">7 · Good Deeds Screen (detail)</div>
+  <div class="screen-wrap">
+    <div class="screen-inner">
+      <div class="screen-header">
+        <div class="back-btn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+        <div><div class="screen-eyebrow">Daily ʿamal</div><div class="screen-title">Good Deeds</div></div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-green"><div class="stat-num white" id="deed-count">3</div><div class="stat-sub white">logged today</div></div>
+        <div class="stat-white"><div class="stat-num dark">6</div><div class="stat-sub muted">tracked deeds</div></div>
+      </div>
+      <div class="list-card" style="padding:0;">
+        <div class="deed-row" onclick="toggleDeed(this,true)" style="border-bottom:1px solid rgba(33,48,42,0.07);">
+          <div class="deed-icon done" style="font-family:'Amiri',serif;">ص</div>
+          <div><div class="deed-label">Fasting</div><div class="deed-status done">Done today</div></div>
+          <div class="deed-check done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+        </div>
+        <div class="deed-row" onclick="toggleDeed(this,false)" style="border-bottom:1px solid rgba(33,48,42,0.07);">
+          <div class="deed-icon todo" style="font-family:'Amiri',serif;">♡</div>
+          <div><div class="deed-label">Sadaqah</div><div class="deed-status todo">Not yet logged</div></div>
+          <div class="deed-check todo"></div>
+        </div>
+        <div class="deed-row" onclick="toggleDeed(this,true)" style="border-bottom:1px solid rgba(33,48,42,0.07);">
+          <div class="deed-icon done" style="font-family:'Amiri',serif;">☾</div>
+          <div><div class="deed-label">Tahajjud</div><div class="deed-status done">Done today</div></div>
+          <div class="deed-check done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+        </div>
+        <div class="deed-row" onclick="toggleDeed(this,false)" style="border-bottom:1px solid rgba(33,48,42,0.07);">
+          <div class="deed-icon todo" style="font-family:'Amiri',serif;">✎</div>
+          <div><div class="deed-label">Learning</div><div class="deed-status todo">Not yet logged</div></div>
+          <div class="deed-check todo"></div>
+        </div>
+        <div class="deed-row" onclick="toggleDeed(this,false)" style="border-bottom:1px solid rgba(33,48,42,0.07);">
+          <div class="deed-icon todo" style="font-family:'Amiri',serif;">✤</div>
+          <div><div class="deed-label">Helped someone</div><div class="deed-status todo">Not yet logged</div></div>
+          <div class="deed-check todo"></div>
+        </div>
+        <div class="deed-row" onclick="toggleDeed(this,true)">
+          <div class="deed-icon done" style="font-family:'Amiri',serif;">◎</div>
+          <div><div class="deed-label">Recitation</div><div class="deed-status done">Done today</div></div>
+          <div class="deed-check done"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:#8A8576;text-align:center;margin-top:14px;">Tap to log · resets at Fajr · every good deed is rewarded.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     8. TASBIH COUNTER (added to Azkar screen)
+════════════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-label">8 · Tasbīḥ Counter (appended to Azkar screen)</div>
+  <div class="screen-wrap" style="padding:16px 0 0;">
+    <div style="padding:0 18px;">
+      <div style="font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin-bottom:8px;">Tasbīḥ Counter</div>
+      <div class="tasbih-card">
+        <div class="tasbih-ar" id="t-ar">سُبْحَانَ ٱللَّهِ</div>
+        <div class="tasbih-en" id="t-en">SubhanAllah</div>
+        <div class="tasbih-count" id="t-count">0</div>
+        <div class="tasbih-of" id="t-of">of 33 · 0 total today</div>
+        <div class="tasbih-bar-track"><div class="tasbih-bar-fill" id="t-bar" style="width:0%;"></div></div>
+        <div class="tasbih-btn" onclick="tapTasbih()">Tap to count</div>
+        <div class="tasbih-reset" onclick="resetTasbih()">Reset</div>
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+  </div>
+</div>
+
+<script>
+// ── Quran Log interactions ───────────────────────────────────────
+const sessions = {fajr:2,dhuhr:0,asr:3,maghrib:0,isha:0};
+function addVerse(k){
+  sessions[k]++;
+  const el=document.getElementById(k+'-n');
+  const row=document.getElementById(k+'-add');
+  el.textContent=sessions[k];
+  row.className='list-action has-data';
+}
+let goal=10;
+function adjustGoal(d){ goal=Math.max(1,Math.min(50,goal+d)); document.getElementById('goal-n').textContent=goal; }
+
+// ── Good Deeds interactions ──────────────────────────────────────
+let deedCount=3;
+function toggleDeed(row,currentState){
+  const icon=row.querySelector('.deed-icon');
+  const status=row.querySelector('.deed-status');
+  const check=row.querySelector('.deed-check');
+  if(currentState){
+    // was done → undo
+    icon.className='deed-icon todo'; icon.style.fontFamily="'Amiri',serif";
+    status.className='deed-status todo'; status.textContent='Not yet logged';
+    check.className='deed-check todo'; check.innerHTML='';
+    row.setAttribute('onclick','toggleDeed(this,false)');
+    deedCount--;
+  } else {
+    // was todo → done
+    icon.className='deed-icon done'; icon.style.fontFamily="'Amiri',serif";
+    status.className='deed-status done'; status.textContent='Done today';
+    check.className='deed-check done';
+    check.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
+    row.setAttribute('onclick','toggleDeed(this,true)');
+    deedCount++;
+  }
+  document.getElementById('deed-count').textContent=deedCount;
+}
+
+// ── Tasbih counter ───────────────────────────────────────────────
+const PHRASES=['سُبْحَانَ ٱللَّهِ','ٱلْحَمْدُ لِلَّهِ','ٱللَّهُ أَكْبَرُ'];
+const EN=['SubhanAllah','Alhamdulillah','AllahuAkbar'];
+const TARGETS=[33,33,34];
+let tCount=0,tPhase=0,tHistory=0;
+function updateTasbih(){
+  document.getElementById('t-ar').textContent=PHRASES[tPhase%3];
+  document.getElementById('t-en').textContent=EN[tPhase%3];
+  document.getElementById('t-count').textContent=tCount;
+  document.getElementById('t-of').textContent='of '+TARGETS[tPhase%3]+' · '+(tHistory+tCount)+' total today';
+  document.getElementById('t-bar').style.width=Math.min(100,Math.round(tCount/TARGETS[tPhase%3]*100))+'%';
+}
+function tapTasbih(){
+  tCount++;
+  if(tCount>=TARGETS[tPhase%3]){tHistory+=tCount;tCount=0;tPhase++;}
+  updateTasbih();
+}
+function resetTasbih(){tCount=0;tPhase=0;tHistory=0;updateTasbih();}
+</script>
+</body>
+</html>

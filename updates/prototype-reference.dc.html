@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  body{margin:0;}
+  ::-webkit-scrollbar{width:0;height:0;}
+  .scrn{scrollbar-width:none;}
+</style>
+</helmet>
+
+<div style="min-height:100vh;width:100%;background:#E7E2D6;background-image:radial-gradient(120% 70% at 50% -10%, #F1ECDE 0%, #E7E2D6 55%, #DED8C8 100%);font-family:'Hanken Grotesk',system-ui,sans-serif;padding:48px 24px 80px;">
+
+  <div style="max-width:1280px;margin:0 auto 40px;">
+    <div style="font-family:'Hanken Grotesk';font-size:12px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#BD9A4E;">Deen o Dunya Planner · Prototype</div>
+    <h1 style="font-family:'Newsreader',Georgia,serif;font-size:34px;font-weight:600;color:#21302A;margin:6px 0 8px;letter-spacing:-0.4px;">Universal prayer times — local calculation update</h1>
+    <p style="font-family:'Hanken Grotesk';font-size:15px;line-height:1.55;color:#6B6657;max-width:680px;margin:0;">Times now compute for the device's <b style="color:#4C5852;">actual location</b> with a selectable calculation method (ICNA kept as the North-America default), Asr madhhab, and high-latitude rule. Sunrise &amp; sunset show live on the Today screen. Tap through the phone — the Today screen has two looks to compare, and changing the method on the Location screen updates every time instantly.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start;justify-content:center;">
+
+    <!-- PHONE -->
+    <div style="flex-shrink:0;">
+      <div style="font-family:'Hanken Grotesk';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#8A8576;text-align:center;margin-bottom:14px;">Interactive prototype · {{ activeLabel }}</div>
+      <div style="width:392px;height:812px;background:#0E0E10;border-radius:54px;padding:11px;box-shadow:0 40px 80px -24px rgba(28,46,36,0.45), 0 0 0 2px #26262A, inset 0 0 0 11px #0E0E10;position:relative;">
+        <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:128px;height:30px;background:#0E0E10;border-radius:0 0 18px 18px;z-index:50;"></div>
+        <div style="width:100%;height:100%;border-radius:44px;overflow:hidden;position:relative;background:radial-gradient(120% 55% at 80% -5%, #FBF6EA 0%, #F4EEE0 42%, #EFE7D6 100%);display:flex;flex-direction:column;">
+
+          <!-- status bar -->
+          <div style="height:46px;flex-shrink:0;display:flex;align-items:flex-end;justify-content:space-between;padding:0 26px 5px;position:relative;z-index:20;">
+            <span style="font-family:'Hanken Grotesk';font-size:14px;font-weight:700;color:#21302A;">{{ clock }}</span>
+            <div style="display:flex;align-items:center;gap:6px;color:#21302A;">
+              <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="7" width="3" height="5" rx="1"/><rect x="4.5" y="4.5" width="3" height="7.5" rx="1"/><rect x="9" y="2" width="3" height="10" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1"/></svg>
+              <svg width="22" height="12" viewBox="0 0 24 12" fill="none"><rect x="1" y="1" width="20" height="10" rx="3" stroke="currentColor" stroke-width="1.2" opacity="0.5"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.5" fill="currentColor"/><rect x="22" y="4" width="1.6" height="4" rx="0.8" fill="currentColor"/></svg>
+            </div>
+          </div>
+
+          <!-- SCREEN BODY -->
+          <div class="scrn" style="flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+
+            <!-- ===================== TODAY ===================== -->
+            <sc-if value="{{ scToday }}" hint-placeholder-val="{{ true }}">
+            <div data-screen-label="Today" style="padding:8px 18px 18px;">
+
+              <!-- header: greeting + dates + location -->
+              <div style="text-align:center;margin-bottom:18px;">
+                <div style="font-family:'Amiri',serif;font-size:23px;color:#BD9A4E;line-height:1.4;">بِسْمِ ٱللّٰهِ ٱلرَّحْمٰنِ ٱلرَّحِيمِ</div>
+                <div style="font-family:'Newsreader',serif;font-size:16px;font-weight:500;font-style:italic;color:#4C5852;margin-top:3px;">Assalamu ʿalaikum</div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:6px;padding:7px 13px;background:#FFFDF7;border-radius:999px;box-shadow:0 2px 8px rgba(28,46,36,0.05);">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#BD9A4E"><path d="M15.5 3a9 9 0 100 18 7.2 7.2 0 110-18z"/></svg>
+                  <span style="font-family:'Hanken Grotesk';font-size:13px;font-weight:600;color:#21302A;">{{ hijri }}</span>
+                </div>
+                <div style="flex:1;"></div>
+                <div onClick="{{ goLocation }}" style="display:flex;align-items:center;gap:4px;color:#8A8576;cursor:pointer;padding:5px 8px;border-radius:999px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+                  <span style="font-family:'Hanken Grotesk';font-size:13px;font-weight:600;">{{ city }}</span>
+                </div>
+              </div>
+              <div style="font-family:'Hanken Grotesk';font-size:12.5px;color:#8A8576;font-weight:500;margin:0 2px 16px;">{{ gregorian }}</div>
+
+              <!-- ===== LOOK A : RIBBON — prayer day timeline ===== -->
+              <sc-if value="{{ lookA }}" hint-placeholder-val="{{ true }}">
+              <div style="border-radius:28px;padding:18px 18px 14px;margin-bottom:14px;background:#FFFDF7;box-shadow:0 8px 24px rgba(28,46,36,0.07);border:1px solid rgba(255,255,255,0.85);overflow:hidden;">
+                <!-- period label + next prayer pill -->
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;">
+                  <div style="min-width:0;">
+                    <div style="font-family:'Hanken Grotesk';font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin-bottom:3px;">{{ periodLabel }}</div>
+                    <div style="font-family:'Newsreader',serif;font-size:16px;font-weight:500;font-style:italic;color:#4C5852;line-height:1.25;">{{ periodSubtitle }}</div>
+                  </div>
+                  <div style="flex-shrink:0;background:rgba(12,90,59,0.07);border-radius:14px;padding:8px 12px;text-align:right;">
+                    <div style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#0C5A3B;">{{ nextEn }}</div>
+                    <div style="font-family:'Newsreader',serif;font-size:21px;font-weight:600;color:#0C5A3B;line-height:1.1;font-variant-numeric:tabular-nums;">{{ countdown }}</div>
+                  </div>
+                </div>
+                <!-- prayer timeline track -->
+                <div style="position:relative;height:62px;margin-bottom:10px;">
+                  <!-- dim base track -->
+                  <div style="position:absolute;top:50%;left:5%;right:5%;height:2px;border-radius:999px;background:rgba(33,48,42,0.10);transform:translateY(-50%);"></div>
+                  <!-- elapsed track (amber → green) -->
+                  <div style="position:absolute;top:50%;left:5%;width:{{ tlNowWidth }};height:2px;border-radius:999px;background:linear-gradient(90deg,rgba(189,154,78,0.75),rgba(12,90,59,0.5));transform:translateY(-50%);"></div>
+                  <!-- NOW amber dot -->
+                  <div style="position:absolute;top:50%;left:{{ tlNowLeft }};width:16px;height:16px;border-radius:50%;background:#BD9A4E;box-shadow:0 0 0 5px rgba(189,154,78,0.15),0 2px 8px rgba(189,154,78,0.4);transform:translate(-50%,-50%);z-index:10;"></div>
+                  <!-- prayer nodes -->
+                  <sc-for list="{{ timelineNodes }}" as="tn" hint-placeholder-count="5">
+                    <div style="position:absolute;top:0;bottom:0;left:{{ tn.left }};transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;justify-content:space-between;width:28px;">
+                      <div style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:700;color:{{ tn.labelColor }};letter-spacing:0.2px;line-height:1;">{{ tn.abbr }}</div>
+                      <div style="width:{{ tn.dotW }};height:{{ tn.dotW }};border-radius:50%;background:{{ tn.dotBg }};box-shadow:{{ tn.dotGlow }};flex-shrink:0;"></div>
+                      <div style="font-family:'Hanken Grotesk';font-size:8.5px;font-weight:700;color:{{ tn.timeColor }};font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap;">{{ tn.timeStr }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <!-- sunrise · daylight length · sunset -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding-top:10px;border-top:1px solid rgba(33,48,42,0.07);">
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#BD9A4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="3.5"/><path d="M12 4v2M5 8l1.4 1.4M19 8l-1.4 1.4M2.5 17h3M18.5 17h3"/><path d="M8 20h8"/></svg>
+                    <span style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:600;color:#8A8576;font-variant-numeric:tabular-nums;">{{ sunrise }}</span>
+                  </div>
+                  <span style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:600;color:#B7B1A1;">{{ daylightLen }} daylight</span>
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <span style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:600;color:#8A8576;font-variant-numeric:tabular-nums;">{{ sunset }}</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#E7B9D0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 00-10 0"/><path d="M12 9V3M4.5 9.5L6 11M19.5 9.5L18 11M2 18h3M19 18h3"/></svg>
+                  </div>
+                </div>
+              </div>
+              </sc-if>
+
+              <!-- ===== LOOK B : HORIZON — daylight arc hero ===== -->
+              <sc-if value="{{ lookB }}" hint-placeholder-val="{{ true }}">
+              <div style="border-radius:28px;padding:20px 20px 16px;margin-bottom:14px;background:#FFFDF7;box-shadow:0 6px 22px rgba(28,46,36,0.07);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Today's daylight</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:600;color:#8A8576;">{{ daylightLen }} of light</div>
+                </div>
+                <div style="position:relative;height:96px;margin:6px 0 2px;">
+                  <svg width="100%" height="96" viewBox="0 0 320 96" preserveAspectRatio="none" style="overflow:visible;">
+                    <defs><linearGradient id="arcg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#D8B978"/><stop offset="0.5" stop-color="#BD9A4E"/><stop offset="1" stop-color="#E7B9D0"/></linearGradient></defs>
+                    <path d="M14 90 A 146 86 0 0 1 306 90" fill="none" stroke="rgba(33,48,42,0.10)" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/>
+                    <path d="M14 90 A 146 86 0 0 1 306 90" fill="none" stroke="url(#arcg)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="{{ arcDash }}"/>
+                  </svg>
+                  <div style="position:absolute;left:{{ sunX }};top:{{ sunY }};transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#FCE08A,#E0A93C);box-shadow:0 0 0 6px rgba(224,169,60,0.18),0 4px 12px rgba(224,169,60,0.5);"></div>
+                  <div style="position:absolute;left:6px;bottom:-2px;text-align:center;"><div style="font-family:'Hanken Grotesk';font-size:9px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#B7B1A1;">Sunrise</div><div style="font-family:'Hanken Grotesk';font-size:13px;font-weight:700;color:#21302A;">{{ sunrise }}</div></div>
+                  <div style="position:absolute;right:6px;bottom:-2px;text-align:center;"><div style="font-family:'Hanken Grotesk';font-size:9px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#B7B1A1;">Sunset</div><div style="font-family:'Hanken Grotesk';font-size:13px;font-weight:700;color:#21302A;">{{ sunset }}</div></div>
+                </div>
+                <div style="height:1px;background:rgba(33,48,42,0.08);margin:14px 0 12px;"></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div>
+                    <div style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Up next · {{ nextEn }}</div>
+                    <div style="font-family:'Newsreader',serif;font-size:15px;color:#4C5852;margin-top:2px;">starts in {{ countdown }}</div>
+                  </div>
+                  <div style="font-family:'Newsreader',serif;font-size:30px;font-weight:600;color:#0C5A3B;font-variant-numeric:tabular-nums;">{{ nextTime }}<span style="font-size:14px;color:#8A8576;margin-left:3px;">{{ nextMer }}</span></div>
+                </div>
+              </div>
+              </sc-if>
+
+              <!-- look switcher -->
+              <div style="display:flex;gap:6px;background:rgba(33,48,42,0.05);border-radius:14px;padding:4px;margin-bottom:14px;">
+                <div onClick="{{ setLookA }}" style="flex:1;text-align:center;padding:8px;border-radius:10px;cursor:pointer;font-family:'Hanken Grotesk';font-size:12.5px;font-weight:700;background:{{ lookABg }};color:{{ lookAColor }};box-shadow:{{ lookAShadow }};transition:all .2s;">Look A · Ribbon</div>
+                <div onClick="{{ setLookB }}" style="flex:1;text-align:center;padding:8px;border-radius:10px;cursor:pointer;font-family:'Hanken Grotesk';font-size:12.5px;font-weight:700;background:{{ lookBBg }};color:{{ lookBColor }};box-shadow:{{ lookBShadow }};transition:all .2s;">Look B · Horizon</div>
+              </div>
+
+              <!-- prayer times list -->
+              <div style="background:#FFFDF7;border-radius:28px;padding:14px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 6px 10px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Prayer Times</div>
+                  <div onClick="{{ goLocation }}" style="display:flex;align-items:center;gap:5px;color:#8A8576;cursor:pointer;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 2.5 14.7 0 17M12 3.5c-2.5 2.3-2.5 14.7 0 17"/></svg>
+                    <span style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:.3px;">{{ methodShort }}</span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+                  </div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:2px;">
+                  <sc-for list="{{ prayers }}" as="p" hint-placeholder-count="6">
+                    <div style="display:flex;align-items:center;gap:12px;padding:{{ p.pad }};border-radius:18px;background:{{ p.rowBg }};box-shadow:{{ p.rowShadow }};opacity:{{ p.op }};">
+                      <div style="width:8px;height:8px;border-radius:999px;flex-shrink:0;background:{{ p.dot }};box-shadow:{{ p.dotGlow }};"></div>
+                      <div style="flex:1;min-width:0;">
+                        <div style="display:flex;align-items:baseline;gap:8px;">
+                          <span style="font-family:'Hanken Grotesk';font-size:16px;font-weight:600;color:{{ p.nameColor }};">{{ p.en }}</span>
+                          <span style="font-family:'Amiri',serif;font-size:16px;color:{{ p.arColor }};">{{ p.ar }}</span>
+                        </div>
+                        <sc-if value="{{ p.isNext }}" hint-placeholder-val="{{ false }}"><div style="font-family:'Hanken Grotesk';font-size:12px;color:rgba(255,255,255,0.72);margin-top:2px;">Upcoming · in {{ countdown }}</div></sc-if>
+                      </div>
+                      <div style="display:flex;align-items:baseline;gap:3px;">
+                        <span style="font-family:'Newsreader',serif;font-size:19px;font-weight:500;color:{{ p.nameColor }};font-variant-numeric:tabular-nums;">{{ p.time }}</span>
+                        <span style="font-family:'Hanken Grotesk';font-size:11px;font-weight:600;color:{{ p.merColor }};">{{ p.mer }}</span>
+                      </div>
+                      <div onClick="{{ p.toggleAdhan }}" style="width:34px;height:34px;border-radius:11px;flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ p.bellBg }};color:{{ p.bellColor }};">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8.5a6 6 0 10-12 0c0 6-2.5 7.5-2.5 7.5h17S18 14.5 18 8.5z"/><path d="M10 20a2 2 0 004 0"/></svg>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- day at a glance: salah log -->
+              <div onClick="{{ goSalah }}" style="background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);cursor:pointer;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Salah Log · Today</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#0C5A3B;"><span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;">{{ salahDone }}/5</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ logChips }}" as="c" hint-placeholder-count="5">
+                    <div onClick="{{ c.cycle }}" style="flex:1;text-align:center;cursor:pointer;">
+                      <div style="height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:{{ c.bg }};color:{{ c.fg }};margin-bottom:5px;border:{{ c.border }};">
+                        <span style="font-family:'Hanken Grotesk';font-size:16px;font-weight:700;">{{ c.glyph }}</span>
+                      </div>
+                      <div style="font-family:'Hanken Grotesk';font-size:10px;font-weight:600;color:#8A8576;">{{ c.en }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:12px;text-align:center;">Tap a prayer to log · On&nbsp;time · Late · Missed · Excused</div>
+              </div>
+
+              <!-- quran log card -->
+              <div onClick="{{ goQuranLog }}" style="background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);cursor:pointer;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Qurʾān Log · Today</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#0C5A3B;"><span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;">{{ quranVersesDone }} verses</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+                </div>
+                <div style="display:flex;gap:6px;margin-bottom:12px;">
+                  <sc-for list="{{ quranSessionChips }}" as="q" hint-placeholder-count="5">
+                    <div style="flex:1;text-align:center;">
+                      <div style="height:40px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:{{ q.bg }};border:{{ q.border }};margin-bottom:4px;">
+                        <span style="font-family:'Hanken Grotesk';font-size:15px;font-weight:700;color:{{ q.fg }};">{{ q.verses }}</span>
+                      </div>
+                      <div style="font-family:'Hanken Grotesk';font-size:10px;font-weight:600;color:#8A8576;">{{ q.en }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <span style="font-family:'Hanken Grotesk';font-size:12px;font-weight:600;color:#21302A;">Juz {{ quranJuz }} <span style="color:#8A8576;font-weight:400;">/ 30</span></span>
+                  <span style="font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:#0C5A3B;">{{ quranStreak }}-day streak</span>
+                </div>
+                <div style="height:6px;border-radius:999px;background:rgba(33,48,42,0.08);overflow:hidden;margin-bottom:10px;">
+                  <div style="height:100%;width:{{ quranJuzBarW }};border-radius:999px;background:linear-gradient(90deg,#BD9A4E,#D8B978);transition:width .4s;"></div>
+                </div>
+                <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;">{{ quranTimeToday }} min read · goal {{ quranDailyGoal }} verses · tap to log</div>
+              </div>
+
+              <!-- zikr today card -->
+              <div onClick="{{ goZikrDetail }}" style="background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);cursor:pointer;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Zikr · Today</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#0C5A3B;"><span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;">{{ tasbihTotal }}</span><span style="font-family:'Hanken Grotesk';font-size:11px;font-weight:600;color:#8A8576;">taps</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <sc-for list="{{ zikrSetChips }}" as="z" hint-placeholder-count="3">
+                    <div style="flex:1;display:flex;align-items:center;gap:5px;padding:9px 10px;border-radius:14px;background:{{ z.bg }};border:{{ z.border }};">
+                      <span style="font-family:'Amiri',serif;font-size:15px;color:{{ z.fg }};flex-shrink:0;">{{ z.glyph }}</span>
+                      <span style="font-family:'Hanken Grotesk';font-size:11px;font-weight:600;color:{{ z.fg }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ z.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- good deeds card -->
+              <div onClick="{{ goGoodDeeds }}" style="background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);cursor:pointer;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Good Deeds · Today</div>
+                  <div style="display:flex;align-items:center;gap:5px;color:#0C5A3B;"><span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;">{{ deedsDone }}/{{ deedsTotal }}</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <sc-for list="{{ deedChips }}" as="d" hint-placeholder-count="6">
+                    <div onClick="{{ d.toggle }}" style="display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:999px;cursor:pointer;background:{{ d.bg }};border:{{ d.border }};">
+                      <span style="font-family:'Amiri',serif;font-size:13px;color:{{ d.fg }};">{{ d.glyph }}</span>
+                      <span style="font-family:'Hanken Grotesk';font-size:12px;font-weight:600;color:{{ d.fg }};">{{ d.label }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- daily nourishment quran -->
+              <div onClick="{{ goQuran }}" style="background:#FFFDF7;border-radius:28px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);cursor:pointer;display:flex;align-items:center;gap:14px;">
+                <div style="width:50px;height:50px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,rgba(189,154,78,0.18),rgba(189,154,78,0.06));display:flex;align-items:center;justify-content:center;color:#BD9A4E;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.3 4.5 4.5v13C8 17.3 10.5 18 12 19.5M12 6.5C13.5 5 16 4.3 19.5 4.5v13C16 17.3 13.5 18 12 19.5M12 6.5v13"/></svg>
+                </div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;margin-bottom:2px;">Daily Nourishment</div>
+                  <div style="font-family:'Newsreader',serif;font-size:17px;font-weight:500;color:#21302A;">Sūrah Ash-Sharḥ · 94</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:12.5px;color:#8A8576;margin-top:2px;">Resume verse 5 · "with hardship comes ease"</div>
+                </div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7B1A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+              </div>
+
+              <!-- reminder banner -->
+              <div style="display:flex;align-items:center;gap:12px;padding:13px 16px;background:linear-gradient(135deg,rgba(12,90,59,0.07),rgba(189,154,78,0.07));border-radius:22px;border:1px dashed rgba(12,90,59,0.18);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#0C5A3B" style="flex-shrink:0;"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6L12 2z"/></svg>
+                <div style="flex:1;font-family:'Hanken Grotesk';font-size:13px;color:#4C5852;line-height:1.4;">A gentle reminder to make <b style="color:#21302A;">duʿāʾ</b> in the last third of the night — begins {{ lastThird }}.</div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== LOCATION & METHOD ===================== -->
+            <sc-if value="{{ scLocation }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Location & Method" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goToday }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Prayer settings</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Location &amp; Method</h2></div>
+              </div>
+
+              <!-- location card -->
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;gap:13px;">
+                  <div style="width:48px;height:48px;border-radius:15px;flex-shrink:0;background:linear-gradient(135deg,#0C5A3B,#073A28);display:flex;align-items:center;justify-content:center;color:#fff;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>
+                  </div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-family:'Newsreader',serif;font-size:18px;font-weight:600;color:#21302A;">{{ city }}</div>
+                    <div style="font-family:'Hanken Grotesk';font-size:12.5px;color:#8A8576;margin-top:1px;">{{ coordLabel }} · {{ tzLabel }}</div>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid rgba(33,48,42,0.08);">
+                  <div><div style="font-family:'Hanken Grotesk';font-size:14px;font-weight:600;color:#21302A;">Auto-detect location</div><div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">Update times as you travel</div></div>
+                  <div onClick="{{ toggleAuto }}" style="width:50px;height:30px;border-radius:999px;flex-shrink:0;cursor:pointer;background:{{ autoBg }};position:relative;transition:background .25s;"><div style="position:absolute;top:3px;left:{{ autoKnob }};width:24px;height:24px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:left .25s cubic-bezier(.4,1.3,.5,1);"></div></div>
+                </div>
+                <div onClick="{{ useLocation }}" style="margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;border-radius:15px;cursor:pointer;background:rgba(12,90,59,0.08);color:#0C5A3B;font-family:'Hanken Grotesk';font-size:14px;font-weight:700;">
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l8 19-8-5-8 5 8-19z"/></svg>{{ locBtnLabel }}
+                </div>
+              </div>
+
+              <!-- live preview -->
+              <div style="background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:24px;padding:16px 18px;margin-bottom:14px;box-shadow:0 14px 30px -10px rgba(12,90,59,0.45);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <span style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#D8B978;">Live preview · {{ methodShort }}</span>
+                  <span style="font-family:'Hanken Grotesk';font-size:11px;font-weight:600;color:rgba(255,255,255,0.6);">{{ asrShort }}</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;gap:4px;">
+                  <sc-for list="{{ previewTimes }}" as="t" hint-placeholder-count="7">
+                    <div style="text-align:center;flex:1;">
+                      <div style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:3px;">{{ t.label }}</div>
+                      <div style="font-family:'Newsreader',serif;font-size:14.5px;font-weight:600;color:#fff;font-variant-numeric:tabular-nums;">{{ t.time }}</div>
+                      <div style="font-family:'Hanken Grotesk';font-size:8.5px;color:rgba(255,255,255,0.55);">{{ t.mer }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <!-- calculation method -->
+              <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin:0 4px 8px;">Calculation Method</div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:6px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ methodList }}" as="m" hint-placeholder-count="8">
+                  <div onClick="{{ m.pick }}" style="display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:16px;cursor:pointer;background:{{ m.bg }};">
+                    <div style="width:22px;height:22px;border-radius:999px;flex-shrink:0;border:{{ m.ring }};display:flex;align-items:center;justify-content:center;background:{{ m.dotBg }};"><div style="width:8px;height:8px;border-radius:999px;background:{{ m.dotIn }};"></div></div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="display:flex;align-items:center;gap:7px;"><span style="font-family:'Hanken Grotesk';font-size:14.5px;font-weight:600;color:#21302A;">{{ m.name }}</span><sc-if value="{{ m.suggested }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Hanken Grotesk';font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#0C5A3B;background:rgba(12,90,59,0.1);padding:2px 7px;border-radius:999px;white-space:nowrap;">Suggested</span></sc-if></div>
+                      <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">{{ m.desc }}</div>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <!-- asr madhhab -->
+              <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin:0 4px 8px;">Asr (Juristic Method)</div>
+              <div style="display:flex;gap:10px;margin-bottom:14px;">
+                <div onClick="{{ setAsrStd }}" style="flex:1;background:{{ asrStdBg }};border:{{ asrStdBorder }};border-radius:18px;padding:14px;cursor:pointer;">
+                  <div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:700;color:{{ asrStdColor }};">Standard</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:2px;">Shāfiʿī, Mālikī, Ḥanbalī</div>
+                </div>
+                <div onClick="{{ setAsrHanafi }}" style="flex:1;background:{{ asrHanBg }};border:{{ asrHanBorder }};border-radius:18px;padding:14px;cursor:pointer;">
+                  <div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:700;color:{{ asrHanColor }};">Ḥanafī</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:2px;">Later Asr (shadow ×2)</div>
+                </div>
+              </div>
+
+              <!-- high latitude -->
+              <div style="background:#FFFDF7;border-radius:24px;padding:16px 18px;margin-bottom:8px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;gap:9px;margin-bottom:4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#BD9A4E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span style="font-family:'Hanken Grotesk';font-size:14px;font-weight:600;color:#21302A;">High-latitude rule</span></div>
+                <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;line-height:1.45;margin-bottom:12px;">For places like Calgary where twilight can persist, choose how Fajr &amp; Isha are estimated in summer.</div>
+                <div style="display:flex;gap:6px;background:rgba(33,48,42,0.05);border-radius:13px;padding:4px;">
+                  <sc-for list="{{ highLatList }}" as="h" hint-placeholder-count="3">
+                    <div onClick="{{ h.pick }}" style="flex:1;text-align:center;padding:8px 4px;border-radius:10px;cursor:pointer;font-family:'Hanken Grotesk';font-size:11px;font-weight:700;background:{{ h.bg }};color:{{ h.fg }};box-shadow:{{ h.shadow }};">{{ h.label }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== SALAH LOG ===================== -->
+            <sc-if value="{{ scSalah }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Salah Log" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goToday }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Track your prayers</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Salah Log</h2></div>
+              </div>
+
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <div style="flex:1;background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:22px;padding:16px;color:#fff;box-shadow:0 12px 26px -10px rgba(12,90,59,0.45);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;line-height:1;">{{ streak }}</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:4px;">day streak · all 5 on time</div>
+                </div>
+                <div style="flex:1;background:#FFFDF7;border-radius:22px;padding:16px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;color:#21302A;line-height:1;">{{ weekPct }}%</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:4px;">prayed this week</div>
+                </div>
+              </div>
+
+              <div style="background:#FFFDF7;border-radius:24px;padding:8px;margin-bottom:16px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ salahRows }}" as="s" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:{{ s.border }};">
+                    <div style="flex:1;min-width:0;">
+                      <div style="display:flex;align-items:baseline;gap:8px;"><span style="font-family:'Hanken Grotesk';font-size:16px;font-weight:600;color:#21302A;">{{ s.en }}</span><span style="font-family:'Amiri',serif;font-size:15px;color:#BD9A4E;">{{ s.ar }}</span></div>
+                      <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">{{ s.statusLabel }} · {{ s.time }}</div>
+                    </div>
+                    <div style="display:flex;gap:5px;">
+                      <sc-for list="{{ s.opts }}" as="o" hint-placeholder-count="4">
+                        <div onClick="{{ o.set }}" style="width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:{{ o.border }};font-family:'Hanken Grotesk';font-size:15px;font-weight:700;">{{ o.glyph }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;">
+                <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#FFFDF7;border-radius:999px;box-shadow:0 2px 8px rgba(28,46,36,0.05);">
+                    <span style="font-family:'Hanken Grotesk';font-size:13px;font-weight:700;color:{{ l.fg }};">{{ l.glyph }}</span>
+                    <span style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:600;color:#4C5852;">{{ l.label }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== REMINDERS ===================== -->
+            <sc-if value="{{ scReminders }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Reminders" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goMore }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Notifications</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Gentle Reminders</h2></div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:6px 18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ reminderRows }}" as="r" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:13px;padding:15px 0;border-bottom:{{ r.border }};">
+                    <div style="width:38px;height:38px;border-radius:12px;flex-shrink:0;background:rgba(12,90,59,0.08);color:#0C5A3B;display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:17px;">{{ r.glyph }}</div>
+                    <div style="flex:1;min-width:0;"><div style="font-family:'Hanken Grotesk';font-size:14.5px;font-weight:600;color:#21302A;">{{ r.title }}</div><div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">{{ r.sub }}</div></div>
+                    <div onClick="{{ r.toggle }}" style="width:50px;height:30px;border-radius:999px;flex-shrink:0;cursor:pointer;background:{{ r.bg }};position:relative;transition:background .25s;"><div style="position:absolute;top:3px;left:{{ r.knob }};width:24px;height:24px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:left .25s cubic-bezier(.4,1.3,.5,1);"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;"><span style="font-family:'Hanken Grotesk';font-size:14px;font-weight:600;color:#21302A;">Adhan sound</span><span style="font-family:'Hanken Grotesk';font-size:13px;font-weight:600;color:#0C5A3B;">Makkah · Mishary</span></div>
+                <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;line-height:1.45;">Choose the muʾadhdhin and whether each prayer plays the full adhan, a short chime, or silent — per prayer on the Today screen.</div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== QURAN ===================== -->
+            <sc-if value="{{ scQuran }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Qur'an" style="padding:8px 18px 18px;">
+              <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Daily Nourishment</div>
+              <h2 style="font-family:'Newsreader',serif;font-size:28px;font-weight:600;color:#21302A;margin:2px 0 16px;">Qurʾān</h2>
+              <div style="background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:26px;padding:20px;margin-bottom:14px;color:#fff;box-shadow:0 16px 32px -10px rgba(12,90,59,0.45);position:relative;overflow:hidden;">
+                <div style="position:absolute;right:-12px;bottom:-20px;font-family:'Amiri',serif;font-size:90px;color:rgba(255,255,255,0.08);">٩٤</div>
+                <div style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#D8B978;">Continue reading</div>
+                <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin:6px 0 2px;">Sūrah Ash-Sharḥ</div>
+                <div style="font-family:'Hanken Grotesk';font-size:13px;color:rgba(255,255,255,0.72);">Verse 5 of 8 · The Relief</div>
+                <div style="font-family:'Amiri',serif;font-size:22px;text-align:right;direction:rtl;margin:14px 0 4px;line-height:1.8;">فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا</div>
+                <div onClick="{{ goToday }}" style="margin-top:10px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.16);padding:10px 18px;border-radius:14px;cursor:pointer;font-family:'Hanken Grotesk';font-size:14px;font-weight:700;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 001.5.87l10-6.5a1 1 0 000-1.74l-10-6.5A1 1 0 008 5.5z"/></svg>Resume</div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;"><span style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;">Daily goal</span><span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;color:#0C5A3B;">{{ quranDone }}/{{ quranGoal }} verses</span></div>
+                <div style="height:10px;border-radius:999px;background:rgba(33,48,42,0.08);overflow:hidden;margin-bottom:16px;"><div style="height:100%;width:{{ quranPct }};border-radius:999px;background:linear-gradient(90deg,#BD9A4E,#D8B978);transition:width .5s;"></div></div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-family:'Hanken Grotesk';font-size:14px;font-weight:600;color:#21302A;">Adjust daily goal</span>
+                  <div style="display:flex;align-items:center;gap:14px;">
+                    <div onClick="{{ goalDown }}" style="width:34px;height:34px;border-radius:11px;background:rgba(33,48,42,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#21302A;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+                    <span style="font-family:'Newsreader',serif;font-size:20px;font-weight:600;color:#21302A;min-width:24px;text-align:center;">{{ quranGoal }}</span>
+                    <div onClick="{{ goalUp }}" style="width:34px;height:34px;border-radius:11px;background:rgba(12,90,59,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0C5A3B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== AZKAR ===================== -->
+            <sc-if value="{{ scAzkar }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Azkar" style="padding:8px 18px 18px;">
+              <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Remembrance</div>
+              <h2 style="font-family:'Newsreader',serif;font-size:28px;font-weight:600;color:#21302A;margin:2px 0 16px;">Adhkār</h2>
+              <div style="background:#FFFDF7;border-radius:24px;padding:8px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ azkarRows }}" as="a" hint-placeholder-count="4">
+                  <div onClick="{{ a.toggle }}" style="display:flex;align-items:center;gap:13px;padding:15px 12px;border-bottom:{{ a.border }};cursor:pointer;">
+                    <div style="width:42px;height:42px;border-radius:13px;flex-shrink:0;background:{{ a.iconBg }};color:{{ a.iconFg }};display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:18px;">{{ a.glyph }}</div>
+                    <div style="flex:1;min-width:0;"><div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:600;color:#21302A;">{{ a.title }}</div><div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">{{ a.sub }}</div></div>
+                    <div style="width:30px;height:30px;border-radius:999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ a.checkBg }};color:{{ a.checkFg }};border:{{ a.checkBorder }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;text-align:center;margin-top:14px;">Tap to mark complete · resets each day at Fajr.</div>
+
+              <!-- tasbih counter -->
+              <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin:18px 4px 8px;">Tasbīḥ Counter</div>
+              <div style="background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:28px;padding:24px 20px 18px;box-shadow:0 14px 30px -10px rgba(12,90,59,0.45);text-align:center;">
+                <div style="font-family:'Amiri',serif;font-size:26px;color:rgba(255,255,255,0.9);margin-bottom:4px;line-height:1.5;direction:rtl;">{{ tasbihPhrase }}</div>
+                <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#D8B978;margin-bottom:16px;">{{ tasbihPhraseEn }}</div>
+                <div style="font-family:'Newsreader',serif;font-size:64px;font-weight:600;color:#fff;line-height:1;margin-bottom:6px;font-variant-numeric:tabular-nums;">{{ tasbihCount }}</div>
+                <div style="font-family:'Hanken Grotesk';font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:16px;">of {{ tasbihCurrentTarget }} · {{ tasbihTotal }} total today</div>
+                <div style="height:4px;border-radius:999px;background:rgba(255,255,255,0.15);overflow:hidden;margin:0 0 18px;">
+                  <div style="height:100%;width:{{ tasbihPct }};border-radius:999px;background:#D8B978;transition:width .12s;"></div>
+                </div>
+                <div onClick="{{ tasbihTap }}" style="padding:18px;border-radius:18px;background:rgba(255,255,255,0.14);cursor:pointer;font-family:'Hanken Grotesk';font-size:16px;font-weight:700;color:#fff;letter-spacing:0.3px;margin-bottom:10px;-webkit-tap-highlight-color:transparent;">Tap to count</div>
+                <div onClick="{{ tasbihReset }}" style="font-family:'Hanken Grotesk';font-size:12px;color:rgba(255,255,255,0.45);cursor:pointer;">Reset</div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== FASTING ===================== -->
+            <sc-if value="{{ scFasting }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Fasting" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goMore }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Ṣawm</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Fasting Tracker</h2></div>
+              </div>
+              <div style="background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:24px;padding:18px;margin-bottom:14px;color:#fff;box-shadow:0 14px 30px -10px rgba(12,90,59,0.45);">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <div><div style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#D8B978;">Today · Fasting</div><div style="font-family:'Newsreader',serif;font-size:22px;font-weight:600;margin-top:4px;">Iftār in {{ iftarIn }}</div></div>
+                  <div style="text-align:right;"><div style="font-family:'Hanken Grotesk';font-size:10.5px;color:rgba(255,255,255,0.6);">Maghrib</div><div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;">{{ maghribTime }}</div></div>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:14px;">
+                  <div style="flex:1;background:rgba(255,255,255,0.1);border-radius:13px;padding:9px 12px;"><div style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:rgba(255,255,255,0.6);">Suhūr ends</div><div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:700;">{{ imsak }}</div></div>
+                  <div style="flex:1;background:rgba(255,255,255,0.1);border-radius:13px;padding:9px 12px;"><div style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:rgba(255,255,255,0.6);">Fast length</div><div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:700;">{{ fastLen }}</div></div>
+                </div>
+              </div>
+              <div style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;color:#BD9A4E;margin:0 4px 8px;">This month</div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                  <sc-for list="{{ fastDays }}" as="d" hint-placeholder-count="30">
+                    <div onClick="{{ d.toggle }}" style="width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:{{ d.bg }};color:{{ d.fg }};border:{{ d.border }};font-family:'Hanken Grotesk';font-size:12.5px;font-weight:700;">{{ d.n }}</div>
+                  </sc-for>
+                </div>
+                <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;text-align:center;margin-top:14px;">Tap a day to log a voluntary fast (Mon · Thu · Ayyām al-Bīḍ highlighted).</div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== REFLECTION ===================== -->
+            <sc-if value="{{ scReflection }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Reflection" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goMore }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Muḥāsabah</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Reflection</h2></div>
+              </div>
+              <div style="background:linear-gradient(135deg,rgba(189,154,78,0.16),rgba(189,154,78,0.05));border-radius:24px;padding:18px;margin-bottom:14px;border:1px solid rgba(189,154,78,0.25);">
+                <div style="font-family:'Hanken Grotesk';font-size:10.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;margin-bottom:6px;">Today's prompt</div>
+                <div style="font-family:'Newsreader',serif;font-size:19px;font-style:italic;color:#21302A;line-height:1.4;">"What is one blessing today that I almost overlooked?"</div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);min-height:150px;">
+                <div style="font-family:'Hanken Grotesk';font-size:14px;color:#B7B1A1;font-style:italic;">Write a few lines…</div>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;">
+                <span style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;">{{ journalStreak }}-day journaling streak</span>
+                <div style="background:#0C5A3B;color:#fff;padding:10px 20px;border-radius:14px;font-family:'Hanken Grotesk';font-size:14px;font-weight:700;cursor:pointer;">Save entry</div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== QURAN LOG ===================== -->
+            <sc-if value="{{ scQuranLog }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Quran Log" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goToday }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Track your reading</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Qurʾān Log</h2></div>
+              </div>
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <div style="flex:1;background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:22px;padding:16px;color:#fff;box-shadow:0 12px 26px -10px rgba(12,90,59,0.45);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;line-height:1;">{{ quranStreak }}</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:4px;">day streak</div>
+                </div>
+                <div style="flex:1;background:#FFFDF7;border-radius:22px;padding:16px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;color:#21302A;line-height:1;">{{ quranWeeklyPct }}%</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:4px;">goal met this week</div>
+                </div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:8px 8px 4px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="padding:10px 10px 8px;font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Today's sessions · tap to add a verse</div>
+                <sc-for list="{{ quranSessionRows }}" as="qs" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:center;gap:12px;padding:11px 10px;border-bottom:{{ qs.border }};">
+                    <div style="width:8px;height:8px;border-radius:999px;flex-shrink:0;background:{{ qs.dot }};"></div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:600;color:#21302A;">{{ qs.en }}</div>
+                      <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;">{{ qs.time }}</div>
+                    </div>
+                    <div onClick="{{ qs.add }}" style="display:flex;align-items:center;gap:4px;padding:7px 12px;border-radius:11px;cursor:pointer;background:{{ qs.addBg }};">
+                      <span style="font-family:'Newsreader',serif;font-size:20px;font-weight:600;color:{{ qs.addFg }};font-variant-numeric:tabular-nums;line-height:1;">{{ qs.verses }}</span>
+                      <span style="font-family:'Hanken Grotesk';font-size:10px;font-weight:700;letter-spacing:0.5px;color:{{ qs.addFg }};">v</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+                  <span style="font-family:'Hanken Grotesk';font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Juz Progress</span>
+                  <span style="font-family:'Newsreader',serif;font-size:16px;font-weight:600;color:#0C5A3B;">Juz {{ quranJuz }} / 30</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+                  <sc-for list="{{ juzSegments }}" as="j" hint-placeholder-count="30">
+                    <div style="flex-basis:calc(100% / 6 - 4px);height:14px;border-radius:4px;background:{{ j.bg }};"></div>
+                  </sc-for>
+                </div>
+                <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;">{{ quranVersesDone }} verses today · {{ quranTimeToday }} min read</div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:18px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span style="font-family:'Hanken Grotesk';font-size:14px;font-weight:600;color:#21302A;">Daily verse goal</span>
+                  <div style="display:flex;align-items:center;gap:14px;">
+                    <div onClick="{{ quranGoalDown }}" style="width:34px;height:34px;border-radius:11px;background:rgba(33,48,42,0.06);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#21302A;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></div>
+                    <span style="font-family:'Newsreader',serif;font-size:20px;font-weight:600;color:#21302A;min-width:30px;text-align:center;">{{ quranDailyGoal }}</span>
+                    <div onClick="{{ quranGoalUp }}" style="width:34px;height:34px;border-radius:11px;background:rgba(12,90,59,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#0C5A3B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== GOOD DEEDS ===================== -->
+            <sc-if value="{{ scGoodDeeds }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Good Deeds" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goMore }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Daily ʿamal</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Good Deeds</h2></div>
+              </div>
+              <div style="display:flex;gap:10px;margin-bottom:16px;">
+                <div style="flex:1;background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:22px;padding:16px;color:#fff;box-shadow:0 12px 26px -10px rgba(12,90,59,0.45);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;line-height:1;">{{ deedsDone }}</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:rgba(255,255,255,0.75);margin-top:4px;">logged today</div>
+                </div>
+                <div style="flex:1;background:#FFFDF7;border-radius:22px;padding:16px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                  <div style="font-family:'Newsreader',serif;font-size:32px;font-weight:600;color:#21302A;line-height:1;">{{ deedsTotal }}</div>
+                  <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;margin-top:4px;">tracked deeds</div>
+                </div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:8px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ goodDeedRows }}" as="gd" hint-placeholder-count="6">
+                  <div onClick="{{ gd.toggle }}" style="display:flex;align-items:center;gap:13px;padding:15px 12px;border-bottom:{{ gd.border }};cursor:pointer;">
+                    <div style="width:42px;height:42px;border-radius:13px;flex-shrink:0;background:{{ gd.iconBg }};color:{{ gd.iconFg }};display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:18px;">{{ gd.glyph }}</div>
+                    <div style="flex:1;min-width:0;">
+                      <div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:600;color:#21302A;">{{ gd.label }}</div>
+                      <div style="font-family:'Hanken Grotesk';font-size:12px;color:{{ gd.statusColor }};margin-top:1px;">{{ gd.statusLabel }}</div>
+                    </div>
+                    <div style="width:30px;height:30px;border-radius:999px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ gd.checkBg }};color:{{ gd.checkFg }};border:{{ gd.checkBorder }};"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;text-align:center;margin-top:14px;">Tap to log · resets at Fajr · every good deed is rewarded.</div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== QIBLA ===================== -->
+            <sc-if value="{{ scQibla }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Qibla" style="padding:8px 18px 18px;text-align:center;">
+              <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Direction to the Kaʿbah</div>
+              <h2 style="font-family:'Newsreader',serif;font-size:28px;font-weight:600;color:#21302A;margin:2px 0 6px;">Qibla</h2>
+              <div style="font-family:'Hanken Grotesk';font-size:13px;color:#8A8576;margin-bottom:24px;">{{ qiblaDeg }}° from North · from {{ city }}</div>
+              <div style="width:240px;height:240px;margin:0 auto 24px;border-radius:50%;background:#FFFDF7;box-shadow:0 16px 40px -12px rgba(28,46,36,0.2),inset 0 0 0 1px rgba(33,48,42,0.05);position:relative;display:flex;align-items:center;justify-content:center;">
+                <div style="position:absolute;inset:14px;border-radius:50%;border:1px dashed rgba(33,48,42,0.12);"></div>
+                <div style="position:absolute;top:12px;font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:#8A8576;">N</div>
+                <div style="position:absolute;bottom:12px;font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:#B7B1A1;">S</div>
+                <div style="position:absolute;left:12px;font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:#B7B1A1;">W</div>
+                <div style="position:absolute;right:12px;font-family:'Hanken Grotesk';font-size:12px;font-weight:700;color:#B7B1A1;">E</div>
+                <div style="width:200px;height:200px;position:relative;transform:rotate({{ qiblaRot }});transition:transform .6s cubic-bezier(.3,.8,.3,1);">
+                  <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#0C5A3B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 19-8-5-8 5 8-19z" fill="#0C5A3B"/></svg>
+                    <div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#21302A,#0E0E10);display:flex;align-items:center;justify-content:center;"><div style="width:16px;height:16px;border:2px solid #BD9A4E;border-radius:2px;"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(12,90,59,0.08);border-radius:14px;color:#0C5A3B;font-family:'Hanken Grotesk';font-size:13px;font-weight:600;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" fill="currentColor" stroke="none"/></svg>
+                Point the top of your phone North to align
+              </div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== PRIVACY & ADS ===================== -->
+            <sc-if value="{{ scPrivacy }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="Privacy & Ads" style="padding:8px 18px 18px;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                <div onClick="{{ goMore }}" style="width:38px;height:38px;border-radius:13px;background:#FFFDF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(28,46,36,0.06);color:#21302A;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 19l-7-7 7-7"/></svg></div>
+                <div><div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Your data</div><h2 style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;color:#21302A;margin:1px 0 0;">Privacy &amp; Ads</h2></div>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;padding:6px 18px;margin-bottom:14px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ privacyRows }}" as="p" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:13px;padding:15px 0;border-bottom:{{ p.border }};">
+                    <div style="flex:1;min-width:0;"><div style="font-family:'Hanken Grotesk';font-size:14.5px;font-weight:600;color:#21302A;">{{ p.title }}</div><div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;line-height:1.4;">{{ p.sub }}</div></div>
+                    <div onClick="{{ p.toggle }}" style="width:50px;height:30px;border-radius:999px;flex-shrink:0;cursor:pointer;background:{{ p.bg }};position:relative;transition:background .25s;"><div style="position:absolute;top:3px;left:{{ p.knob }};width:24px;height:24px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:left .25s cubic-bezier(.4,1.3,.5,1);"></div></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div onClick="{{ toggleAdfree }}" style="background:linear-gradient(150deg,#0C5A3B,#073A28);border-radius:24px;padding:18px;color:#fff;cursor:pointer;box-shadow:0 14px 30px -10px rgba(12,90,59,0.45);display:flex;align-items:center;gap:14px;">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="#D8B978"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6L12 2z"/></svg>
+                <div style="flex:1;"><div style="font-family:'Newsreader',serif;font-size:18px;font-weight:600;">Go ad-free · Supporter</div><div style="font-family:'Hanken Grotesk';font-size:12.5px;color:rgba(255,255,255,0.72);margin-top:2px;">{{ adfreeState }} · removes banner ads, supports development</div></div>
+              </div>
+              <div style="font-family:'Hanken Grotesk';font-size:11.5px;color:#8A8576;text-align:center;margin-top:16px;line-height:1.5;">Prayer times are computed <b style="color:#4C5852;">on-device</b>. Location is used only to calculate times and never leaves your phone unless ads are on.</div>
+            </div>
+            </sc-if>
+
+            <!-- ===================== MORE ===================== -->
+            <sc-if value="{{ scMore }}" hint-placeholder-val="{{ false }}">
+            <div data-screen-label="More" style="padding:8px 18px 18px;">
+              <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#BD9A4E;">Tools &amp; Settings</div>
+              <h2 style="font-family:'Newsreader',serif;font-size:28px;font-weight:600;color:#21302A;margin:2px 0 16px;">More</h2>
+              <div onClick="{{ goLocation }}" style="background:#FFFDF7;border-radius:22px;padding:16px;margin-bottom:14px;display:flex;align-items:center;gap:14px;cursor:pointer;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <div style="width:50px;height:50px;border-radius:16px;flex-shrink:0;background:linear-gradient(135deg,#0C5A3B,#073A28);display:flex;align-items:center;justify-content:center;color:#fff;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 10-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
+                <div style="flex:1;"><div style="font-family:'Newsreader',serif;font-size:17px;font-weight:600;color:#21302A;">Location &amp; Method</div><div style="font-family:'Hanken Grotesk';font-size:12.5px;color:#8A8576;margin-top:1px;">{{ city }} · {{ methodShort }} · {{ asrShort }}</div></div>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B7B1A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+              </div>
+              <div style="background:#FFFDF7;border-radius:24px;overflow:hidden;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+                <sc-for list="{{ moreRows }}" as="m" hint-placeholder-count="6">
+                  <div onClick="{{ m.go }}" style="display:flex;align-items:center;gap:13px;padding:15px 16px;cursor:pointer;border-bottom:{{ m.border }};">
+                    <div style="width:38px;height:38px;border-radius:12px;flex-shrink:0;background:rgba(12,90,59,0.08);color:#0C5A3B;display:flex;align-items:center;justify-content:center;font-family:'Amiri',serif;font-size:17px;">{{ m.glyph }}</div>
+                    <div style="flex:1;min-width:0;"><div style="font-family:'Hanken Grotesk';font-size:15px;font-weight:600;color:#21302A;">{{ m.title }}</div><div style="font-family:'Hanken Grotesk';font-size:12px;color:#8A8576;margin-top:1px;">{{ m.sub }}</div></div>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#B7B1A1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="text-align:center;font-family:'Hanken Grotesk';font-size:12px;color:#B7B1A1;padding:20px 0 8px;">Deen o Dunya Planner · v1.2</div>
+            </div>
+            </sc-if>
+
+          </div>
+
+          <!-- BOTTOM NAV -->
+          <div style="padding:8px 14px 22px;flex-shrink:0;position:relative;z-index:40;">
+            <div style="display:flex;align-items:center;justify-content:space-around;background:rgba(255,253,247,0.82);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border-radius:24px;padding:8px 6px;box-shadow:0 8px 28px rgba(28,46,36,0.12),0 0 0 1px rgba(33,48,42,0.04);">
+              <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+                <div onClick="{{ n.go }}" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 9px;border-radius:14px;cursor:pointer;position:relative;color:{{ n.color }};">
+                  <sc-if value="{{ n.active }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:2px;width:34px;height:30px;border-radius:11px;background:rgba(12,90,59,0.10);"></div></sc-if>
+                  <div style="position:relative;" innerHTML="{{ n.icon }}"></div>
+                  <span style="font-family:'Hanken Grotesk';font-size:9.5px;font-weight:700;">{{ n.label }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- HANDOFF SPECS -->
+    <div style="width:430px;flex-shrink:0;">
+      <div style="font-family:'Hanken Grotesk';font-size:12px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#8A8576;margin-bottom:14px;">Developer handoff · spec</div>
+      <div style="background:#FFFDF7;border-radius:24px;padding:24px;box-shadow:0 6px 22px rgba(28,46,36,0.06);border:1px solid rgba(255,255,255,0.7);">
+        <sc-for list="{{ specs }}" as="s" hint-placeholder-count="6">
+          <div style="padding:14px 0;border-bottom:{{ s.border }};">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div style="width:7px;height:7px;border-radius:999px;background:#BD9A4E;"></div><div style="font-family:'Hanken Grotesk';font-size:13.5px;font-weight:700;color:#21302A;">{{ s.title }}</div></div>
+            <div style="font-family:'Hanken Grotesk';font-size:12.5px;color:#6B6657;line-height:1.55;">{{ s.body }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="background:#21302A;border-radius:24px;padding:22px;margin-top:16px;color:#EFE7D6;">
+        <div style="font-family:'Hanken Grotesk';font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#D8B978;margin-bottom:8px;">Implementation note</div>
+        <div style="font-family:'Hanken Grotesk';font-size:12.5px;line-height:1.6;color:rgba(239,231,214,0.85);">The prototype computes times with a real solar algorithm (PrayTimes-equivalent) so method &amp; madhhab changes are live. In the app, replace the hardcoded <span style="font-family:monospace;font-size:11px;color:#D8B978;">PRAYERS</span> array and <span style="font-family:monospace;font-size:11px;color:#D8B978;">adhanTimes</span> state with this calculation keyed off geolocation; map coordinates → IANA timezone server-side or via a tz library rather than the device offset.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1340,&quot;height&quot;:980}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'today', look: 'A', tab: 'today',
+    lat: 51.0447, lon: -114.0719, city: 'Calgary, AB', tz: -6, auto: true, locating: false,
+    method: 'ICNA', asr: 'std', highLat: 'middle',
+    salah: { fajr:'ontime', dhuhr:'ontime', asr:'none', maghrib:'none', isha:'none' },
+    adhan: { fajr:true, dhuhr:true, asr:true, maghrib:false, isha:true },
+    reminders: { prePrayer:true, lastThird:true, morningAdhkar:true, eveningAdhkar:false, jumuah:true },
+    azkar: { morning:true, evening:false, sleep:false, afterPrayer:true },
+    privacy: { personalizedAds:false, analytics:false, crashReports:true, locationShare:false },
+    adfree: false,
+    quranGoal: 2, quranDone: 1,
+    quranView: 'list', quranSurahIdx: 0, quranVerseIdx: 4, quranPlaying: false, quranShowQaris: false, quranQariIdx: 0,
+    fasts: {}, now: new Date(),
+    quranSessions: { fajr:2, dhuhr:0, asr:3, maghrib:0, isha:0 },
+    quranTimeToday: 12, quranStreak: 14, quranDailyGoal: 10, quranJuz: 6,
+    tasbihCount: 0, tasbihPhase: 0, tasbihHistory: 66,
+    goodDeeds: { fasting:true, sadaqah:false, tahajjud:true, learning:false, helping:false, recitation:true }
+  };
+
+  componentDidMount(){
+    this._t = setInterval(()=> this.setState({ now: new Date() }), 30000);
+    // seed a few sensible fasts
+    this.setState({ fasts: {2:true,5:true,9:true,12:true,13:true,14:true,16:true,19:true,23:true} });
+    if(navigator.geolocation){
+      this.setState({ locating: true });
+      navigator.geolocation.getCurrentPosition(async pos => {
+        const { latitude:lat, longitude:lon } = pos.coords;
+        const tz = -new Date().getTimezoneOffset()/60;
+        let city = `${lat.toFixed(2)}°, ${lon.toFixed(2)}°`;
+        try {
+          const r = await (await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)).json();
+          const c = r.city || r.locality || r.principalSubdivision;
+          const sub = r.principalSubdivisionCode ? r.principalSubdivisionCode.split('-').pop() : (r.countryCode||'');
+          if(c) city = sub ? `${c}, ${sub}` : c;
+          this._country = r.countryCode || 'CA';
+        } catch(e){ this._country = 'CA'; }
+        this.setState({ lat, lon, tz, city, locating:false });
+      }, ()=> this.setState({ locating:false }), { enableHighAccuracy:false, timeout:8000, maximumAge:600000 });
+    }
+  }
+  componentWillUnmount(){ clearInterval(this._t); }
+
+  // ---------- prayer time engine ----------
+  _methods(){
+    return {
+      ICNA:   { name:'ICNA', short:'ICNA', desc:'Fajr 15° · Isha 15° — common in North America', fajr:15, isha:15 },
+      ISNA:   { name:'ISNA', short:'ISNA', desc:'Islamic Society of N. America · 15° / 15°', fajr:15, isha:15 },
+      MWL:    { name:'Muslim World League', short:'MWL', desc:'Fajr 18° · Isha 17° — widely used', fajr:18, isha:17 },
+      Egypt:  { name:'Egyptian Authority', short:'Egypt', desc:'Fajr 19.5° · Isha 17.5°', fajr:19.5, isha:17.5 },
+      Makkah: { name:'Umm al-Qurā (Makkah)', short:'Makkah', desc:'Fajr 18.5° · Isha 90 min after Maghrib', fajr:18.5, isha:0, ishaMin:90 },
+      Karachi:{ name:'Univ. of Karachi', short:'Karachi', desc:'Fajr 18° · Isha 18° — S. Asia', fajr:18, isha:18 },
+      Tehran: { name:'Tehran (Shia)', short:'Tehran', desc:'Fajr 17.7° · Isha 14°', fajr:17.7, isha:14 },
+      Gulf:   { name:'Gulf Region', short:'Gulf', desc:'Fajr 19.5° · Isha 90 min', fajr:19.5, isha:0, ishaMin:90 },
+      Karachi2:{ name:'Singapore (MUIS)', short:'Singapore', desc:'Fajr 20° · Isha 18°', fajr:20, isha:18 },
+      France: { name:'France (UOIF)', short:'France', desc:'Fajr 12° · Isha 12°', fajr:12, isha:12 },
+      Turkey: { name:'Diyanet (Turkey)', short:'Turkey', desc:'Fajr 18° · Isha 17°', fajr:18, isha:17 }
+    };
+  }
+  _suggestForCountry(){
+    const c = (this._country||'CA').toUpperCase();
+    const map = { US:'ICNA', CA:'ICNA', SA:'Makkah', AE:'Gulf', QA:'Gulf', KW:'Gulf', BH:'Gulf', OM:'Gulf',
+      PK:'Karachi', IN:'Karachi', BD:'Karachi', EG:'Egypt', IR:'Tehran', TR:'Turkey', FR:'France',
+      SG:'Karachi2', MY:'Karachi2', GB:'MWL' };
+    return map[c] || 'MWL';
+  }
+
+  _compute(date){
+    const RAD = Math.PI/180;
+    const dsin=d=>Math.sin(d*RAD), dcos=d=>Math.cos(d*RAD), dtan=d=>Math.tan(d*RAD);
+    const dasin=x=>Math.asin(x)/RAD, dacos=x=>Math.acos(x)/RAD;
+    const datan2=(y,x)=>Math.atan2(y,x)/RAD, dacot=x=>Math.atan2(1,x)/RAD;
+    const fixA=a=>{a=a-360*Math.floor(a/360);return a<0?a+360:a;};
+    const fixH=a=>{a=a-24*Math.floor(a/24);return a<0?a+24:a;};
+    const lat=this.state.lat, lon=this.state.lon, tz=this.state.tz;
+    const y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+    let yy=y, mm=m;
+    if(mm<=2){ yy-=1; mm+=12; }
+    const A=Math.floor(yy/100), B=2-A+Math.floor(A/4);
+    const jd = Math.floor(365.25*(yy+4716))+Math.floor(30.6001*(mm+1))+d+B-1524.5 - lon/(15*24);
+    const sun=t=>{ const D=jd+t-2451545.0;
+      const g=fixA(357.529+0.98560028*D), q=fixA(280.459+0.98564736*D);
+      const L=fixA(q+1.915*dsin(g)+0.020*dsin(2*g)), e=23.439-0.00000036*D;
+      const decl=dasin(dsin(e)*dsin(L));
+      const eqt=q/15 - fixH(datan2(dcos(e)*dsin(L), dcos(L))/15);
+      return {decl,eqt}; };
+    const mid=t=> fixH(12 - sun(t).eqt);
+    const angle=(t,ang,ccw)=>{ const decl=sun(t).decl;
+      const x=(-dsin(ang)-dsin(decl)*dsin(lat))/(dcos(decl)*dcos(lat));
+      const v=dacos(x)/15; return mid(t)+(ccw?-v:v); };
+    const asrT=(t,f)=>{ const decl=sun(t).decl;
+      const a=-dacot(f+dtan(Math.abs(lat-decl))); return angle(t,a,false); };
+    const cfg=this._methods()[this.state.method] || this._methods().MWL;
+    const af = this.state.asr==='hanafi' ? 2 : 1;
+    let T={ fajr:5/24, sunrise:6/24, dhuhr:12/24, asr:13/24, sunset:18/24, maghrib:18/24, isha:18/24 };
+    for(let i=0;i<2;i++){
+      T = {
+        fajr: angle(T.fajr, cfg.fajr, true),
+        sunrise: angle(T.sunrise, 0.833, true),
+        dhuhr: mid(T.dhuhr),
+        asr: asrT(T.asr, af),
+        sunset: angle(T.sunset, 0.833, false),
+        maghrib: angle(T.maghrib, 0.833, false),
+        isha: cfg.isha ? angle(T.isha, cfg.isha, false) : angle(T.maghrib,0.833,false)+(cfg.ishaMin||90)/60
+      };
+    }
+    const adj = v => v + tz - lon/15;
+    let out = {}; let bad=false;
+    ['fajr','sunrise','dhuhr','asr','sunset','maghrib','isha'].forEach(k=>{ out[k]=adj(T[k]); if(isNaN(out[k])) bad=true; });
+    // high-latitude fallback (night portion) for fajr & isha
+    if(bad || this._needsHighLat(out)){
+      const night = (24 + out.sunrise - out.sunset);
+      let portion;
+      if(this.state.highLat==='seventh') portion = night/7;
+      else if(this.state.highLat==='angle') portion = night/2; // simplified
+      else portion = night/2; // middle
+      if(isNaN(out.fajr) || (out.sunrise-out.fajr) > portion) out.fajr = out.sunrise - portion;
+      if(isNaN(out.isha) || (out.isha-out.sunset) > portion) out.isha = out.sunset + portion;
+    }
+    out.imsak = out.fajr - 10/60;
+    out.midnight = adj(mid(0)) + 12; // approx
+    return out;
+  }
+  _needsHighLat(o){ return isNaN(o.fajr)||isNaN(o.isha); }
+
+  _fmt(h){
+    if(isNaN(h)) return {t:'--:--', mer:'', h24:0};
+    h = ((h%24)+24)%24;
+    let hr=Math.floor(h+0.5/60), min=Math.round((h-Math.floor(h))*60);
+    if(min===60){min=0;hr+=1;} hr=hr%24;
+    const mer = hr<12 ? 'AM':'PM';
+    let hh = hr%12; if(hh===0) hh=12;
+    return { t:`${hh}:${String(min).padStart(2,'0')}`, mer, h24: hr + min/60 };
+  }
+
+  renderVals(){
+    const S=this.state;
+    const M=this._methods();
+    const times=this._compute(S.now);
+    const f={}; ['fajr','sunrise','dhuhr','asr','sunset','maghrib','isha','imsak'].forEach(k=> f[k]=this._fmt(times[k]));
+    const nowH = S.now.getHours()+S.now.getMinutes()/60;
+
+    const PR=[
+      {key:'fajr',en:'Fajr',ar:'الفجر'},
+      {key:'dhuhr',en:'Dhuhr',ar:'الظهر'},
+      {key:'asr',en:'Asr',ar:'العصر'},
+      {key:'maghrib',en:'Maghrib',ar:'المغرب'},
+      {key:'isha',en:'Isha',ar:'العشاء'}
+    ];
+    // determine next prayer
+    let nextKey=null;
+    for(const p of PR){ if(f[p.key].h24 > nowH){ nextKey=p.key; break; } }
+    if(!nextKey) nextKey='fajr';
+    const nextObj = PR.find(p=>p.key===nextKey);
+    // countdown
+    let target = f[nextKey].h24;
+    let diff = target - nowH; if(diff<0) diff+=24;
+    const ch=Math.floor(diff), cm=Math.round((diff-ch)*60);
+    const countdown = ch>0 ? `${ch}h ${String(cm).padStart(2,'0')}m` : `${cm}m`;
+
+    const prayers = PR.map(p=>{
+      const isNext = p.key===nextKey;
+      const isPast = f[p.key].h24 <= nowH && !(nextKey==='fajr' && true && false);
+      const past = f[p.key].h24 <= nowH && nextKey!=='fajr' ? true : (nextKey==='fajr' ? f[p.key].h24<=nowH : f[p.key].h24<=nowH);
+      const reallyPast = f[p.key].h24 <= nowH && !isNext;
+      return {
+        en:p.en, ar:p.ar, time:f[p.key].t, mer:f[p.key].mer, isNext,
+        pad: isNext ? '15px 14px':'11px 14px',
+        rowBg: isNext ? 'linear-gradient(135deg,#0C5A3B,#073A28)':'transparent',
+        rowShadow: isNext ? '0 8px 22px rgba(12,90,59,0.32)':'none',
+        op: reallyPast ? 0.45 : 1,
+        dot: isNext ? '#D8B978' : (reallyPast ? '#B7B1A1':'rgba(33,48,42,0.18)'),
+        dotGlow: isNext ? '0 0 0 4px rgba(216,185,120,0.25)':'none',
+        nameColor: isNext ? '#fff':'#21302A',
+        arColor: isNext ? 'rgba(255,255,255,0.85)':'#BD9A4E',
+        merColor: isNext ? 'rgba(255,255,255,0.7)':'#8A8576',
+        bellBg: S.adhan[p.key] ? (isNext?'rgba(255,255,255,0.18)':'rgba(189,154,78,0.14)') : (isNext?'rgba(255,255,255,0.08)':'rgba(33,48,42,0.05)'),
+        bellColor: S.adhan[p.key] ? (isNext?'#fff':'#BD9A4E') : (isNext?'rgba(255,255,255,0.4)':'#B7B1A1'),
+        toggleAdhan: ()=> this.setState({ adhan: {...S.adhan, [p.key]: !S.adhan[p.key] } })
+      };
+    });
+
+    // look switcher styles
+    const lookA = S.look==='A', lookB = S.look==='B';
+
+    // salah chips (today screen mini)
+    const STAT = { none:{g:'·',bg:'rgba(33,48,42,0.05)',fg:'#B7B1A1',bd:'1px dashed rgba(33,48,42,0.18)'},
+      ontime:{g:'✓',bg:'rgba(12,90,59,0.12)',fg:'#0C5A3B',bd:'none'},
+      late:{g:'!',bg:'rgba(189,154,78,0.18)',fg:'#9A7B2E',bd:'none'},
+      missed:{g:'×',bg:'rgba(176,60,52,0.12)',fg:'#B03C34',bd:'none'},
+      excused:{g:'~',bg:'rgba(74,110,140,0.14)',fg:'#3E6A8C',bd:'none'} };
+    const logChips = PR.map(p=>{ const st=STAT[S.salah[p.key]]; return {
+      en:p.en, glyph:st.g, bg:st.bg, fg:st.fg, border:st.bd,
+      cycle:(e)=>{ if(e&&e.stopPropagation)e.stopPropagation(); const order=['none','ontime','late','missed','excused']; const i=order.indexOf(S.salah[p.key]); this.setState({ salah:{...S.salah,[p.key]:order[(i+1)%order.length]} }); }
+    };});
+    const salahDone = PR.filter(p=> S.salah[p.key]!=='none' && S.salah[p.key]!=='missed').length;
+
+    // salah log full screen
+    const STAT_LABEL={none:'Not logged',ontime:'On time',late:'Prayed late',missed:'Missed',excused:'Excused'};
+    const salahRows = PR.map((p,i)=> ({
+      en:p.en, ar:p.ar, time:f[p.key].t+' '+f[p.key].mer,
+      statusLabel: STAT_LABEL[S.salah[p.key]],
+      border: i<4 ? '1px solid rgba(33,48,42,0.07)':'none',
+      opts: ['ontime','late','missed','excused'].map(o=>{ const st=STAT[o]; const on=S.salah[p.key]===o; return {
+        glyph:st.g, bg: on?st.bg:'rgba(33,48,42,0.04)', fg: on?st.fg:'#B7B1A1',
+        border: on?`1px solid ${st.fg}33`:'1px solid transparent',
+        set: ()=> this.setState({ salah:{...S.salah,[p.key]: on?'none':o} })
+      };})
+    }));
+    const legend=[{glyph:'✓',label:'On time',fg:'#0C5A3B'},{glyph:'!',label:'Late',fg:'#9A7B2E'},{glyph:'×',label:'Missed',fg:'#B03C34'},{glyph:'~',label:'Excused',fg:'#3E6A8C'}];
+
+    // method list
+    const sugg=this._suggestForCountry();
+    const methodList = Object.keys(M).map(k=>{ const sel=S.method===k; return {
+      name:M[k].name, desc:M[k].desc, suggested: k===sugg,
+      bg: sel?'rgba(12,90,59,0.07)':'transparent',
+      ring: sel?'2px solid #0C5A3B':'2px solid rgba(33,48,42,0.2)',
+      dotBg: sel?'#0C5A3B':'transparent',
+      dotIn: sel?'#fff':'transparent',
+      pick: ()=> this.setState({ method:k })
+    };});
+
+    // preview times (location screen)
+    const previewTimes=[
+      {label:'Fajr',...f.fajr},{label:'Sunrise',...f.sunrise},{label:'Dhuhr',...f.dhuhr},
+      {label:'Asr',...f.asr},{label:'Maghrib',...f.maghrib},{label:'Isha',...f.isha}
+    ].map(x=>({label:x.label,time:x.t,mer:x.mer}));
+
+    // high lat list
+    const highLatList=[{k:'middle',label:'Mid-night'},{k:'seventh',label:'1/7th'},{k:'angle',label:'Angle'}].map(h=>{ const on=S.highLat===h.k; return {
+      label:h.label, bg:on?'#FFFDF7':'transparent', fg:on?'#0C5A3B':'#8A8576', shadow:on?'0 2px 8px rgba(28,46,36,0.1)':'none',
+      pick:()=> this.setState({ highLat:h.k })
+    };});
+
+    // reminders
+    const RM=[{k:'prePrayer',glyph:'◷',title:'Pre-prayer nudge',sub:'15 min before each prayer'},
+      {k:'lastThird',glyph:'☾',title:'Last third of night',sub:'For tahajjud & duʿāʾ'},
+      {k:'morningAdhkar',glyph:'☀',title:'Morning adhkār',sub:'After Fajr'},
+      {k:'eveningAdhkar',glyph:'✦',title:'Evening adhkār',sub:'After Asr'},
+      {k:'jumuah',glyph:'✿',title:'Jumuʿah reminder',sub:'Friday · Sūrah al-Kahf'}];
+    const reminderRows = RM.map((r,i)=>({ glyph:r.glyph, title:r.title, sub:r.sub,
+      border:i<RM.length-1?'1px solid rgba(33,48,42,0.07)':'none',
+      bg:S.reminders[r.k]?'#0C5A3B':'rgba(33,48,42,0.16)', knob:S.reminders[r.k]?'23px':'3px',
+      toggle:()=> this.setState({ reminders:{...S.reminders,[r.k]:!S.reminders[r.k]} }) }));
+
+    // azkar
+    const AZ=[{k:'morning',glyph:'☀',title:'Morning adhkār',sub:'Recited after Fajr'},
+      {k:'afterPrayer',glyph:'مـ',title:'After-prayer adhkār',sub:'Tasbīḥ ×33, ×33, ×34'},
+      {k:'evening',glyph:'✦',title:'Evening adhkār',sub:'Recited after Asr'},
+      {k:'sleep',glyph:'☾',title:'Before sleep',sub:'Āyat al-Kursī & more'}];
+    const azkarRows=AZ.map((a,i)=>{ const on=S.azkar[a.k]; return { glyph:a.glyph, title:a.title, sub:a.sub,
+      border:i<AZ.length-1?'1px solid rgba(33,48,42,0.07)':'none',
+      iconBg:on?'rgba(12,90,59,0.1)':'rgba(33,48,42,0.05)', iconFg:on?'#0C5A3B':'#8A8576',
+      checkBg:on?'#0C5A3B':'transparent', checkFg:on?'#fff':'transparent', checkBorder:on?'none':'2px solid rgba(33,48,42,0.18)',
+      toggle:()=> this.setState({ azkar:{...S.azkar,[a.k]:!on} }) };});
+
+    // fasting
+    const daysInMonth=new Date(S.now.getFullYear(),S.now.getMonth()+1,0).getDate();
+    const today=S.now.getDate();
+    const special={13:1,14:1,15:1}; // ayyam al-bid
+    const fastDays=Array.from({length:daysInMonth},(_,i)=>{ const n=i+1; const on=!!S.fasts[n]; const sp=special[n]; return {
+      n, bg:on?'#0C5A3B':(sp?'rgba(189,154,78,0.14)':'rgba(33,48,42,0.04)'), fg:on?'#fff':(sp?'#9A7B2E':'#8A8576'),
+      border: n===today?'2px solid #BD9A4E':'2px solid transparent',
+      toggle:()=> this.setState({ fasts:{...S.fasts,[n]:!on} }) };});
+    let iftarDiff = f.maghrib.h24 - nowH; if(iftarDiff<0) iftarDiff+=24;
+    const iftarIn = `${Math.floor(iftarDiff)}h ${String(Math.round((iftarDiff-Math.floor(iftarDiff))*60)).padStart(2,'0')}m`;
+    const fastLenH = (24 + f.maghrib.h24 - f.fajr.h24)%24;
+    const fastLen = `${Math.floor(fastLenH)}h ${String(Math.round((fastLenH-Math.floor(fastLenH))*60)).padStart(2,'0')}m`;
+
+    // privacy
+    const PV=[{k:'personalizedAds',title:'Personalized ads',sub:'Share data with ad partners for relevant ads'},
+      {k:'analytics',title:'Usage analytics',sub:'Anonymous stats to improve the app'},
+      {k:'crashReports',title:'Crash reports',sub:'Send diagnostics when the app crashes'},
+      {k:'locationShare',title:'Share location with ads',sub:'Off keeps location on-device only'}];
+    const privacyRows=PV.map((p,i)=>({ title:p.title, sub:p.sub, border:i<PV.length-1?'1px solid rgba(33,48,42,0.07)':'none',
+      bg:S.privacy[p.k]?'#0C5A3B':'rgba(33,48,42,0.16)', knob:S.privacy[p.k]?'23px':'3px',
+      toggle:()=> this.setState({ privacy:{...S.privacy,[p.k]:!S.privacy[p.k]} }) }));
+
+    // more rows
+    const moreRows=[
+      {glyph:'✓',title:'Salah Log',sub:'On time · late · missed · excused',go:()=>this.setState({screen:'salah'}),border:'1px solid rgba(33,48,42,0.06)'},
+      {glyph:'◷',title:'Reminders',sub:'Notifications & adhan',go:()=>this.setState({screen:'reminders'}),border:'1px solid rgba(33,48,42,0.06)'},
+      {glyph:'ص',title:'Fasting Tracker',sub:'Ramadan & voluntary fasts',go:()=>this.setState({screen:'fasting'}),border:'1px solid rgba(33,48,42,0.06)'},
+      {glyph:'✎',title:'Reflection',sub:'Daily muḥāsabah journal',go:()=>this.setState({screen:'reflection'}),border:'1px solid rgba(33,48,42,0.06)'},
+      {glyph:'♡',title:'Good Deeds',sub:'Sadaqah · Tahajjud · Learning & more',go:()=>this.setState({screen:'gooddeeds'}),border:'1px solid rgba(33,48,42,0.06)'},
+      {glyph:'☾',title:'Privacy & Ads',sub:'Your data & ad-free option',go:()=>this.setState({screen:'privacy'}),border:'none'}
+    ];
+
+    // nav
+    const ic={
+      today:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 6.5V20a1 1 0 01-1 1h-4v-6h-6v6H5a1 1 0 01-1-1V9.5L12 3z"/></svg>',
+      quran:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6.5C10.5 5 8 4.3 4.5 4.5v13C8 17.3 10.5 18 12 19.5M12 6.5C13.5 5 16 4.3 19.5 4.5v13C16 17.3 13.5 18 12 19.5M12 6.5v13"/></svg>',
+      qibla:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5 5-2z" fill="currentColor" stroke="none"/></svg>',
+      azkar:'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="7" r="2.3"/><circle cx="12" cy="5.5" r="2.3"/><circle cx="18" cy="7" r="2.3"/><path d="M5 9.5C4 13 5.5 18 12 20c6.5-2 8-7 7-10.5"/></svg>',
+      more:'<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="6" r="1.7"/><circle cx="12" cy="6" r="1.7"/><circle cx="18" cy="6" r="1.7"/><circle cx="6" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18" cy="12" r="1.7"/><circle cx="6" cy="18" r="1.7"/><circle cx="12" cy="18" r="1.7"/><circle cx="18" cy="18" r="1.7"/></svg>'
+    };
+    const moreScreens=['more','salah','reminders','fasting','reflection','privacy','location','quranlog','gooddeeds'];
+    const activeTab = S.screen==='today'?'today': S.screen==='quran'?'quran': S.screen==='qibla'?'qibla': S.screen==='azkar'?'azkar': moreScreens.includes(S.screen)?'more':'today';
+    const navItems=[['today','Today'],['quran',"Qur'an"],['qibla','Qibla'],['azkar','Azkar'],['more','More']].map(([k,label])=>({
+      label, active: activeTab===k, color: activeTab===k?'#0C5A3B':'#8A8576', icon: ic[k],
+      go: ()=> this.setState({ screen:k })
+    }));
+
+    // dates
+    const greg = S.now.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    let hijri='13 Dhū al-Qiʿdah 1447 AH';
+    try{ hijri=new Intl.DateTimeFormat('en-US-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric'}).format(S.now).replace(' AH','')+' AH'; }catch(e){}
+
+    // daylight arc (look B)
+    const dayLen=(f.sunset.h24 - f.sunrise.h24);
+    let frac=(nowH - f.sunrise.h24)/dayLen; frac=Math.max(0,Math.min(1,frac));
+    // arc: ellipse rx146 ry86 center(160,90), from 180°→0°
+    const ang=Math.PI*(1-frac);
+    const sunX=(160 + 146*Math.cos(ang))/320*100;
+    const sunYpx=90 - 86*Math.sin(ang);
+    const dlh=Math.floor(dayLen), dlm=Math.round((dayLen-dlh)*60);
+
+    // Look A: day ribbon timeline
+    const tlStart = times.fajr - 0.25;
+    const tlEnd = times.isha + 1.0;
+    const tlSpan = tlEnd - tlStart;
+    const toCP = h => Math.max(5, Math.min(95, 5 + ((h - tlStart) / tlSpan) * 90));
+    const nowCP = toCP(nowH);
+    const tlNowLeft = nowCP + '%';
+    const tlNowWidth = (nowCP - 5) + '%';
+    const pLabels2 = [
+      [times.fajr,         'Night · Before Fajr',   'Last third of night'],
+      [times.sunrise,      'Fajr · Dawn',            'The blessed morning hour'],
+      [times.dhuhr - 0.5,  'Ḍuḥā · Mid-morning',    'Between sunrise and noon'],
+      [times.dhuhr + 0.25, 'Zawal · Midday',         'Dhuhr window opens'],
+      [times.asr,          'Afternoon',              'Between Dhuhr and Asr'],
+      [times.sunset,       'Asr · Late afternoon',   'Window open'],
+      [times.isha,         'Maghrib · Evening',      'Sunset to Isha'],
+      [30,                 'Night',                  'After Isha']
+    ];
+    const [, periodLabel, periodSubtitle] = pLabels2.find(([t]) => nowH < t) || pLabels2[pLabels2.length - 1];
+    const timelineNodes = [
+      { key:'fajr',    abbr:'F' },
+      { key:'dhuhr',   abbr:'D' },
+      { key:'asr',     abbr:'A' },
+      { key:'maghrib', abbr:'M' },
+      { key:'isha',    abbr:'I' }
+    ].map(n => {
+      const cp = toCP(times[n.key]);
+      const isNext = n.key === nextKey;
+      const isPast = times[n.key] < nowH && !isNext;
+      return {
+        abbr: n.abbr,
+        left: cp + '%',
+        labelColor: isNext ? '#BD9A4E' : (isPast ? '#C8C2B8' : '#8A8576'),
+        dotW:   isNext ? '11px' : '7px',
+        dotBg:  isNext ? '#BD9A4E' : (isPast ? 'rgba(33,48,42,0.22)' : 'rgba(33,48,42,0.15)'),
+        dotGlow: isNext ? '0 0 0 4px rgba(189,154,78,0.22)' : 'none',
+        timeStr:  isNext ? (f[n.key].t + ' ' + f[n.key].mer) : '',
+        timeColor: isNext ? '#BD9A4E' : 'transparent'
+      };
+    });
+
+    // last third of night
+    const nightStart=f.isha.h24, dawnH=f.fajr.h24;
+    const nightDur=(24+dawnH-f.maghrib.h24)%24;
+    const lastThirdH=(f.maghrib.h24 + nightDur*2/3)%24;
+    const lt=this._fmt(lastThirdH);
+
+    // Quran log
+    const QL_KEYS=['fajr','dhuhr','asr','maghrib','isha'];
+    const QL_EN=['Fajr','Dhuhr','Asr','Maghr.','Isha'];
+    const quranVersesDone=QL_KEYS.reduce((s,k)=>s+(S.quranSessions[k]||0),0);
+    const quranJuzBarW=Math.round(S.quranJuz/30*100)+'%';
+    const quranWeeklyPct=86;
+    const quranSessionChips=QL_KEYS.map((k,i)=>{
+      const v=S.quranSessions[k]||0,on=v>0;
+      return{en:QL_EN[i],verses:on?String(v):'·',
+        bg:on?'rgba(12,90,59,0.12)':'rgba(33,48,42,0.05)',
+        fg:on?'#0C5A3B':'#B7B1A1',border:on?'none':'1px dashed rgba(33,48,42,0.18)'};});
+    const quranSessionRows=QL_KEYS.map((k,i)=>{
+      const v=S.quranSessions[k]||0;
+      return{en:QL_EN[i],verses:v,time:f[k].t+' '+f[k].mer,
+        dot:v>0?'#0C5A3B':'rgba(33,48,42,0.18)',
+        border:i<4?'1px solid rgba(33,48,42,0.07)':'none',
+        addBg:v>0?'rgba(12,90,59,0.10)':'rgba(33,48,42,0.05)',
+        addFg:v>0?'#0C5A3B':'#B7B1A1',
+        add:()=>this.setState({quranSessions:{...S.quranSessions,[k]:(S.quranSessions[k]||0)+1}})};});
+    const juzSegments=Array.from({length:30},(_,i)=>({
+      bg:i<S.quranJuz?'#0C5A3B':(i===S.quranJuz?'rgba(12,90,59,0.35)':'rgba(33,48,42,0.08)')}));
+    // Zikr & tasbih
+    const AZ_SETS2=[{k:'morning',glyph:'☀',label:'Morning'},{k:'afterPrayer',glyph:'مـ',label:'After Prayer'},{k:'evening',glyph:'✦',label:'Evening'}];
+    const zikrSetChips=AZ_SETS2.map(a=>{const on=S.azkar[a.k];return{
+      glyph:a.glyph,label:a.label,
+      bg:on?'rgba(12,90,59,0.10)':'rgba(33,48,42,0.05)',
+      fg:on?'#0C5A3B':'#8A8576',border:on?'none':'1px solid rgba(33,48,42,0.10)'};});
+    const tasbihTotal=S.tasbihHistory+S.tasbihCount;
+    const T_AR=['سُبْحَانَ ٱللَّهِ','ٱلْحَمْدُ لِلَّهِ','ٱللَّهُ أَكْبَرُ'];
+    const T_EN=['SubhanAllah','Alhamdulillah','AllahuAkbar'];
+    const T_N=[33,33,34];
+    const tPh=S.tasbihPhase%3;
+    const tasbihPhrase=T_AR[tPh],tasbihPhraseEn=T_EN[tPh],tasbihCurrentTarget=T_N[tPh];
+    const tasbihPct=Math.min(100,Math.round(S.tasbihCount/tasbihCurrentTarget*100))+'%';
+    const tasbihTap=()=>{
+      let nc=S.tasbihCount+1,np=S.tasbihPhase,nh=S.tasbihHistory;
+      if(nc>=T_N[S.tasbihPhase%3]){nh+=nc;nc=0;np=S.tasbihPhase+1;}
+      this.setState({tasbihCount:nc,tasbihPhase:np,tasbihHistory:nh});};
+    const tasbihReset=()=>this.setState({tasbihCount:0,tasbihPhase:0,tasbihHistory:0});
+    // Good deeds
+    const DEEDS=[
+      {k:'fasting',glyph:'ص',label:'Fasting'},{k:'sadaqah',glyph:'♡',label:'Sadaqah'},
+      {k:'tahajjud',glyph:'☾',label:'Tahajjud'},{k:'learning',glyph:'✎',label:'Learning'},
+      {k:'helping',glyph:'✤',label:'Helped someone'},{k:'recitation',glyph:'◎',label:'Recitation'}
+    ];
+    const deedChips=DEEDS.map(d=>{const on=S.goodDeeds[d.k];return{
+      glyph:d.glyph,label:d.label,
+      bg:on?'rgba(12,90,59,0.12)':'rgba(33,48,42,0.05)',fg:on?'#0C5A3B':'#8A8576',
+      border:on?'none':'1px solid rgba(33,48,42,0.10)',
+      toggle:(e)=>{if(e&&e.stopPropagation)e.stopPropagation();this.setState({goodDeeds:{...S.goodDeeds,[d.k]:!on}});} };});
+    const deedsDone=DEEDS.filter(d=>S.goodDeeds[d.k]).length;
+    const deedsTotal=DEEDS.length;
+    const goodDeedRows=DEEDS.map((d,i)=>{const on=S.goodDeeds[d.k];return{
+      glyph:d.glyph,label:d.label,
+      iconBg:on?'rgba(12,90,59,0.1)':'rgba(33,48,42,0.05)',iconFg:on?'#0C5A3B':'#8A8576',
+      statusLabel:on?'Done today':'Not yet logged',statusColor:on?'#0C5A3B':'#B7B1A1',
+      checkBg:on?'#0C5A3B':'transparent',checkFg:on?'#fff':'transparent',
+      checkBorder:on?'none':'2px solid rgba(33,48,42,0.18)',
+      border:i<DEEDS.length-1?'1px solid rgba(33,48,42,0.07)':'none',
+      toggle:()=>this.setState({goodDeeds:{...S.goodDeeds,[d.k]:!on}})};});
+
+    // qibla bearing
+    const RAD=Math.PI/180;
+    const kl=21.4225*RAD, kln=39.8262*RAD, la=S.lat*RAD, lo=(39.8262-S.lon)*RAD;
+    let qb=Math.atan2(Math.sin(lo), Math.cos(la)*Math.tan(kl)-Math.sin(la)*Math.cos(lo))/RAD;
+    qb=((qb%360)+360)%360;
+
+    const specs=[
+      {title:'Local prayer-time calculation',body:'Replaces hardcoded times. Solar-position algorithm (PrayTimes-equivalent) keyed to device lat/lon, timezone, calculation method, Asr madhhab, and high-latitude rule. All on-device.'},
+      {title:'Calculation method — universal',body:'ICNA stays the North-America default (Fajr/Isha 15°). 10 methods selectable; the app suggests one from the detected country and the user can override anytime.'},
+      {title:'Sunrise & sunset on Today',body:'Computed for the user\'s location and shown as chips (Look A) or a live daylight arc with sun position (Look B). Sunrise also anchors the timeline.'},
+      {title:'Location handling',body:'Auto-detect via geolocation + reverse-geocode for the label; manual override supported. Production: map coordinates → IANA timezone (don\'t rely on device offset) for travel accuracy.'},
+      {title:'Salah log & streak',body:'Per-prayer status: on time / late / missed / excused. Feeds the Today "day at a glance" card, streak, and weekly %.'},
+      {title:'Asr madhhab & high-latitude',body:'Standard (shadow ×1) vs Ḥanafī (×2). High-latitude options (mid-night, 1/7th, angle) handle Calgary summers where twilight persists.'}
+    ];
+
+    return {
+      // screen flags
+      scToday:S.screen==='today', scLocation:S.screen==='location', scSalah:S.screen==='salah',
+      scReminders:S.screen==='reminders', scQuran:S.screen==='quran', scAzkar:S.screen==='azkar',
+      scFasting:S.screen==='fasting', scReflection:S.screen==='reflection', scQibla:S.screen==='qibla',
+      scPrivacy:S.screen==='privacy', scMore:S.screen==='more',
+      scQuranLog:S.screen==='quranlog', scGoodDeeds:S.screen==='gooddeeds',
+      activeLabel: ({today:'Today',location:'Location & Method',salah:'Salah Log',reminders:'Reminders',quran:"Qur'an",azkar:'Azkar',fasting:'Fasting',reflection:'Reflection',qibla:'Qibla',privacy:'Privacy & Ads',more:'More',quranlog:'Qurʾān Log',gooddeeds:'Good Deeds'})[S.screen],
+      clock: S.now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}).replace(/\s?[AP]M/,''),
+      // header
+      hijri, gregorian:greg, city:S.city,
+      // look
+      lookA, lookB,
+      lookABg: lookA?'#FFFDF7':'transparent', lookAColor: lookA?'#0C5A3B':'#8A8576', lookAShadow: lookA?'0 2px 8px rgba(28,46,36,0.1)':'none',
+      lookBBg: lookB?'#FFFDF7':'transparent', lookBColor: lookB?'#0C5A3B':'#8A8576', lookBShadow: lookB?'0 2px 8px rgba(28,46,36,0.1)':'none',
+      setLookA:()=>this.setState({look:'A'}), setLookB:()=>this.setState({look:'B'}),
+      // next prayer
+      nextEn:nextObj.en, nextAr:nextObj.ar, nextTime:f[nextKey].t, nextMer:f[nextKey].mer, countdown,
+      sunrise:f.sunrise.t, sunset:f.sunset.t,
+      // arc
+      arcDash: `${Math.round(frac*460)} 999`, sunX:`${sunX}%`, sunY:`${sunYpx}px`, daylightLen:`${dlh}h ${String(dlm).padStart(2,'0')}m`,
+      // ribbon
+      periodLabel, periodSubtitle, tlNowLeft, tlNowWidth, timelineNodes,
+      prayers, methodShort:M[S.method].short,
+      // salah
+      logChips, salahDone, salahRows, legend,
+      streak:18, weekPct:91,
+      // method/location
+      methodList, previewTimes, highLatList,
+      asrShort: S.asr==='hanafi'?'Ḥanafī':'Standard',
+      coordLabel:`${S.lat.toFixed(2)}°, ${S.lon.toFixed(2)}°`, tzLabel:`UTC${S.tz>=0?'+':''}${S.tz}`,
+      autoBg:S.auto?'#0C5A3B':'rgba(33,48,42,0.16)', autoKnob:S.auto?'23px':'3px',
+      toggleAuto:()=>this.setState({auto:!S.auto}),
+      locBtnLabel: S.locating?'Locating…':'Use my current location',
+      useLocation: ()=>{ if(navigator.geolocation){ this.setState({locating:true}); navigator.geolocation.getCurrentPosition(async pos=>{ const{latitude:lat,longitude:lon}=pos.coords; const tz=-new Date().getTimezoneOffset()/60; let city=`${lat.toFixed(2)}°, ${lon.toFixed(2)}°`; try{const r=await(await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`)).json(); const c=r.city||r.locality||r.principalSubdivision; const sub=r.principalSubdivisionCode?r.principalSubdivisionCode.split('-').pop():(r.countryCode||''); if(c)city=sub?`${c}, ${sub}`:c; this._country=r.countryCode;}catch(e){} this.setState({lat,lon,tz,city,locating:false}); },()=>this.setState({locating:false}),{enableHighAccuracy:false,timeout:8000,maximumAge:0}); } },
+      asrStdBg:S.asr==='std'?'rgba(12,90,59,0.07)':'#FFFDF7', asrStdBorder:S.asr==='std'?'2px solid #0C5A3B':'1px solid rgba(255,255,255,0.7)', asrStdColor:S.asr==='std'?'#0C5A3B':'#21302A',
+      asrHanBg:S.asr==='hanafi'?'rgba(12,90,59,0.07)':'#FFFDF7', asrHanBorder:S.asr==='hanafi'?'2px solid #0C5A3B':'1px solid rgba(255,255,255,0.7)', asrHanColor:S.asr==='hanafi'?'#0C5A3B':'#21302A',
+      setAsrStd:()=>this.setState({asr:'std'}), setAsrHanafi:()=>this.setState({asr:'hanafi'}),
+      // reminders / azkar / privacy / fasting
+      reminderRows, azkarRows, privacyRows, fastDays,
+      iftarIn, maghribTime:f.maghrib.t, imsak:f.imsak.t, fastLen,
+      adfreeState: S.adfree?'Active':'Available', toggleAdfree:()=>this.setState({adfree:!S.adfree}),
+      // quran
+      quranGoal:S.quranGoal, quranDone:Math.min(S.quranDone,S.quranGoal), quranPct:`${Math.min(100,Math.round(S.quranDone/S.quranGoal*100))}%`,
+      goalUp:()=>this.setState({quranGoal:Math.min(20,S.quranGoal+1)}), goalDown:()=>this.setState({quranGoal:Math.max(1,S.quranGoal-1)}),
+      quranShowList:S.quranView==='list'&&!S.quranShowQaris,
+      quranShowReader:S.quranView==='reader'&&!S.quranShowQaris,
+      quranShowQaris:S.quranShowQaris,
+      quranGoList:()=>this.setState({quranView:'list'}),
+      quranShowQariSheet:()=>this.setState({quranShowQaris:true}),
+      quranCloseQaris:()=>this.setState({quranShowQaris:false}),
+      ...(() => {
+        const SURAHS=[
+          {n:1,name:'Al-Fātiḥah',ar:'الفاتحة',meaning:'The Opening',v:7,type:'Makkī',verses:[
+            {ar:'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',en:'In the name of Allah, the Most Gracious, the Most Merciful.',ur:'اللہ کے نام سے جو نہایت مہربان رحم والا ہے'},
+            {ar:'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ',en:'All praise is for Allah—Lord of all worlds,',ur:'سب تعریف اللہ کو جو رب ہے سارے جہان کا'},
+            {ar:'ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',en:'the Most Compassionate, Most Merciful,',ur:'نہایت مہربان رحم والا'},
+            {ar:'مَٰلِكِ يَوْمِ ٱلدِّينِ',en:'Master of the Day of Judgment.',ur:'روزِ جزا کا مالک'},
+            {ar:'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',en:'You ˹alone˺ we worship and You ˹alone˺ we ask for help.',ur:'ہم تیری ہی عبادت کریں اور تجھ سے ہی مدد مانگیں'},
+            {ar:'ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ',en:'Guide us along the Straight Path,',ur:'ہمیں سیدھے راستے کی ہدایت فرما'},
+            {ar:'صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ',en:'the Path of those You have blessed—not those You are displeased with, or those who are astray.',ur:'ان لوگوں کا راستہ جن پر تو نے انعام کیا نہ ان کا جن پر غضب ہوا اور نہ گمراہوں کا'}
+          ]},
+          {n:103,name:'Al-ʿAṣr',ar:'العصر',meaning:'The Passage of Time',v:3,type:'Makkī',verses:[
+            {ar:'وَٱلْعَصْرِ',en:'By the ˹passage of˺ time!',ur:'قسم ہے زمانے کی'},
+            {ar:'إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ',en:'Surely humanity is in ˹great˺ loss,',ur:'بے شک انسان خسارے میں ہے'},
+            {ar:'إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ',en:'except those who have faith, do good, and urge each other to the truth, and to perseverance.',ur:'سوائے ان کے جو ایمان لائے اور نیک عمل کیے اور ایک دوسرے کو حق اور صبر کی وصیت کی'}
+          ]},
+          {n:112,name:'Al-Ikhlāṣ',ar:'الإخلاص',meaning:'Sincerity',v:4,type:'Makkī',verses:[
+            {ar:'قُلْ هُوَ ٱللَّهُ أَحَدٌ',en:'Say, He is Allah, ˹the˺ One.',ur:'کہو وہ اللہ ایک ہے'},
+            {ar:'ٱللَّهُ ٱلصَّمَدُ',en:'Allah—the Sustainer needed by all.',ur:'اللہ بے نیاز ہے'},
+            {ar:'لَمْ يَلِدْ وَلَمْ يُولَدْ',en:'He has never had offspring, nor was He born.',ur:'نہ اس نے کسی کو جنا نہ وہ کسی سے جنا گیا'},
+            {ar:'وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌ',en:'And there is none comparable to Him.',ur:'اور اس کا کوئی ہمسر نہیں'}
+          ]},
+          {n:113,name:'Al-Falaq',ar:'الفلق',meaning:'The Daybreak',v:5,type:'Makkī',verses:[
+            {ar:'قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ',en:'Say, I seek refuge in the Lord of the daybreak,',ur:'کہو میں پناہ مانگتا ہوں صبح کے رب کی'},
+            {ar:'مِن شَرِّ مَا خَلَقَ',en:'from the evil of whatever He has created,',ur:'ہر مخلوق کی برائی سے'},
+            {ar:'وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ',en:'and from the evil of the night when it grows dark,',ur:'اور رات کی برائی سے جب اندھیرا چھا جائے'},
+            {ar:'وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ',en:'and from the evil of those who blow on knots,',ur:'اور ان کی برائی سے جو گرہوں میں پھونکتی ہیں'},
+            {ar:'وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ',en:'and from the evil of an envier when they envy.',ur:'اور حسد کرنے والے کی برائی سے جب وہ حسد کرے'}
+          ]},
+          {n:114,name:'An-Nās',ar:'الناس',meaning:'Mankind',v:6,type:'Makkī',verses:[
+            {ar:'قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ',en:'Say, I seek refuge in the Lord of humankind,',ur:'کہو میں پناہ مانگتا ہوں لوگوں کے رب کی'},
+            {ar:'مَلِكِ ٱلنَّاسِ',en:'the Master of humankind,',ur:'لوگوں کے بادشاہ کی'},
+            {ar:'إِلَٰهِ ٱلنَّاسِ',en:'the God of humankind,',ur:'لوگوں کے معبود کی'},
+            {ar:'مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ',en:'from the evil of the lurking whisperer—',ur:'وسوسہ ڈالنے والے پیچھے ہٹ جانے والے کی برائی سے'},
+            {ar:'ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ',en:'who whispers into the hearts of humankind,',ur:'جو لوگوں کے سینوں میں وسوسہ ڈالتا ہے'},
+            {ar:'مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ',en:'from among jinn and humankind.',ur:'جنوں میں سے بھی اور انسانوں میں سے بھی'}
+          ]}
+        ];
+        const SURAH_LIST=[
+          {n:1,name:'Al-Fātiḥah',ar:'الفاتحة',meaning:'The Opening',v:7,type:'Makkī',dataIdx:0},
+          {n:2,name:'Al-Baqarah',ar:'البقرة',meaning:'The Cow',v:286,type:'Madanī',dataIdx:0},
+          {n:3,name:'Āl ʿImrān',ar:'آل عمران',meaning:'Family of Imrān',v:200,type:'Madanī',dataIdx:0},
+          {n:4,name:'An-Nisāʾ',ar:'النساء',meaning:'The Women',v:176,type:'Madanī',dataIdx:0},
+          {n:5,name:'Al-Māʾidah',ar:'المائدة',meaning:'The Table',v:120,type:'Madanī',dataIdx:0},
+          {n:18,name:'Al-Kahf',ar:'الكهف',meaning:'The Cave',v:110,type:'Makkī',dataIdx:0},
+          {n:36,name:'Yā-Sīn',ar:'يس',meaning:'Yā-Sīn',v:83,type:'Makkī',dataIdx:0},
+          {n:55,name:'Ar-Raḥmān',ar:'الرحمن',meaning:'The Most Merciful',v:78,type:'Madanī',dataIdx:0},
+          {n:56,name:'Al-Wāqiʿah',ar:'الواقعة',meaning:'The Inevitable',v:96,type:'Makkī',dataIdx:0},
+          {n:67,name:'Al-Mulk',ar:'الملك',meaning:'The Dominion',v:30,type:'Makkī',dataIdx:0},
+          {n:78,name:'An-Nabaʾ',ar:'النبأ',meaning:'The Announcement',v:40,type:'Makkī',dataIdx:0},
+          {n:99,name:'Az-Zalzalah',ar:'الزلزلة',meaning:'The Earthquake',v:8,type:'Madanī',dataIdx:0},
+          {n:103,name:'Al-ʿAṣr',ar:'العصر',meaning:'The Time',v:3,type:'Makkī',dataIdx:1},
+          {n:108,name:'Al-Kawthar',ar:'الكوثر',meaning:'Abundance',v:3,type:'Makkī',dataIdx:2},
+          {n:112,name:'Al-Ikhlāṣ',ar:'الإخلاص',meaning:'Sincerity',v:4,type:'Makkī',dataIdx:2},
+          {n:113,name:'Al-Falaq',ar:'الفلق',meaning:'The Daybreak',v:5,type:'Makkī',dataIdx:3},
+          {n:114,name:'An-Nās',ar:'الناس',meaning:'Mankind',v:6,type:'Makkī',dataIdx:4}
+        ];
+        const QARI_LIST=[
+          {name:'Mishary Rashid Alafasy',detail:'Kuwait · Mujawwad',initials:'م ر'},
+          {name:'Abdul Rahman Al-Sudais',detail:'Makkah · Imām al-Ḥaram',initials:'ع ر'},
+          {name:'Abdul Basit ʿAbd al-Ṣamad',detail:'Egypt · Mujawwad',initials:'ع ب'},
+          {name:'Maher Al-Muaiqly',detail:'Madinah · Imām al-Nabawī',initials:'م م'},
+          {name:'Mahmoud Al-Husary',detail:'Egypt · Murattal',initials:'م ح'},
+          {name:'Saad Al-Ghamdi',detail:'Saudi Arabia · Murattal',initials:'س غ'}
+        ];
+        const surah=SURAHS[S.quranSurahIdx]||SURAHS[0];
+        const vi=Math.min(S.quranVerseIdx,surah.verses.length-1);
+        const quranVerseItems=surah.verses.map((v,i)=>{const isActive=i===vi;return{n:i+1,ar:v.ar,en:v.en,ur:v.ur,isActive,rowBg:isActive?'linear-gradient(135deg,#0C5A3B,#073A28)':'#FFFDF7',numBg:isActive?'rgba(255,255,255,0.2)':'rgba(189,154,78,0.14)',numColor:isActive?'#fff':'#BD9A4E',arColor:isActive?'#fff':'#21302A',enColor:isActive?'rgba(255,255,255,0.88)':'#4C5852',urColor:isActive?'rgba(255,255,255,0.72)':'#8A8576',divColor:isActive?'rgba(255,255,255,0.14)':'rgba(33,48,42,0.08)',playPath:S.quranPlaying&&isActive?'M6.5 5H9v14H6.5V5zm8.5 0H17v14h-2V5z':'M8 5.5v13a1 1 0 001.5.87l10-6.5a1 1 0 000-1.74l-10-6.5A1 1 0 008 5.5z',playLabel:S.quranPlaying&&isActive?'Playing…':'Listen',play:()=>this.setState({quranVerseIdx:i,quranPlaying:true})};});
+        const quranSurahList=SURAH_LIST.map((s,i)=>({...s,border:i<SURAH_LIST.length-1?'1px solid rgba(33,48,42,0.07)':'none',typeBg:s.type==='Makkī'?'rgba(12,90,59,0.08)':'rgba(189,154,78,0.12)',typeColor:s.type==='Makkī'?'#0C5A3B':'#9A7B2E',go:()=>this.setState({quranView:'reader',quranSurahIdx:s.dataIdx,quranVerseIdx:0,quranPlaying:false})}));
+        const qari=QARI_LIST[S.quranQariIdx]||QARI_LIST[0];
+        const quranQaris=QARI_LIST.map((q,i)=>({...q,bg:i===S.quranQariIdx?'rgba(12,90,59,0.07)':'transparent',dotBg:i===S.quranQariIdx?'#0C5A3B':'transparent',dotBorder:i===S.quranQariIdx?'none':'2px solid rgba(33,48,42,0.2)',dotIn:i===S.quranQariIdx?'#fff':'transparent',pick:()=>this.setState({quranQariIdx:i,quranShowQaris:false})}));
+        return {quranVerseItems,quranSurahList,quranQaris,qSurahAr:surah.ar,qSurahName:surah.name,qSurahMeaning:surah.meaning,qSurahType:surah.type,qVerseTotal:surah.verses.length,qVerseIdx:vi+1,qActiveAr:surah.verses[vi].ar.slice(0,28)+'…',qariShort:qari.name.split(' ').slice(0,2).join(' '),quranPrevVerse:()=>this.setState({quranVerseIdx:Math.max(0,S.quranVerseIdx-1)}),quranNextVerse:()=>this.setState({quranVerseIdx:Math.min(surah.verses.length-1,S.quranVerseIdx+1)}),quranTogglePlay:()=>this.setState({quranPlaying:!S.quranPlaying})};
+      })(),
+      journalStreak:6, lastThird:lt.t+' '+lt.mer,
+      // qibla
+      qiblaDeg:Math.round(qb), qiblaRot:`${qb}deg`,
+      // more
+      moreRows, navItems, specs,
+      // quran log
+      quranSessionChips, quranVersesDone, quranJuz:S.quranJuz, quranJuzBarW, quranWeeklyPct,
+      quranStreak:S.quranStreak, quranTimeToday:S.quranTimeToday, quranDailyGoal:S.quranDailyGoal,
+      quranSessionRows, juzSegments,
+      quranGoalUp:()=>this.setState({quranDailyGoal:Math.min(50,S.quranDailyGoal+1)}),
+      quranGoalDown:()=>this.setState({quranDailyGoal:Math.max(1,S.quranDailyGoal-1)}),
+      // zikr & tasbih
+      zikrSetChips, tasbihTotal, tasbihPhrase, tasbihPhraseEn, tasbihCurrentTarget,
+      tasbihCount:S.tasbihCount, tasbihPct, tasbihTap, tasbihReset,
+      // good deeds
+      deedChips, deedsDone, deedsTotal, goodDeedRows,
+      // navigation
+      goToday:()=>this.setState({screen:'today'}), goLocation:()=>this.setState({screen:'location'}),
+      goSalah:()=>this.setState({screen:'salah'}), goQuran:()=>this.setState({screen:'quran'}),
+      goMore:()=>this.setState({screen:'more'}),
+      goQuranLog:()=>this.setState({screen:'quranlog'}),
+      goGoodDeeds:()=>this.setState({screen:'gooddeeds'}),
+      goZikrDetail:()=>this.setState({screen:'azkar'})
+    };
+  }
+}
+</script>
+</body>
+</html>

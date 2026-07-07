@@ -1,0 +1,17 @@
+node_modules/
+dist/
+build/
+.gradle/
+android/.gradle/
+android/app/build/
+android/local.properties
+ios/Pods/
+.DS_Store
+*.log
+*.swp
+*.swo
+*~
+.env
+.env.local
+UsersmjawaAppDataLocalTempclaudeC--Users-mjawa-Deen-o-Dunyae1385430-c3db-4f8e-88fc-bf5eab9d4e33/
+.claude/
