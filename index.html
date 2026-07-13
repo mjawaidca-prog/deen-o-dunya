@@ -3233,27 +3233,53 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
     return Promise.resolve();
   }
 
-  function PosterModal(props){
-    var poster = props.poster, onClose = props.onClose;
-    var doneState = React.useState(null), doneMsg = doneState[0], setDoneMsg = doneState[1];
-    if (!poster) return null;
-    var fname = "ddp-" + (poster.item && poster.item.kind === "hadith" ? "hadith" : "ayah") + "-" + Date.now() + ".png";
-    return h("div", { onClick: onClose, style: { position: "fixed", inset: 0, zIndex: 220, background: "rgba(20,30,25,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
-      h("div", { onClick: function(ev){ ev.stopPropagation(); }, style: { background: T.card, borderRadius: 22, padding: 14, maxWidth: 400, width: "100%", maxHeight: "88vh", overflow: "auto", boxShadow: "0 24px 60px rgba(0,0,0,0.35)" } },
-        poster.status === "building"
-          ? h("div", { style: { textAlign: "center", padding: "50px 0", fontFamily: T.sans, fontSize: 13, color: T.muted } }, "Preparing poster…")
-          : h(React.Fragment, null,
-              h("img", { src: poster.dataUrl, style: { width: "100%", borderRadius: 14, display: "block", marginBottom: 12 } }),
-              doneMsg && h("div", { style: { textAlign: "center", fontFamily: T.sans, fontSize: 12.5, fontWeight: 700, color: T.emerald, marginBottom: 8 } }, doneMsg),
-              h("div", { style: { display: "flex", gap: 8 } },
-                h("button", { type: "button", onClick: function(){ sharePoster(poster.dataUrl, fname); }, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Share"),
-                h("button", { type: "button", onClick: function(){ savePoster(poster.dataUrl, fname).then(function(){ setDoneMsg("Saved" + (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() ? " to Documents" : "")); setTimeout(function(){ setDoneMsg(null); }, 2200); }); }, style: { flex: 1, border: "1.5px solid " + T.gold, borderRadius: 13, padding: "12px 0", background: "transparent", color: T.gold, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Save"),
-                h("button", { type: "button", onClick: onClose, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: "rgba(33,48,42,0.07)", color: T.ink2, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Close")
-              )
-            )
-      )
-    );
-  }
+function PosterModal(props){
+     var poster = props.poster, onClose = props.onClose;
+     var doneState = React.useState(null), doneMsg = doneState[0], setDoneMsg = doneState[1];
+     var posterLangState = React.useState("all"), posterLang = posterLangState[0], setPosterLang = posterLangState[1];
+     var displayState = React.useState(null), display = displayState[0], setDisplay = displayState[1];
+     var rebuildingState = React.useState(false), rebuilding = rebuildingState[0], setRebuilding = rebuildingState[1];
+     React.useEffect(function(){ setPosterLang("all"); setDisplay(poster); }, [poster]);
+     if (!poster) return null;
+     var item = poster.item || {};
+     var fname = "ddp-" + (item.kind === "hadith" ? "hadith" : "ayah") + "-" + Date.now() + ".png";
+     var shown = display || poster;
+     var presentLangs = ["ar", "en", "ur"].filter(function(k){ return !!item[k]; });
+     var langLabels = { ar: "\u0639\u0631\u0628\u064A", en: "English", ur: "\u0627\u0631\u062F\u0648" };
+     var langOptions = presentLangs.length > 1 ? [{ key: "all", label: "All" }].concat(presentLangs.map(function(k){ return { key: k, label: langLabels[k] }; })) : [];
+     function chooseLang(key){
+            if (key === posterLang || rebuilding) return;
+            setPosterLang(key);
+            if (key === "all") { setDisplay(poster); return; }
+            setRebuilding(true);
+            var filtered = Object.assign({}, item);
+            ["ar", "en", "ur"].forEach(function(k){ if (k !== key) filtered[k] = ""; });
+            buildPosterDataUrl(filtered).then(function(du){
+                     setRebuilding(false);
+                     setDisplay({ status: "ready", dataUrl: du, item: item });
+            }).catch(function(){ setRebuilding(false); });
+     }
+     return h("div", { onClick: onClose, style: { position: "fixed", inset: 0, zIndex: 220, background: "rgba(20,30,25,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
+                    h("div", { onClick: function(ev){ ev.stopPropagation(); }, style: { background: T.card, borderRadius: 22, padding: 14, maxWidth: 400, width: "100%", maxHeight: "88vh", overflow: "auto", boxShadow: "0 24px 60px rgba(0,0,0,0.35)" } },
+                              (shown.status === "building" || rebuilding)
+                                ? h("div", { style: { textAlign: "center", padding: "50px 0", fontFamily: T.sans, fontSize: 13, color: T.muted } }, "Preparing poster…")
+                                : h(React.Fragment, null,
+                                                  langOptions.length > 0 && h("div", { style: { display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" } },
+                                                                                              langOptions.map(function(o){
+                                                                                                                 return h("button", { key: o.key, type: "button", onClick: function(){ chooseLang(o.key); }, style: { border: "none", borderRadius: 999, padding: "6px 12px", fontFamily: T.sans, fontSize: 11.5, fontWeight: 800, cursor: "pointer", background: posterLang === o.key ? T.emerald : "rgba(33,48,42,0.07)", color: posterLang === o.key ? "#fff" : T.ink2 } }, o.label);
+                                                                                               })
+                                                                                            ),
+                                                  h("img", { src: shown.dataUrl, style: { width: "100%", borderRadius: 14, display: "block", marginBottom: 12 } }),
+                                                  doneMsg && h("div", { style: { textAlign: "center", fontFamily: T.sans, fontSize: 12.5, fontWeight: 700, color: T.emerald, marginBottom: 8 } }, doneMsg),
+                                                  h("div", { style: { display: "flex", gap: 8 } },
+                                                                    h("button", { type: "button", onClick: function(){ sharePoster(shown.dataUrl, fname); }, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Share"),
+                                                                    h("button", { type: "button", onClick: function(){ savePoster(shown.dataUrl, fname).then(function(){ setDoneMsg("Saved" + (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() ? " to Documents" : "")); setTimeout(function(){ setDoneMsg(null); }, 2200); }); }, style: { flex: 1, border: "1.5px solid " + T.gold, borderRadius: 13, padding: "12px 0", background: "transparent", color: T.gold, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Save"),
+                                                                    h("button", { type: "button", onClick: onClose, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: "rgba(33,48,42,0.07)", color: T.ink2, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Close")
+                                                                  )
+                                                )
+                            )
+                  );
+}
 
   function SearchScreen(props){
     var back = props.back, openAyah = props.openAyah;
