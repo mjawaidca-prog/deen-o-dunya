@@ -1539,6 +1539,11 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
   function writeStoredTafsir(surah, mufassir, ayahs, lang){
     var payload = { surah: surah, id: mufassir.id, language: lang || "en", name: mufassir.name, work: mufassir.work, savedAt: Date.now(), ayahs: ayahs };
     localStorage.setItem(tafsirKey(surah, mufassir.id, lang), JSON.stringify(payload));
+    // Also persist to IndexedDB for larger quota (fire-and-forget)
+    if (window.DDP_DB) {
+      var dbKey = surah + ":" + mufassir.id + ":" + (lang || "en");
+      DDP_DB.set("tafsir", dbKey, payload).catch(function(){});
+    }
   }
   function seedTafsir(content, id){
     var map = {};
@@ -1847,7 +1852,8 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
     var currentState = React.useState(0), current = currentState[0], setCurrent = currentState[1];
     var playingState = React.useState(false), playing = playingState[0], setPlaying = playingState[1];
     var tafsirOpenState = React.useState(false), tafsirOpen = tafsirOpenState[0], setTafsirOpen = tafsirOpenState[1];
-    var tafsirLang = show.ur && !show.en ? "ur" : "en";
+    var tafsirShowState = React.useState(false), tafsirShow = tafsirShowState[0], setTafsirShow = tafsirShowState[1];
+    var tafsirLangState = React.useState("en"), tafsirLang = tafsirLangState[0], setTafsirLang = tafsirLangState[1];
     var rangeState = React.useState(function(){ return { start: 1, end: chapterTotal }; });
     var range = rangeState[0], setRange = rangeState[1];
     var loadedTotal = s && s.ayahs ? s.ayahs.length : 0;
@@ -1890,7 +1896,7 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
       return coverage.complete ? "saved" : coverage.count ? "partial" : "idle";
     });
     var tafsirStatus = tafsirStatusState[0], setTafsirStatus = tafsirStatusState[1];
-    var tafsirProgressState = React.useState(0), tafsirProgress = tafsirProgressState[0], setTafsirProgress = tafsirProgressState[1], cardShow = { en: show.en, ur: show.ur, tafsir: !1 };
+    var tafsirProgressState = React.useState(0), tafsirProgress = tafsirProgressState[0], setTafsirProgress = tafsirProgressState[1], cardShow = { en: show.en, ur: show.ur, tafsir: tafsirShow };
     var ayahRefs = React.useRef({});
     var vlistInstanceRef = React.useRef(null);
     var vlistRootsRef = React.useRef({});
@@ -2133,6 +2139,24 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
           var key = pair[0], label = pair[1];
           return h("div", { key: key, onClick: function(){ toggleShow(key); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 13, cursor: "pointer", fontFamily: key === "ur" ? T.urdu : T.sans, fontSize: key === "ur" ? 15 : 13, fontWeight: 700, background: show[key] ? T.emerald : "rgba(33,48,42,0.06)", color: show[key] ? "#fff" : T.muted, transition: "all .2s" } }, label);
         })),
+        h("div", { style: { display: "flex", gap: 8, marginBottom: 8 } },
+          h("div", { onClick: function(){ setTafsirShow(function(v){ return !v; }); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 13, cursor: "pointer", fontFamily: T.sans, fontSize: 13, fontWeight: 700, background: tafsirShow ? T.gold : "rgba(33,48,42,0.06)", color: tafsirShow ? "#fff" : T.muted, transition: "all .2s", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 } },
+            h("span", { style: { flexShrink: 0 } }, h(Ic.layers, { s: 14 })), "Tafsir"
+          ),
+          tafsirShow && h("div", { style: { display: "flex", gap: 8, flex: 2 } }, [["en", "EN"], ["ur", "UR"]].map(function(pair){
+            var key = pair[0], label = pair[1];
+            return h("div", { key: "tlang-" + key, onClick: function(){ setTafsirLang(key); }, style: { flex: 1, textAlign: "center", padding: "9px 0", borderRadius: 13, cursor: "pointer", fontFamily: key === "ur" ? T.urdu : T.sans, fontSize: key === "ur" ? 14 : 12, fontWeight: 700, background: tafsirLang === key ? T.gold : "rgba(33,48,42,0.06)", color: tafsirLang === key ? "#fff" : T.muted, transition: "all .2s" } }, label);
+          }))
+        ),
+        tafsirShow && h("div", { onClick: function(){ setMufassirIdx(function(v){ return (v + 1) % MUFASSIREEN.length; }); }, style: { display: "flex", alignItems: "center", gap: 8, padding: "9px 12px", marginBottom: 8, borderRadius: 14, cursor: "pointer", background: "rgba(189,154,78,0.10)", border: "1px solid rgba(189,154,78,0.18)" } },
+          h("span", { style: { color: T.gold, flexShrink: 0 } }, h(Ic.layers, { s: 15 })),
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { fontFamily: T.sans, fontSize: 13, fontWeight: 700, color: T.ink } }, selected.name),
+            h("div", { style: { fontFamily: T.serif, fontSize: 11.5, fontStyle: "italic", color: T.gold, marginTop: 1 } }, selected.work)
+          ),
+          h("span", { style: { fontFamily: T.sans, fontSize: 10.5, fontWeight: 800, color: T.muted, background: "rgba(33,48,42,0.06)", padding: "4px 8px", borderRadius: 999 } }, "Tap to change")
+        ),
+        tafsirShow && tafsirStatus !== "saved" && h(TafsirDownloadPanel, { selected: selected, status: tafsirStatus, progress: tafsirProgress, count: chapterTotal, lang: tafsirLang, onDownload: downloadTafsir }),
         h(AyahRangeControl, { start: rangeStart, end: rangeEnd, total: chapterTotal, loaded: loadedTotal, partial: partial || loadedTotal < chapterTotal, onChange: setAyahRange }),
       ),
       s && selectedLoaded > 0 && h(PlayerBar, { surah: t, ayahNo: activeRow ? activeRow.n : rangeStart + activeIndex, qari: QARIS[qari], current: activeRow ? activeRow.n - 1 : activeIndex, total: selectedLoaded, playing: playing, edition: QARI_EDITION[qari], gid: activeRow && activeRow.ayah.gid || gidStartFor(t) + rangeStart + activeIndex - 1, onToggle: function(){ setPlaying(function(v){ return !v; }); }, onPrev: function(){ setCurrent(Math.max(0, activeIndex - 1)); }, onNext: function(){ if (activeIndex + 1 < selectedLoaded) setCurrent(activeIndex + 1); else setPlaying(false); } }),
