@@ -1,6 +1,6 @@
 {
   "name": "deen-o-dunya-planner",
-  "version": "1.5.1",
+  "version": "1.3.0",
   "private": true,
   "description": "Deen o Dunya Planner PWA and mobile app package.",
   "scripts": {
