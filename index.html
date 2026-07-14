@@ -3125,84 +3125,92 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
     if (lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] += " …"; }
     return lines;
   }
-  function buildPosterDataUrl(item){
-    var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-    return ready.then(function(){
-      var W = 1080, H = 1350;
-      var cv = document.createElement("canvas");
-      cv.width = W; cv.height = H;
-      var ctx = cv.getContext("2d");
-      var grad = ctx.createLinearGradient(0, 0, 0, H);
-      grad.addColorStop(0, "#FDFAF1");
-      grad.addColorStop(1, "#F2EAD6");
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, H);
-      ctx.strokeStyle = "rgba(189,154,78,0.55)"; ctx.lineWidth = 3;
-      psRoundRect(ctx, 42, 42, W - 84, H - 84, 28); ctx.stroke();
-      ctx.strokeStyle = "rgba(189,154,78,0.25)"; ctx.lineWidth = 1.5;
-      psRoundRect(ctx, 58, 58, W - 116, H - 116, 20); ctx.stroke();
-      ctx.textAlign = "center";
-      ctx.textBaseline = "alphabetic";
-      var maxW = W - 200;
-      /* measure content blocks first so we can vertically centre them */
-      var blocks = [];
-      if (item.ar) {
-        var arSize = item.ar.length < 120 ? 54 : (item.ar.length < 320 ? 44 : 36);
-        ctx.font = "600 " + arSize + "px " + T.arabic;
-        ctx.direction = "rtl";
-        var arLines = psWrapText(ctx, item.ar, maxW, 10);
-        ctx.direction = "ltr";
-        blocks.push({ type:"ar", lines: arLines, size: arSize, lh: arSize * 1.85, color:"#21302A" });
-      }
-      if (item.en) {
-        ctx.font = "400 33px " + T.serif;
-        blocks.push({ type:"en", lines: psWrapText(ctx, item.en, maxW, 13), size: 33, lh: 33 * 1.55, color:"#44543C" });
-      }
-      if (item.ur) {
-        ctx.font = "500 36px " + T.urdu;
-        ctx.direction = "rtl";
-        blocks.push({ type:"ur", lines: psWrapText(ctx, item.ur, maxW, 10), size: 36, lh: 36 * 1.9, color:"#44543C" });
-        ctx.direction = "ltr";
-      }
-      var total = 0;
-      blocks.forEach(function(b, i){ total += b.lines.length * b.lh + (i > 0 ? 56 : 0); });
-      var top = 210, bottom = 1180;
-      var y = top + Math.max(0, (bottom - top - total) / 2);
-      /* eyebrow — shrink to fit, then truncate as a last resort */
-      ctx.fillStyle = "#BD9A4E";
-      var eyebrowText = String(item.eyebrow || "").toUpperCase();
-      var ebSize = 26;
-      ctx.font = "800 " + ebSize + "px " + T.sans;
-      while (ctx.measureText(eyebrowText).width > W - 160 && ebSize > 18) {
-        ebSize -= 2;
-        ctx.font = "800 " + ebSize + "px " + T.sans;
-      }
-      while (ctx.measureText(eyebrowText).width > W - 160 && eyebrowText.length > 8) {
-        eyebrowText = eyebrowText.slice(0, -2).replace(/\s+\S*$/, "") + "…";
-      }
-      ctx.fillText(eyebrowText, W / 2, 150);
-      /* content */
-      blocks.forEach(function(b, i){
-        if (i > 0) {
-          ctx.strokeStyle = "rgba(189,154,78,0.5)"; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(W / 2 - 60, y + 6); ctx.lineTo(W / 2 + 60, y + 6); ctx.stroke();
-          y += 56;
-        }
-        ctx.font = (b.type === "ar" ? "600 " : (b.type === "ur" ? "500 " : "400 ")) + b.size + "px " + (b.type === "ar" ? T.arabic : (b.type === "ur" ? T.urdu : T.serif));
-        ctx.fillStyle = b.color;
-        if (b.type !== "en") ctx.direction = "rtl";
-        b.lines.forEach(function(ln){ y += b.lh; ctx.fillText(ln, W / 2, y - b.lh * 0.3); });
-        ctx.direction = "ltr";
-      });
-      /* footer */
-      ctx.strokeStyle = "rgba(189,154,78,0.4)"; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(200, 1225); ctx.lineTo(W - 200, 1225); ctx.stroke();
-      ctx.fillStyle = "#0C5A3B";
-      ctx.font = "700 30px " + T.serif;
-      ctx.fillText("☾  Deen O Dunya Planner", W / 2, 1282);
-      return cv.toDataURL("image/png");
-    });
-  }
+  function buildPosterDataUrl(item, options){
+   options = options || {};
+   var fontScale = options.fontScale || 1;
+   var ready = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+   return ready.then(function(){
+    var W = 1080;
+    var cv = document.createElement("canvas");
+    cv.width = W; cv.height = 1350;
+    var ctx = cv.getContext("2d");
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    var maxW = W - 200;
+    var blocks = [];
+    if (item.ar) {
+     var arSize = Math.round((item.ar.length < 120 ? 54 : (item.ar.length < 320 ? 44 : 36)) * fontScale);
+     ctx.font = "600 " + arSize + "px " + T.arabic;
+     ctx.direction = "rtl";
+     var arLines = psWrapText(ctx, item.ar, maxW, 300);
+     ctx.direction = "ltr";
+     blocks.push({ type:"ar", lines: arLines, size: arSize, lh: arSize * 1.85, color:"#21302A" });
+    }
+    if (item.en) {
+     var enSize = Math.round(33 * fontScale);
+     ctx.font = "400 " + enSize + "px " + T.serif;
+     blocks.push({ type:"en", lines: psWrapText(ctx, item.en, maxW, 300), size: enSize, lh: enSize * 1.55, color:"#44543C" });
+    }
+    if (item.ur) {
+     var urSize = Math.round(36 * fontScale);
+     ctx.font = "500 " + urSize + "px " + T.urdu;
+     ctx.direction = "rtl";
+     blocks.push({ type:"ur", lines: psWrapText(ctx, item.ur, maxW, 300), size: urSize, lh: urSize * 1.9, color:"#44543C" });
+ ctx.direction = "ltr";
+ }
+ var total = 0;
+    blocks.forEach(function(b, i){ total += b.lines.length * b.lh + (i > 0 ? 56 : 0); });
+    var top = 210;
+    var footerReserve = 170;
+    var minContentH = 970;
+    var contentH = Math.max(minContentH, total);
+    var H = top + contentH + footerReserve;
+    cv.width = W; cv.height = H;
+    var grad = ctx.createLinearGradient(0, 0, 0, H);
+    grad.addColorStop(0, "#FDFAF1");
+    grad.addColorStop(1, "#F2EAD6");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = "rgba(189,154,78,0.55)"; ctx.lineWidth = 3;
+    psRoundRect(ctx, 42, 42, W - 84, H - 84, 28); ctx.stroke();
+    ctx.strokeStyle = "rgba(189,154,78,0.25)"; ctx.lineWidth = 1.5;
+    psRoundRect(ctx, 58, 58, W - 116, H - 116, 20); ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "alphabetic";
+    var bottom = H - footerReserve;
+    var y = top + Math.max(0, (bottom - top - total) / 2);
+    ctx.fillStyle = "#BD9A4E";
+    var eyebrowText = String(item.eyebrow || "").toUpperCase();
+    var ebSize = 26;
+    ctx.font = "800 " + ebSize + "px " + T.sans;
+    while (ctx.measureText(eyebrowText).width > W - 160 && ebSize > 18) {
+     ebSize -= 2;
+     ctx.font = "800 " + ebSize + "px " + T.sans;
+    }
+    while (ctx.measureText(eyebrowText).width > W - 160 && eyebrowText.length > 8) {
+     eyebrowText = eyebrowText.slice(0, -2).replace(/\s+\S*$/, "") + "\u2026";
+    }
+    ctx.fillText(eyebrowText, W / 2, 150);
+    blocks.forEach(function(b, i){
+     if (i > 0) {
+      ctx.strokeStyle = "rgba(189,154,78,0.5)"; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(W / 2 - 60, y + 6); ctx.lineTo(W / 2 + 60, y + 6); ctx.stroke();
+      y += 56;
+     }
+     ctx.font = (b.type === "ar" ? "600 " : (b.type === "ur" ? "500 " : "400 ")) + b.size + "px " + (b.type === "ar" ? T.arabic : (b.type === "ur" ? T.urdu : T.serif));
+                                                                                                                                                                                                                                                                             ctx.fillStyle = b.color;
+ if (b.type !== "en") ctx.direction = "rtl";
+ b.lines.forEach(function(ln){ y += b.lh; ctx.fillText(ln, W / 2, y - b.lh * 0.3); });
+ ctx.direction = "ltr";
+ });
+ ctx.strokeStyle = "rgba(189,154,78,0.4)"; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(200, H - 125); ctx.lineTo(W - 200, H - 125); ctx.stroke();
+ ctx.fillStyle = "#0C5A3B";
+                     ctx.font = "700 30px " + T.serif;
+ ctx.fillText("\u263E  Deen O Dunya Planner", W / 2, H - 68);
+ return cv.toDataURL("image/png");
+ });
+ }
   function psDownload(dataUrl, fname){
     var a = document.createElement("a");
     a.href = dataUrl; a.download = fname;
@@ -3233,27 +3241,133 @@ const TABS=[{key:"dashboard",label:__t("today_tab","Today"),icon:Ic.dashboard},{
     return Promise.resolve();
   }
 
-  function PosterModal(props){
-    var poster = props.poster, onClose = props.onClose;
-    var doneState = React.useState(null), doneMsg = doneState[0], setDoneMsg = doneState[1];
-    if (!poster) return null;
-    var fname = "ddp-" + (poster.item && poster.item.kind === "hadith" ? "hadith" : "ayah") + "-" + Date.now() + ".png";
-    return h("div", { onClick: onClose, style: { position: "fixed", inset: 0, zIndex: 220, background: "rgba(20,30,25,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
-      h("div", { onClick: function(ev){ ev.stopPropagation(); }, style: { background: T.card, borderRadius: 22, padding: 14, maxWidth: 400, width: "100%", maxHeight: "88vh", overflow: "auto", boxShadow: "0 24px 60px rgba(0,0,0,0.35)" } },
-        poster.status === "building"
-          ? h("div", { style: { textAlign: "center", padding: "50px 0", fontFamily: T.sans, fontSize: 13, color: T.muted } }, "Preparing poster…")
-          : h(React.Fragment, null,
-              h("img", { src: poster.dataUrl, style: { width: "100%", borderRadius: 14, display: "block", marginBottom: 12 } }),
-              doneMsg && h("div", { style: { textAlign: "center", fontFamily: T.sans, fontSize: 12.5, fontWeight: 700, color: T.emerald, marginBottom: 8 } }, doneMsg),
-              h("div", { style: { display: "flex", gap: 8 } },
-                h("button", { type: "button", onClick: function(){ sharePoster(poster.dataUrl, fname); }, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Share"),
-                h("button", { type: "button", onClick: function(){ savePoster(poster.dataUrl, fname).then(function(){ setDoneMsg("Saved" + (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform() ? " to Documents" : "")); setTimeout(function(){ setDoneMsg(null); }, 2200); }); }, style: { flex: 1, border: "1.5px solid " + T.gold, borderRadius: 13, padding: "12px 0", background: "transparent", color: T.gold, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Save"),
-                h("button", { type: "button", onClick: onClose, style: { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: "rgba(33,48,42,0.07)", color: T.ink2, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, "Close")
-              )
-            )
-      )
-    );
-  }
+function PosterModal(props){
+ var poster = props.poster, onClose = props.onClose;
+ var item = (poster && poster.item) || {};
+ var presentLangs = ["ar","en","ur"].filter(function(k){ return !!item[k]; });
+ var doneState = React.useState(null);
+ var doneMsg = doneState[0], setDoneMsg = doneState[1];
+ var selLangState = React.useState(presentLangs.slice());
+                                                                                                                                                                                                                                                                                                                                                                         var selectedLangs = selLangState[0], setSelectedLangs = selLangState[1];
+ var scaleState = React.useState(1);
+ var fontScale = scaleState[0], setFontScale = scaleState[1];
+ var displayState = React.useState(null);
+                                                                                                                                                                                                                                                                                  var display = displayState[0], setDisplay = displayState[1];
+ var rebState = React.useState(false);
+ var rebuilding = rebState[0], setRebuilding = rebState[1];
+  React.useEffect(function(){
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                               setSelectedLangs(presentLangs.slice());
+ setFontScale(1);
+ setDisplay(poster);
+ }, [poster]);
+                                                                                                                                                                              React.useEffect(function(){
+ if (!poster) return;
+ if (!selectedLangs) return;
+ var same = selectedLangs.length === presentLangs.length;
+  if (fontScale === 1 && same) { setDisplay(poster); return; }
+  setRebuilding(true);
+ var filtered = Object.assign({}, item);
+ for (var i=0;i<3;i++){
+ var k = ["ar","en","ur"][i];
+      if (selectedLangs.indexOf(k) === -1) filtered[k] = "";
+ }
+ var opts = { fontScale: fontScale };
+ buildPosterDataUrl(filtered, opts).then(function(du){
+ setRebuilding(false);
+ setDisplay({ status: "ready", dataUrl: du, item: item });
+ }).catch(function(){ setRebuilding(false); });
+ }, [poster, selectedLangs, fontScale]);
+  if (!poster) return null;
+ var kind = item.kind === "hadith" ? "hadith" : "ayah";
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           var fname = "ddp-" + kind + "-" + Date.now() + ".png";
+ var shown = display || poster;
+ var labelAr = String.fromCharCode(1593,1585,1576,1610);
+ var labelUr = String.fromCharCode(1575,1585,1583,1608);
+ var langLabels = { ar: labelAr, en: "English", ur: labelUr };
+ var langOptions = [];
+ if (presentLangs.length > 1) {
+ langOptions.push({ key: "all", label: "All" });
+ for (var i2=0;i2<presentLangs.length;i2++){
+ var k2 = presentLangs[i2];
+ langOptions.push({ key: k2, label: langLabels[k2] });
+                                                                                                                                                                                    }
+ }
+ function toggleLang(key){
+ if (rebuilding) return;
+ if (key === "all") { setSelectedLangs(presentLangs.slice()); return; }
+ var cur = selectedLangs || [];
+  var idx = cur.indexOf(key);
+ if (idx === -1) { setSelectedLangs(cur.concat([key])); return; }
+                                           if (cur.length <= 1) return;
+ var next = cur.slice();
+ next.splice(idx, 1);
+ setSelectedLangs(next);
+ }
+ function bumpFont(delta){
+ if (rebuilding) return;
+ var next = Math.round((fontScale + delta) * 100) / 100;
+ if (next < 0.8) next = 0.8;
+ if (next > 1.3) next = 1.3;
+ setFontScale(next);
+ }
+ var overlayStyle = { position: "fixed", inset: 0, zIndex: 220, background: "rgba(20,30,25,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 };
+ var cardStyle = { background: T.card, borderRadius: 22, padding: 14, maxWidth: 400, width: "100%", maxHeight: "88vh", overflow: "auto", boxShadow: "0 24px 60px rgba(0,0,0,0.35)" };
+ var chipsRowStyle = { display: "flex", gap: 6, marginBottom: 10, flexWrap: "wrap" };
+                                                                                                                                                                                                                                                                                                                                                                           var sizeRowStyle = { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, marginBottom: 12, background: "rgba(33,48,42,0.05)", borderRadius: 12, padding: "6px 10px" };
+ var sizeLabelStyle = { fontFamily: T.sans, fontSize: 11.5, fontWeight: 700, color: T.ink2 };
+ var sizeCtrlWrapStyle = { display: "flex", alignItems: "center", gap: 10 };
+ var imgStyle = { width: "100%", borderRadius: 14, display: "block", marginBottom: 12 };
+ var doneMsgStyle = { textAlign: "center", fontFamily: T.sans, fontSize: 12.5, fontWeight: 700, color: T.emerald, marginBottom: 8 };
+ var btnRowStyle = { display: "flex", gap: 8 };
+ function chipStyle(active){
+ return { border: "none", borderRadius: 999, padding: "6px 12px", fontFamily: T.sans, fontSize: 11.5, fontWeight: 800, cursor: "pointer", background: active ? T.emerald : "rgba(33,48,42,0.07)", color: active ? "#fff" : T.ink2 };
+ }
+ function fontBtnStyle(disabledFlag){
+                                                                                                                                                                                                                                                   return { border: "none", borderRadius: 999, width: 26, height: 26, fontFamily: T.sans, fontSize: 14, fontWeight: 800, cursor: disabledFlag ? "default" : "pointer", background: "rgba(33,48,42,0.09)", color: T.ink2, opacity: disabledFlag ? 0.4 : 1 };
+ }
+ function renderChip(o){
+ var active = o.key === "all" ? selectedLangs.length === presentLangs.length : selectedLangs.indexOf(o.key) !== -1;
+ return h("button", { key: o.key, type: "button", onClick: function(){ toggleLang(o.key); }, style: chipStyle(active) }, o.label);
+ }
+ var body;
+ if (shown.status === "building" || rebuilding) {
+ body = h("div", { style: { textAlign: "center", padding: "50px 0", fontFamily: T.sans, fontSize: 13, color: T.muted } }, "Preparing poster...");
+ } else {
+ var chipsRow = langOptions.length > 0 ? h("div", { style: chipsRowStyle }, langOptions.map(renderChip)) : null;
+ var minusDisabled = fontScale <= 0.8;
+                                                                                                                                                                                                                                                                                                                                                                         var plusDisabled = fontScale >= 1.3;
+ var sizeRow = h("div", { style: sizeRowStyle },
+ h("span", { style: sizeLabelStyle }, "Text size"),
+ h("div", { style: sizeCtrlWrapStyle },
+ h("button", { type: "button", onClick: function(){ bumpFont(-0.1); }, disabled: minusDisabled, style: fontBtnStyle(minusDisabled) }, "-"),
+ h("span", { style: sizeLabelStyle }, Math.round(fontScale * 100) + "%"),
+ h("button", { type: "button", onClick: function(){ bumpFont(0.1); }, disabled: plusDisabled, style: fontBtnStyle(plusDisabled) }, "+")
+ )
+ );
+ var imgEl = h("img", { src: shown.dataUrl, style: imgStyle });
+ var doneEl = doneMsg ? h("div", { style: doneMsgStyle }, doneMsg) : null;
+ function onShare(){ sharePoster(shown.dataUrl, fname); }
+ function onSave(){
+ savePoster(shown.dataUrl, fname).then(function(){
+ var native = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+ setDoneMsg("Saved" + (native ? " to Documents" : ""));
+ setTimeout(function(){ setDoneMsg(null); }, 2200);
+                                                                                                                                                                                                                                                                                  });
+ }
+ var shareBtnStyle = { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: T.emerald, color: "#fff", fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" };
+ var saveBtnStyle = { flex: 1, border: "1.5px solid " + T.gold, borderRadius: 13, padding: "12px 0", background: "transparent", color: T.gold, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" };
+ var closeBtnStyle = { flex: 1, border: "none", borderRadius: 13, padding: "12px 0", background: "rgba(33,48,42,0.07)", color: T.ink2, fontFamily: T.sans, fontSize: 13.5, fontWeight: 800, cursor: "pointer" };
+                                                                                                                                                       var btnRow = h("div", { style: btnRowStyle },
+ h("button", { type: "button", onClick: onShare, style: shareBtnStyle }, "Share"),
+ h("button", { type: "button", onClick: onSave, style: saveBtnStyle }, "Save"),
+ h("button", { type: "button", onClick: onClose, style: closeBtnStyle }, "Close")
+                                                                                                                                                                                                                                                                                  );
+ body = h(React.Fragment, null, chipsRow, sizeRow, imgEl, doneEl, btnRow);
+ }
+ return h("div", { onClick: onClose, style: overlayStyle },
+                                                                                                                        h("div", { onClick: function(ev){ ev.stopPropagation(); }, style: cardStyle }, body)
+ );
+ }
 
   function SearchScreen(props){
     var back = props.back, openAyah = props.openAyah;
