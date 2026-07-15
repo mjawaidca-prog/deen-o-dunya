@@ -27,7 +27,9 @@
   var DAYS_AR = ["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
   var DAYS_UR = ["اتوار","سوموار","منگل","بدھ","جمعرات","جمعہ","ہفتہ"];
 
-  /* Kuwaiti algorithm */
+  /* Kuwaiti algorithm — correct Gregorian→Hijri conversion.
+     Ref: "Calendrical Calculations" (Reingold & Dershowitz), with the
+     widely-used Hijri epoch constant 1948440 (Julian Day of 1 Muharram 1 AH). */
   function gregorianToHijri(gDate) {
     var offset = getOffset();
     var d = new Date(gDate.getTime() + offset * 86400000);
@@ -36,19 +38,24 @@
     var M = d.getMonth() + 1;
     var D = d.getDate();
 
+    // 1. Compute Julian Day from Gregorian date
     if (M < 3) { Y -= 1; M += 12; }
     var A = Math.floor(Y / 100);
     var B = 2 - A + Math.floor(A / 4);
     var JD = Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + D + B - 1524.5;
 
-    var Z = Math.floor(JD - 1948438.5 + 0.5);
-    var A2 = Math.floor((Z - 122.1) / 365.25);
-    var B2 = Z - Math.floor(365.25 * A2);
-    var C  = Math.floor(B2 / 30.6001);
+    // 2. Convert Julian Day → Hijri (Kuwaiti algorithm)
+    var L = Math.floor(JD) - 1948440 + 10632;
+    var N = Math.floor((L - 1) / 10631);
+    L = L - 10631 * N + 354;
+    var J = Math.floor((10985 - L) / 5316) * Math.floor((50 * L) / 17719)
+          + Math.floor(L / 5670) * Math.floor((43 * L) / 15238);
+    L = L - Math.floor((30 - J) / 15) * Math.floor((17719 * J) / 50)
+          - Math.floor(J / 16) * Math.floor((15238 * J) / 43) + 29;
 
-    var hD = B2 - Math.floor(30.6001 * C);
-    var hM = C === 14 || C === 15 ? C - 13 : C - 1;
-    var hY = A2 - (hM <= 2 ? 4716 : 4715);
+    var hM = Math.floor((24 * L) / 709);
+    var hD = L - Math.floor((709 * hM) / 24);
+    var hY = 30 * N + J - 30;
 
     return { year: hY, month: hM, day: hD, dow: d.getDay() };
   }
